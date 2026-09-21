@@ -36,3 +36,7 @@ The project must not automate acceptance of competition terms or redistribute th
 - Fallback dataset path: defined in [synthetic-fallback.md](synthetic-fallback.md).
 
 Stage 01 may begin with the fallback data contract if account access delays the real dataset, but the missing primary dataset must remain visible in the stage status.
+
+## Canonical adapter boundary
+
+The current Stage 01 ingestion code accepts the canonical transaction schema documented in [data-dictionary.md](data-dictionary.md). Synthetic data is generated directly in that schema. Raw IEEE-CIS files require a dedicated adapter because their fields are anonymized and do not map one-to-one to business entities. The adapter must be implemented and documented after the authenticated files are available; the project must not pretend that the synthetic schema is the original IEEE-CIS schema.

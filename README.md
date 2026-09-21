@@ -6,7 +6,7 @@ The approved scope and delivery gates are defined in [PROJECT_PLAN.md](PROJECT_P
 
 ## Current status
 
-Stage 00 is in progress. Business models and Agent features have not started.
+Stages 00 and 01 are complete. The repository contains an installable package and a deterministic point-in-time data pipeline. Stage 02 model development has not started.
 
 ## Prerequisites
 
@@ -38,6 +38,34 @@ Raw datasets are never committed. See:
 - [Data access](docs/data/data-access.md)
 - [Synthetic fallback](docs/data/synthetic-fallback.md)
 - [Storage budget](docs/data/storage-budget.md)
+
+## Stage 01 data pipeline
+
+Generate the deterministic synthetic fallback dataset:
+
+```powershell
+uv run --offline python scripts\generate_synthetic_data.py --config configs\dev.yaml
+```
+
+Build normalized data, historical features, chronological splits, and the feature report:
+
+```powershell
+uv run --offline python scripts\build_features.py --config configs\dev.yaml
+```
+
+Generated outputs are intentionally ignored by Git:
+
+```text
+data/raw/synthetic/transactions.csv
+data/interim/transactions.parquet
+data/interim/features_all.parquet
+data/processed/train_features.parquet
+data/processed/validation_features.parquet
+data/processed/test_features.parquet
+reports/generated/feature_report.md
+```
+
+The canonical schema and time semantics are documented in [docs/data/data-dictionary.md](docs/data/data-dictionary.md).
 
 ## Secrets
 

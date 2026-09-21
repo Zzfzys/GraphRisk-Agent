@@ -1,0 +1,25 @@
+project_name: graphrisk-agent
+
+paths:
+  raw_transactions: data/raw/synthetic/transactions.csv
+  interim_transactions: data/interim/transactions.parquet
+  interim_features: data/interim/features_all.parquet
+  processed_dir: data/processed
+  feature_report: reports/generated/feature_report.md
+
+data:
+  source: synthetic
+  regenerate_synthetic: true
+
+split:
+  train_ratio: 0.70
+  validation_ratio: 0.15
+  test_ratio: 0.15
+
+synthetic:
+  rows: 5000
+  seed: 20260921
+  start_time: "2025-01-01T00:00:00+00:00"
+
+logging:
+  level: INFO
