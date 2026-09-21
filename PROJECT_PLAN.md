@@ -198,7 +198,7 @@ flowchart TD
 - GPU 为 RTX 2060 6GB，适合受控规模 GraphSAGE 和量化小模型实验；
 - 内存约 16GB，数据处理需要避免复制完整宽表；
 - Stage 00 验证时 E 盘约有 47.52GB 可用空间，后续仍需监控模型与本地 LLM 占用；
-- IEEE-CIS 数据尚未取得；
+- IEEE-CIS 五个官方 CSV 已下载到 `data/raw/ieee-cis/` 并完成表头、大小与 SHA-256 记录，canonical adapter 尚待实现；
 - LLM API 总预算控制在 100～200 元，实验必须记录 Token 和估算成本。
 
 ## 12. 当前状态
@@ -212,7 +212,7 @@ Stage 00 已于 2026-09-21 完成：
 - 数据入口、保存路径、许可处理、来源记录和合成后备方案已经文档化；
 - Docker、PostgreSQL 和 Neo4j 按计划后置。
 
-IEEE-CIS 的认证下载仍需用户使用自己的 Kaggle 账户接受规则。该事项不阻塞使用合成数据契约进入 Stage 01，但真实数据到位前不得报告真实数据集模型指标。
+Stage 00 完成时 IEEE-CIS 尚未下载，因此项目使用合成数据契约继续推进。用户随后已通过自己的 Kaggle 账户取得数据；真实数据 adapter 和重跑完成前不得报告真实数据集模型指标。
 
 Stage 01 已于 2026-09-21 完成：
 
@@ -225,7 +225,7 @@ Stage 01 已于 2026-09-21 完成：
 - 5,000 行合成管线连续运行两次得到相同 SHA-256 产物；
 - 详细验证记录位于 `reports/stage-01-validation.md`。
 
-IEEE-CIS 原始数据与 adapter 仍待用户完成 Kaggle 规则接受和数据下载。当前合成数据仅用于验证工程管线，不作为真实模型效果证据。
+IEEE-CIS 原始数据已于 2026-09-21 放入 `data/raw/ieee-cis/`。当前仍需实现并测试 IEEE-CIS adapter；在 adapter 和真实数据重跑完成前，现有合成数据指标仍只用于验证工程管线，不作为真实模型效果证据。
 
 Stage 02 已于 2026-09-21 完成：
 

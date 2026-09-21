@@ -30,13 +30,16 @@ The project must not automate acceptance of competition terms or redistribute th
 ## Current verification status
 
 - Official data page: identified;
-- Local raw data: not present as of 2026-09-21;
-- Kaggle account/rules acceptance: requires the user account and has not been verified;
-- Download and checksum: pending;
+- Local raw data: five expected competition CSV files are present under `data/raw/ieee-cis/` as of 2026-09-21;
+- Schema check: transaction tables contain `TransactionID` and `TransactionDT`; `train_transaction.csv` contains `isFraud`; identity tables contain `TransactionID`;
+- Kaggle account/rules acceptance: user-managed and not independently verified by the project;
+- Download provenance: file sizes and SHA-256 checksums are stored in ignored local file `data/raw/ieee-cis/provenance.json`;
 - Fallback dataset path: defined in [synthetic-fallback.md](synthetic-fallback.md).
 
-Stage 01 may begin with the fallback data contract if account access delays the real dataset, but the missing primary dataset must remain visible in the stage status.
+The downloaded files pass the availability and top-level schema gate. They are not yet accepted by the canonical feature pipeline because the IEEE-CIS adapter remains to be implemented and tested.
 
 ## Canonical adapter boundary
 
-The current Stage 01 ingestion code accepts the canonical transaction schema documented in [data-dictionary.md](data-dictionary.md). Synthetic data is generated directly in that schema. Raw IEEE-CIS files require a dedicated adapter because their fields are anonymized and do not map one-to-one to business entities. The adapter must be implemented and documented after the authenticated files are available; the project must not pretend that the synthetic schema is the original IEEE-CIS schema.
+The current Stage 01 ingestion code accepts the canonical transaction schema documented in [data-dictionary.md](data-dictionary.md). Synthetic data is generated directly in that schema. Raw IEEE-CIS files require a dedicated adapter because their fields are anonymized and do not map one-to-one to business entities. The adapter must join the training transaction and identity tables on `TransactionID`, preserve `TransactionDT` ordering, map only defensible entity fields, and document missing-value behavior. The project must not pretend that the canonical or synthetic schema is the original IEEE-CIS schema.
+
+Only `train_transaction.csv` contains the supervised target. The official test files and `sample_submission.csv` are retained for provenance or optional Kaggle inference; they must not be used as a labeled evaluation set. Model development will create chronological train, validation and test partitions from the official training rows.
