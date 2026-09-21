@@ -1,6 +1,6 @@
 # GraphRisk-Agent 总体项目计划
 
-> 文档状态：已批准，尚未开始执行  
+> 文档状态：执行中，Stage 00～02 已完成
 > 当前版本：v1.0  
 > 建立日期：2026-09-21  
 > 计划周期：Week 0 + 16 周  
@@ -192,12 +192,12 @@ flowchart TD
 
 ## 11. 当前已知条件与风险
 
-- 当前仓库为空，尚未进入 Stage 00；
-- 本机存在 Git 和 uv，但尚无可用项目 Python 环境；
+- 仓库已完成 Stage 00～02，下一阶段为确定性调查工具；
+- 仓库内 Python 3.11、uv 锁文件和本地虚拟环境已可用；
 - Docker、PostgreSQL 和 Neo4j 尚未安装或不可用；
 - GPU 为 RTX 2060 6GB，适合受控规模 GraphSAGE 和量化小模型实验；
 - 内存约 16GB，数据处理需要避免复制完整宽表；
-- E 盘当前空间不足，执行前需要清理到至少 30～50GB 可用空间；
+- Stage 00 验证时 E 盘约有 47.52GB 可用空间，后续仍需监控模型与本地 LLM 占用；
 - IEEE-CIS 数据尚未取得；
 - LLM API 总预算控制在 100～200 元，实验必须记录 Token 和估算成本。
 
@@ -227,4 +227,14 @@ Stage 01 已于 2026-09-21 完成：
 
 IEEE-CIS 原始数据与 adapter 仍待用户完成 Kaggle 规则接受和数据下载。当前合成数据仅用于验证工程管线，不作为真实模型效果证据。
 
-Stage 02 尚未开始。
+Stage 02 已于 2026-09-21 完成：
+
+- 使用相同时间切分训练 Dummy、Logistic Regression 和 XGBoost；
+- 以验证集 PR-AUC 选择 Logistic Regression 为 champion，测试集只用于最终报告；
+- 统一报告 PR-AUC、ROC-AUC、Precision、Recall、F1、Top-K 与单条预测 P95 延迟；
+- 使用本地 MLflow SQLite 后端保存三个完成的实验运行；
+- 建立 `/health`、`/model/info` 和 `/risk/predict` FastAPI 接口；
+- 25 项自动化测试全部通过，并用真实 Uvicorn 进程验证成功与错误响应；
+- 详细证据位于 `reports/stage-02-validation.md`。
+
+Stage 02 指标来自合成数据，只证明工程闭环。风险等级阈值和模型概率尚未做业务校准。Stage 03 尚未开始。

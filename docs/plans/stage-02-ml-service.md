@@ -1,8 +1,10 @@
 # Stage 02：XGBoost、统一评估与预测服务
 
-> 状态：Planned  
+> 状态：Done
 > 计划时间：Week 3  
 > 前置阶段：Stage 01
+> 实际开始：2026-09-21
+> 实际结束：2026-09-21
 
 ## 阶段目标
 
@@ -18,12 +20,12 @@
 
 ## 实现任务
 
-- [ ] 建立 Dummy、Logistic Regression 和 XGBoost 基线；
-- [ ] 建立统一 `train/predict/evaluate` 接口；
-- [ ] 记录配置、特征、指标、运行时间和模型产物；
-- [ ] 输出统一模型对比表；
-- [ ] 实现 `/health`、`/model/info` 和 `/risk/predict`；
-- [ ] 编写模型、指标与 API 测试。
+- [x] 建立 Dummy、Logistic Regression 和 XGBoost 基线；
+- [x] 建立统一 `train/predict/evaluate` 接口；
+- [x] 记录配置、特征、指标、运行时间和模型产物；
+- [x] 输出统一模型对比表；
+- [x] 实现 `/health`、`/model/info` 和 `/risk/predict`；
+- [x] 编写模型、指标与 API 测试。
 
 ## 交付物
 
@@ -34,15 +36,24 @@
 
 ## 验收标准
 
-- [ ] 所有模型使用相同时间切分；
-- [ ] 主指标为 PR-AUC；
-- [ ] 评估报告包含 Top-K 指标和推理延迟；
-- [ ] API 返回风险分数、等级和模型版本；
-- [ ] API 输入错误具有结构化错误响应。
+- [x] 所有模型使用相同时间切分；
+- [x] 主指标为 PR-AUC；
+- [x] 评估报告包含 Top-K 指标和推理延迟；
+- [x] API 返回风险分数、等级和模型版本；
+- [x] API 输入错误具有结构化错误响应。
 
 ## 验证证据
 
-待执行后填写。
+- `uv sync --locked --offline` 通过；
+- `uv lock --check --offline` 通过；
+- `uv run --offline pytest`：25 项测试全部通过；
+- `python -m compileall src api scripts tests` 通过；
+- `uv build --offline` 成功生成 sdist 与 wheel，产物包含 API 和模型源码；
+- 三个模型完成真实训练，MLflow 中三个运行均为 `FINISHED`；
+- Logistic Regression 以验证集 PR-AUC `0.1457` 胜出，测试集 PR-AUC 为 `0.1892`；
+- XGBoost 测试集 PR-AUC 为 `0.2024`，但未用测试结果反向改变选型；
+- Uvicorn 真实进程验证 `/health`、`/model/info`、成功预测、404 与 422；
+- 完整证据见 [`reports/stage-02-validation.md`](../../reports/stage-02-validation.md)。
 
 ## 风险与降级方案
 
@@ -55,11 +66,17 @@
 | 日期 | 决定 | 原因 | 影响 |
 |---|---|---|---|
 | 2026-09-21 | PR-AUC 为主指标 | 欺诈标签高度不平衡 | Accuracy 不作为核心判断 |
+| 2026-09-21 | 仅使用验证集 PR-AUC 选择 champion | 保持测试集独立，避免测试泄漏 | Logistic Regression 被选中，即使 XGBoost 测试 PR-AUC 更高 |
+| 2026-09-21 | MLflow 使用完整发行版和 SQLite 后端 | Windows 下精简版配合本地文件存储无法稳定查询刚创建的运行 | 增加依赖体积，换取可复查的本地实验记录 |
+| 2026-09-21 | 风险等级暂用 0.30/0.70 阈值 | Stage 02 需要稳定 API 契约，当前无业务成本数据 | 后续必须把等级与概率校准分开说明 |
 
 ## 计划变更
 
-暂无。
+- 原计划强调 XGBoost 交付；实际补充 Dummy 和 Logistic Regression，用统一接口建立更可信的对照。
+- 训练和服务均使用 Stage 01 合成数据；指标只能作为工程验证，不能用于声称真实风控效果。
 
 ## 阶段复盘
 
-阶段完成后填写。
+本阶段完成了从 point-in-time 特征到可服务模型的闭环。训练入口可重复运行，MLflow 保存实验元数据，FastAPI 可按 `transaction_id` 返回结构化风险结果。验证集选型规则正确抵抗了“测试集表现更好就换模型”的诱惑。
+
+进入 Stage 03 时直接复用 `RiskPredictor` 作为确定性风险工具。需要继续保留的边界包括：合成数据身份、未经校准的分数、启发式风险等级阈值，以及真实数据 adapter 尚未完成。

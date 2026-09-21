@@ -6,13 +6,22 @@ readme = "README.md"
 requires-python = ">=3.11,<3.12"
 dependencies = [
     "duckdb>=1.4,<2",
+    "fastapi>=0.118,<1",
+    "httpx>=0.28,<1",
+    "joblib>=1.4,<2",
+    "mlflow>=3.5,<4",
+    "pandas>=2.2,<4",
     "pydantic>=2.11,<3",
     "pyyaml>=6,<7",
+    "scikit-learn>=1.7,<2",
+    "uvicorn>=0.35,<1",
+    "xgboost>=3,<4",
 ]
 
 [project.scripts]
 graphrisk-build-features = "graphrisk.pipeline:main"
 graphrisk-generate-synthetic = "graphrisk.data.synthetic:main"
+graphrisk-train-baselines = "graphrisk.training.train_baselines:main"
 
 [build-system]
 requires = ["hatchling>=1.27,<2"]
@@ -28,4 +37,4 @@ testpaths = ["tests"]
 addopts = "-ra -p no:cacheprovider"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/graphrisk"]
+packages = ["src/graphrisk", "api"]

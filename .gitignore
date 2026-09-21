@@ -31,8 +31,9 @@ data/processed/**
 !data/interim/.gitkeep
 !data/processed/.gitkeep
 artifacts/
-models/
+/models/
 mlruns/
+mlflow/
 logs/
 reports/generated/
 

@@ -1,0 +1,4 @@
+model,selected_as_champion,validation_pr_auc,validation_roc_auc,validation_precision,validation_recall,validation_f1,validation_precision_at_1pct,validation_recall_at_1pct,validation_precision_at_5pct,validation_recall_at_5pct,test_pr_auc,test_roc_auc,test_precision,test_recall,test_f1,test_precision_at_1pct,test_recall_at_1pct,test_precision_at_5pct,test_recall_at_5pct,p95_latency_ms,model_size_bytes
+dummy,false,0.021333,0.500000,0.000000,0.000000,0.000000,0.000000,0.000000,0.026316,0.062500,0.028000,0.500000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,8.537,4083
+logistic_regression,true,0.145663,0.766349,0.125000,0.500000,0.200000,0.250000,0.125000,0.078947,0.187500,0.189250,0.779868,0.146667,0.523810,0.229167,0.250000,0.095238,0.131579,0.238095,8.396,9682
+xgboost,false,0.136311,0.753661,0.136364,0.375000,0.200000,0.125000,0.062500,0.131579,0.312500,0.202355,0.791430,0.205882,0.333333,0.254545,0.250000,0.095238,0.184211,0.333333,9.213,63429

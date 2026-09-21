@@ -6,7 +6,7 @@ The approved scope and delivery gates are defined in [PROJECT_PLAN.md](PROJECT_P
 
 ## Current status
 
-Stages 00 and 01 are complete. The repository contains an installable package and a deterministic point-in-time data pipeline. Stage 02 model development has not started.
+Stages 00 through 02 are complete. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, and a FastAPI risk prediction service. Stage 03 investigation tools have not started.
 
 ## Prerequisites
 
@@ -66,6 +66,29 @@ reports/generated/feature_report.md
 ```
 
 The canonical schema and time semantics are documented in [docs/data/data-dictionary.md](docs/data/data-dictionary.md).
+
+## Stage 02 model training and API
+
+Train Dummy, Logistic Regression, and XGBoost on the same chronological splits. The command selects the champion by validation PR-AUC, writes ignored local model artifacts, and records each run in local MLflow SQLite storage:
+
+```powershell
+uv run --offline python scripts\train_baselines.py --config configs\train_baseline.yaml
+uv run --offline python scripts\list_mlflow_runs.py --config configs\train_baseline.yaml
+```
+
+Start the risk service after training:
+
+```powershell
+uv run --offline uvicorn api.main:app --host 127.0.0.1 --port 8000
+```
+
+The service exposes:
+
+- `GET /health` for artifact readiness;
+- `GET /model/info` for champion metadata and evaluation metrics;
+- `POST /risk/predict` with `{"transaction_id": "T00000001"}` for a score, risk level, and model version.
+
+Stage 02 used the synthetic fallback data. Its metrics verify the engineering and evaluation pipeline only. See [the Stage 02 validation report](reports/stage-02-validation.md) for the model comparison, API evidence, and known limits.
 
 ## Secrets
 
