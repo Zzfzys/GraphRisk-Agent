@@ -13,7 +13,7 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-ra"
+addopts = "-ra -p no:cacheprovider"
 
 [tool.uv]
 package = false

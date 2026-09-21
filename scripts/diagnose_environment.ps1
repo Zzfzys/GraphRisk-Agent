@@ -13,11 +13,12 @@ if (Get-Command git -ErrorAction SilentlyContinue) {
 }
 
 Write-Output "`nDisk"
-Get-PSDrive -Name E -ErrorAction SilentlyContinue |
-    Select-Object Name,
-        @{Name = "FreeGB"; Expression = { [math]::Round($_.Free / 1GB, 2) } },
-        @{Name = "UsedGB"; Expression = { [math]::Round($_.Used / 1GB, 2) } } |
-    Format-Table -AutoSize
+$projectDrive = [System.IO.DriveInfo]::new((Get-Location).Drive.Name)
+[pscustomobject]@{
+    Name = $projectDrive.Name
+    FreeGB = [math]::Round($projectDrive.AvailableFreeSpace / 1GB, 2)
+    UsedGB = [math]::Round(($projectDrive.TotalSize - $projectDrive.AvailableFreeSpace) / 1GB, 2)
+} | Format-Table -AutoSize
 
 Write-Output "`nPython and uv"
 if (Get-Command uv -ErrorAction SilentlyContinue) {

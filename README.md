@@ -19,11 +19,11 @@ Stage 00 is in progress. Business models and Agent features have not started.
 ```powershell
 uv python install 3.11 --install-dir .uv-python --cache-dir .uv-cache
 $projectPython = (Get-ChildItem -LiteralPath ".uv-python" -Filter "python.exe" -Recurse | Select-Object -First 1).FullName
-uv sync --locked --python $projectPython --cache-dir .uv-cache
+uv sync --locked --python $projectPython
 uv run --offline pytest
 ```
 
-The managed Python runtime, package cache, and virtual environment remain inside the repository and are excluded from Git.
+The managed Python runtime, package cache, and virtual environment remain inside the repository and are excluded from Git. `uv.toml` keeps uv's cache inside the workspace so the same commands work in restricted environments.
 
 ## Environment diagnostic
 
