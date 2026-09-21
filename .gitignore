@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local environments and uv state
+.venv/
+.uv-cache/
+.uv-python/
+.git-sandbox-backup/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+kaggle.json
+
+# Data and generated artifacts
+data/raw/**
+data/interim/**
+data/processed/**
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+artifacts/
+models/
+mlruns/
+logs/
+reports/generated/
+
+# Large model and data formats
+*.ckpt
+*.onnx
+*.pt
+*.pth
+*.safetensors
+*.parquet
+*.feather
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

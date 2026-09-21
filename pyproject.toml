@@ -1,0 +1,19 @@
+[project]
+name = "graphrisk-agent"
+version = "0.1.0"
+description = "Evidence-grounded fraud investigation agent portfolio project"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3,<9",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.uv]
+package = false
