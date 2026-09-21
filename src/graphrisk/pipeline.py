@@ -7,6 +7,7 @@ from pathlib import Path
 
 from graphrisk.config import load_config
 from graphrisk.data.ingestion import IngestionSummary, ingest_canonical_transactions
+from graphrisk.data.ieee_cis import adapt_ieee_cis_transactions
 from graphrisk.data.splitting import SplitSummary, write_temporal_splits
 from graphrisk.data.synthetic import GenerationSummary, generate_from_config
 from graphrisk.features.transaction_features import (
@@ -41,10 +42,18 @@ def run_pipeline(config_path: str | Path) -> PipelineSummary:
     elif not raw_path.is_file():
         raise FileNotFoundError(f"configured transaction data does not exist: {raw_path}")
 
-    ingestion = ingest_canonical_transactions(
-        raw_path,
-        config.resolve_path(config.paths.interim_transactions),
-    )
+    interim_transactions = config.resolve_path(config.paths.interim_transactions)
+    if config.data.source == "ieee_cis":
+        if config.paths.raw_identity is None or config.data.relative_time_anchor is None:
+            raise ValueError("IEEE-CIS paths and relative time anchor are required")
+        ingestion = adapt_ieee_cis_transactions(
+            raw_path,
+            config.resolve_path(config.paths.raw_identity),
+            interim_transactions,
+            relative_time_anchor=config.data.relative_time_anchor,
+        )
+    else:
+        ingestion = ingest_canonical_transactions(raw_path, interim_transactions)
     features = build_historical_features(
         ingestion.output_path,
         config.resolve_path(config.paths.interim_features),

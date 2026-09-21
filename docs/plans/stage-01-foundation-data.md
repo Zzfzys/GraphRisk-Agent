@@ -72,6 +72,8 @@
 | 2026-09-21 | 建立独立 canonical transaction schema | IEEE-CIS 原始文件尚未取得且字段匿名 | 真实数据到位后实现显式 adapter |
 | 2026-09-21 | 相同时间戳的交易视为同时发生 | 数据源没有可靠的同时间事件顺序 | 同时间交易不能互相提供历史信息 |
 | 2026-09-21 | 先计算严格历史特征，再进行时间切分 | 验证和测试推理可以使用其发生前的真实历史 | 窗口必须排除当前和未来事件 |
+| 2026-09-21 | IEEE-CIS 使用显式 adapter 和独立产物目录 | 原始字段匿名且不能直接满足 canonical contract | 保留合成证据，同时允许真实数据公平重跑 |
+| 2026-09-21 | 缺失图实体使用交易唯一 fallback | 共享 `unknown` 会制造不存在的图关系 | 不同缺失值交易不会被错误连接 |
 
 ## 计划变更
 
@@ -92,4 +94,10 @@ Stage 01 已完成可安装 Python package、配置和结构化日志、数据�
 - 可重复运行的 `scripts/build_features.py`；
 - 统一 canonical schema 和已记录的真实数据 adapter 边界。
 
-遗留事项：IEEE-CIS 下载与 adapter 仍需用户 Kaggle 账户，不能把当前合成数据指标包装为真实风控效果。
+原阶段遗留事项是 IEEE-CIS 下载与 adapter；该事项已在下方补充验证中关闭。合成数据指标与真实数据指标仍必须分别报告。
+
+## 真实数据接入补充验证
+
+IEEE-CIS 文件到位后已完成 adapter、全量转换、历史特征和时间切分验证：590,540 条交易全部保留，20,663 条欺诈标签保持一致，切分为 413,378 / 88,581 / 88,581。管线连续运行两次得到一致 SHA-256，详细证据见 [`reports/ieee-cis-adapter-validation.md`](../../reports/ieee-cis-adapter-validation.md)。
+
+仍需保留的语义限制是：`TransactionDT` 的真实日历起点未知，canonical 身份仍是启发式实体组合。

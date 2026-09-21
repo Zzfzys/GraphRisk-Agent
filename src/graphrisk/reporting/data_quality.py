@@ -45,10 +45,24 @@ def write_feature_report(
         missing_historical_mean,
     ) = summary
 
+    evidence_note = (
+        "Synthetic results must not be presented as real-world model evidence."
+        if source_name == "synthetic"
+        else "Competition-dataset results must not be presented as production performance."
+    )
+    time_note = (
+        ""
+        if source_name != "ieee_cis"
+        else (
+            "\n> IEEE-CIS calendar timestamps use the configured artificial anchor. "
+            "Only source ordering and elapsed intervals are meaningful."
+        )
+    )
     report = f"""# Feature build report
 
 > Data source: `{source_name}`
-> This report describes generated artifacts. Synthetic results must not be presented as real-world model evidence.
+> This report describes generated artifacts. {evidence_note}
+{time_note}
 
 ## Dataset summary
 

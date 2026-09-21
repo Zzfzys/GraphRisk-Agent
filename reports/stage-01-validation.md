@@ -81,3 +81,7 @@ The pipeline was executed twice with the same configuration. All relevant files 
 - `identity_key` is a grouping heuristic, not a verified customer ID;
 - The synthetic distribution is designed for pipeline tests and demonstrations;
 - PostgreSQL, Neo4j, Docker and production-scale data processing remain later-stage work.
+
+## Post-stage IEEE-CIS addendum
+
+The primary dataset was downloaded after this original synthetic validation. The adapter and full 590,540-row pipeline now pass; see [the separate IEEE-CIS adapter validation](ieee-cis-adapter-validation.md). The statements above about the dataset being absent describe the original Stage 01 run and are retained as historical evidence.

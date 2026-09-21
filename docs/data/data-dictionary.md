@@ -1,12 +1,13 @@
 # Canonical transaction data dictionary
 
-Stage 01 uses a small, semantically clear canonical schema. Synthetic data is generated directly in this schema. A future IEEE-CIS adapter will map available source fields into it without claiming that a derived identity is a true customer account.
+Stage 01 uses a small, semantically clear canonical schema. Synthetic data is generated directly in this schema. The validated IEEE-CIS mapping is documented in [ieee-cis-adapter.md](ieee-cis-adapter.md) and does not claim that a derived identity is a true customer account.
 
 | Field | Type | Required | Meaning |
 |---|---|---:|---|
 | `transaction_id` | string | yes | Unique transaction identifier |
-| `transaction_time` | timezone-aware timestamp | yes | Event time converted to UTC |
-| `transaction_amount` | non-negative float | yes | Transaction amount in synthetic units |
+| `transaction_time` | timezone-aware timestamp | yes | Event time represented in UTC; IEEE-CIS uses a documented artificial anchor |
+| `source_transaction_dt_seconds` | integer | IEEE-CIS only | Unmodified relative `TransactionDT` offset |
+| `transaction_amount` | non-negative float | yes | Transaction amount in source-defined or synthetic units |
 | `card_id` | string | yes | Card-like graph entity identifier |
 | `device_id` | string | yes | Device-like graph entity identifier |
 | `email_domain` | string | yes | Email-domain graph entity |

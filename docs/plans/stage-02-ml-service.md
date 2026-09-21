@@ -79,4 +79,8 @@
 
 本阶段完成了从 point-in-time 特征到可服务模型的闭环。训练入口可重复运行，MLflow 保存实验元数据，FastAPI 可按 `transaction_id` 返回结构化风险结果。验证集选型规则正确抵抗了“测试集表现更好就换模型”的诱惑。
 
-进入 Stage 03 时直接复用 `RiskPredictor` 作为确定性风险工具。需要继续保留的边界包括：合成数据身份、未经校准的分数、启发式风险等级阈值，以及真实数据 adapter 尚未完成。
+进入 Stage 03 时直接复用 `RiskPredictor` 作为确定性风险工具。需要继续保留的边界包括：启发式实体身份、未经校准的分数、启发式风险等级阈值，以及 IEEE-CIS 人工时间锚点。
+
+## IEEE-CIS 补充验证
+
+真实数据 adapter 完成后，三个基线在独立 IEEE-CIS 产物目录重新训练。三个 MLflow 运行均完成；XGBoost 以验证集 PR-AUC `0.1736` 成为 champion，测试集 PR-AUC 为 `0.1522`。真实 champion 已通过 FastAPI 加载和预测验证。单请求约 `802ms`，说明接入成功但单行预处理仍需优化。详细证据见 [`reports/ieee-cis-adapter-validation.md`](../../reports/ieee-cis-adapter-validation.md)。

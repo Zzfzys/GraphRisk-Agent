@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field, PrivateAttr, field_validator, model_valid
 
 class PathConfig(BaseModel):
     raw_transactions: Path
+    raw_identity: Path | None = None
     interim_transactions: Path
     interim_features: Path
     processed_dir: Path
@@ -17,8 +18,19 @@ class PathConfig(BaseModel):
 
 
 class DataConfig(BaseModel):
-    source: Literal["synthetic", "canonical"] = "synthetic"
+    source: Literal["synthetic", "canonical", "ieee_cis"] = "synthetic"
     regenerate_synthetic: bool = False
+    relative_time_anchor: datetime | None = None
+
+    @field_validator("relative_time_anchor")
+    @classmethod
+    def relative_time_anchor_must_be_timezone_aware(
+        cls,
+        value: datetime | None,
+    ) -> datetime | None:
+        if value is not None and (value.tzinfo is None or value.utcoffset() is None):
+            raise ValueError("relative_time_anchor must include a timezone")
+        return value
 
 
 class SplitConfig(BaseModel):
@@ -56,10 +68,21 @@ class ProjectConfig(BaseModel):
     paths: PathConfig
     data: DataConfig
     split: SplitConfig
-    synthetic: SyntheticConfig
+    synthetic: SyntheticConfig | None = None
     logging: LoggingConfig = Field(default_factory=LoggingConfig)
 
     _project_root: Path = PrivateAttr()
+
+    @model_validator(mode="after")
+    def source_specific_settings_must_be_present(self) -> "ProjectConfig":
+        if self.data.source == "synthetic" and self.synthetic is None:
+            raise ValueError("synthetic settings are required for synthetic data")
+        if self.data.source == "ieee_cis":
+            if self.paths.raw_identity is None:
+                raise ValueError("raw_identity is required for IEEE-CIS data")
+            if self.data.relative_time_anchor is None:
+                raise ValueError("relative_time_anchor is required for IEEE-CIS data")
+        return self
 
     def set_project_root(self, root: Path) -> None:
         self._project_root = root.resolve()

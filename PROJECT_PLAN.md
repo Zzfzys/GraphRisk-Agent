@@ -198,7 +198,7 @@ flowchart TD
 - GPU 为 RTX 2060 6GB，适合受控规模 GraphSAGE 和量化小模型实验；
 - 内存约 16GB，数据处理需要避免复制完整宽表；
 - Stage 00 验证时 E 盘约有 47.52GB 可用空间，后续仍需监控模型与本地 LLM 占用；
-- IEEE-CIS 五个官方 CSV 已下载到 `data/raw/ieee-cis/` 并完成表头、大小与 SHA-256 记录，canonical adapter 尚待实现；
+- IEEE-CIS 五个官方 CSV 已下载到 `data/raw/ieee-cis/`，canonical adapter、全量特征管线和真实数据基线均已验证；
 - LLM API 总预算控制在 100～200 元，实验必须记录 Token 和估算成本。
 
 ## 12. 当前状态
@@ -225,7 +225,7 @@ Stage 01 已于 2026-09-21 完成：
 - 5,000 行合成管线连续运行两次得到相同 SHA-256 产物；
 - 详细验证记录位于 `reports/stage-01-validation.md`。
 
-IEEE-CIS 原始数据已于 2026-09-21 放入 `data/raw/ieee-cis/`。当前仍需实现并测试 IEEE-CIS adapter；在 adapter 和真实数据重跑完成前，现有合成数据指标仍只用于验证工程管线，不作为真实模型效果证据。
+IEEE-CIS 原始数据已于 2026-09-21 放入 `data/raw/ieee-cis/`，adapter 随后完成全量接入验证。合成数据与 IEEE-CIS 指标分别保留，不混合作为同一组实验结果。
 
 Stage 02 已于 2026-09-21 完成：
 
@@ -237,4 +237,4 @@ Stage 02 已于 2026-09-21 完成：
 - 25 项自动化测试全部通过，并用真实 Uvicorn 进程验证成功与错误响应；
 - 详细证据位于 `reports/stage-02-validation.md`。
 
-Stage 02 指标来自合成数据，只证明工程闭环。风险等级阈值和模型概率尚未做业务校准。Stage 03 尚未开始。
+Stage 02 的原始指标来自合成数据；后续真实数据重跑选择 XGBoost 为 champion，验证集/测试集 PR-AUC 分别为 `0.1736`/`0.1522`。真实数据 API 预测成功，但单请求约 `802ms`，需要后续优化。风险等级阈值和模型概率尚未做业务校准。详细真实数据证据位于 `reports/ieee-cis-adapter-validation.md`，Stage 03 尚未开始。

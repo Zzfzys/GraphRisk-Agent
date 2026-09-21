@@ -1,0 +1,22 @@
+project_name: graphrisk-agent
+
+paths:
+  raw_transactions: data/raw/ieee-cis/train_transaction.csv
+  raw_identity: data/raw/ieee-cis/train_identity.csv
+  interim_transactions: data/interim/ieee-cis/transactions.parquet
+  interim_features: data/interim/ieee-cis/features_all.parquet
+  processed_dir: data/processed/ieee-cis
+  feature_report: reports/generated/ieee-cis-feature-report.md
+
+data:
+  source: ieee_cis
+  regenerate_synthetic: false
+  relative_time_anchor: "2000-01-01T00:00:00+00:00"
+
+split:
+  train_ratio: 0.70
+  validation_ratio: 0.15
+  test_ratio: 0.15
+
+logging:
+  level: INFO

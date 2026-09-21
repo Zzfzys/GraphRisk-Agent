@@ -103,6 +103,8 @@ def generate_synthetic_transactions(
 
 
 def generate_from_config(config: ProjectConfig) -> GenerationSummary:
+    if config.synthetic is None:
+        raise ValueError("synthetic settings are required to generate synthetic data")
     return generate_synthetic_transactions(
         config.resolve_path(config.paths.raw_transactions),
         rows=config.synthetic.rows,

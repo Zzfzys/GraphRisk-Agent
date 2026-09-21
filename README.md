@@ -67,6 +67,16 @@ reports/generated/feature_report.md
 
 The canonical schema and time semantics are documented in [docs/data/data-dictionary.md](docs/data/data-dictionary.md).
 
+### IEEE-CIS data pipeline
+
+Place the authenticated competition CSV files under `data/raw/ieee-cis/`, then build separate real-data artifacts without overwriting the synthetic pipeline:
+
+```powershell
+uv run --offline python scripts\build_features.py --config configs\ieee_cis.yaml
+```
+
+The adapter joins `train_transaction.csv` and `train_identity.csv` on `TransactionID`, preserves `TransactionDT` ordering, creates canonical graph entities, and writes chronological splits under `data/processed/ieee-cis/`. See [the adapter specification](docs/data/ieee-cis-adapter.md) and [full validation evidence](reports/ieee-cis-adapter-validation.md).
+
 ## Stage 02 model training and API
 
 Train Dummy, Logistic Regression, and XGBoost on the same chronological splits. The command selects the champion by validation PR-AUC, writes ignored local model artifacts, and records each run in local MLflow SQLite storage:
@@ -89,6 +99,13 @@ The service exposes:
 - `POST /risk/predict` with `{"transaction_id": "T00000001"}` for a score, risk level, and model version.
 
 Stage 02 used the synthetic fallback data. Its metrics verify the engineering and evaluation pipeline only. See [the Stage 02 validation report](reports/stage-02-validation.md) for the model comparison, API evidence, and known limits.
+
+The same baselines can be trained independently on the adapted IEEE-CIS data:
+
+```powershell
+uv run --offline python scripts\train_baselines.py --config configs\train_baseline_ieee_cis.yaml
+uv run --offline python scripts\list_mlflow_runs.py --config configs\train_baseline_ieee_cis.yaml
+```
 
 ## Secrets
 

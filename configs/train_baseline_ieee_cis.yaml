@@ -1,0 +1,28 @@
+project_name: graphrisk-agent
+dataset_source: ieee_cis
+
+paths:
+  train_features: data/processed/ieee-cis/train_features.parquet
+  validation_features: data/processed/ieee-cis/validation_features.parquet
+  test_features: data/processed/ieee-cis/test_features.parquet
+  serving_features: data/interim/ieee-cis/features_all.parquet
+  output_dir: artifacts/stage-02/ieee-cis
+  results_csv: reports/generated/ieee-cis-baseline-results.csv
+  mlflow_database: artifacts/stage-02/ieee-cis/mlflow.db
+  mlflow_artifacts: artifacts/stage-02/ieee-cis/mlflow-artifacts
+
+training:
+  random_seed: 20260921
+  decision_threshold: 0.50
+  models:
+    - dummy
+    - logistic_regression
+    - xgboost
+  latency_sample_size: 200
+
+mlflow:
+  experiment_name: graphrisk-stage-02-ieee-cis-baselines
+
+serving:
+  low_threshold: 0.30
+  high_threshold: 0.70

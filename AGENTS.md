@@ -50,7 +50,9 @@ uv sync --locked
 uv run --offline pytest
 uv run --offline python scripts\generate_synthetic_data.py --config configs\dev.yaml
 uv run --offline python scripts\build_features.py --config configs\dev.yaml
+uv run --offline python scripts\build_features.py --config configs\ieee_cis.yaml
 uv run --offline python scripts\train_baselines.py --config configs\train_baseline.yaml
+uv run --offline python scripts\train_baselines.py --config configs\train_baseline_ieee_cis.yaml
 uv run --offline python scripts\list_mlflow_runs.py --config configs\train_baseline.yaml
 uv run --offline uvicorn api.main:app --host 127.0.0.1 --port 8000
 ```
