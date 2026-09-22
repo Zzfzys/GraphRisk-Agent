@@ -57,7 +57,7 @@
 | `invalid_input` | ID 空白/过长、未知数据源、limit 越界、未知字段 | `invalid_transaction_id`, `invalid_dataset_source`, `invalid_limit`, `invalid_request` |
 | `not_found` | 在已可用且已选定的数据源里没有这笔交易 | `transaction_not_found` |
 | `unavailable` | 能力尚未实现，如 Stage 03 图风险邻居 | `capability_unavailable` |
-| `dependency_error` | 数据/模型产物缺失、来源错配、重复交易、查询或推理失败、依赖超时 | `transaction_artifact_unavailable`, `feature_artifact_unavailable`, `model_artifact_unavailable`, `data_source_mismatch`, `duplicate_transaction`, `query_failed`, `prediction_failed`, `dependency_timeout` |
+| `dependency_error` | 数据/模型产物缺失、已有交易缺少特征行、来源错配、重复交易、查询或推理失败、依赖超时 | `transaction_artifact_unavailable`, `feature_artifact_unavailable`, `feature_record_missing`, `model_artifact_unavailable`, `data_source_mismatch`, `duplicate_transaction`, `query_failed`, `prediction_failed`, `dependency_timeout` |
 
 `error.message` 固定为不含堆栈、路径和原始输入的公开文本。只有 `dependency_timeout` 标记 `retryable=true`；其余错误默认不可自动重试，调用方可按 `status` 与 `code` 决定停止或降级。`not_found` 的前提是成功查过可用数据源；文件缺失时应报告 `dependency_error`，不能误报交易不存在。
 
