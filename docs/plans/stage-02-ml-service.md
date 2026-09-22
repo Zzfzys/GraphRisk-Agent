@@ -84,3 +84,7 @@
 ## IEEE-CIS 补充验证
 
 真实数据 adapter 完成后，三个基线在独立 IEEE-CIS 产物目录重新训练。三个 MLflow 运行均完成；XGBoost 以验证集 PR-AUC `0.1736` 成为 champion，测试集 PR-AUC 为 `0.1522`。真实 champion 已通过 FastAPI 加载和预测验证。单请求约 `802ms`，说明接入成功但单行预处理仍需优化。详细证据见 [`reports/ieee-cis-adapter-validation.md`](../../reports/ieee-cis-adapter-validation.md)。
+
+## 2026-09-22 复核
+
+31 项全量测试、两套 champion 产物与 MLflow 记录、真实 IEEE-CIS HTTP 成功及错误响应均通过。复核没有重新训练模型；详细记录见 [`reports/stage-00-02-recheck-2026-09-22.md`](../../reports/stage-00-02-recheck-2026-09-22.md)。

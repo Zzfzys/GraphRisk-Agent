@@ -99,3 +99,7 @@ Stage 00 已完成最小开发环境、Git 仓库、依赖锁、smoke test、数
 - Stage 01 可先使用合成数据，但真实数据缺失状态必须保持可见；
 - Docker Desktop 在 Stage 06 前重新评估；
 - PostgreSQL 与 Neo4j 仍按后续阶段计划引入。
+
+## 2026-09-22 复核
+
+当前环境、锁文件、测试、磁盘、GPU、数据校验和 Git 忽略规则再次通过；完整记录见 [`reports/stage-00-02-recheck-2026-09-22.md`](../../reports/stage-00-02-recheck-2026-09-22.md)。IEEE-CIS 数据已到位，原下载遗留事项已关闭；Docker 等仍按后续阶段计划处理。

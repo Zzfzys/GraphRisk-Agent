@@ -107,6 +107,14 @@ uv run --offline python scripts\train_baselines.py --config configs\train_baseli
 uv run --offline python scripts\list_mlflow_runs.py --config configs\train_baseline_ieee_cis.yaml
 ```
 
+To serve the IEEE-CIS champion instead of the default synthetic champion in PowerShell:
+
+```powershell
+$env:GRAPHRISK_MODEL_DIR = (Resolve-Path 'artifacts\stage-02\ieee-cis\champion').Path
+$env:GRAPHRISK_FEATURE_DATA = (Resolve-Path 'data\interim\ieee-cis\features_all.parquet').Path
+uv run --offline uvicorn api.main:app --host 127.0.0.1 --port 8000
+```
+
 ## Secrets
 
 Copy `.env.example` to `.env` and fill values locally when a later stage needs external services. `.env`, credentials, model weights, raw data, generated artifacts, and local environments are ignored by Git.
