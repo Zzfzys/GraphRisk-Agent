@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 
 import duckdb
@@ -27,6 +28,7 @@ FEATURE_COLUMNS = (
     "amount_std_last_24h",
     "amount_deviation_last_24h",
 )
+RELATION_ENTITY_COLUMNS = ("card_id", "device_id", "email_domain", "address_id")
 
 
 class ArtifactUnavailableError(Exception):
@@ -62,7 +64,14 @@ class InvestigationRepository:
         )
 
     def transaction(self, transaction_id: str) -> dict[str, object] | None:
+        row = self.transaction_with_time(transaction_id)
+        if row is not None:
+            row.pop("transaction_time")
+        return row
+
+    def transaction_with_time(self, transaction_id: str) -> dict[str, object] | None:
         columns = list(TRANSACTION_COLUMNS)
+        columns.append("transaction_time")
         if self.dataset_source == "ieee_cis":
             columns.append("source_transaction_dt_seconds")
         return self._select_one(
@@ -79,6 +88,55 @@ class InvestigationRepository:
             transaction_id,
             list(FEATURE_COLUMNS),
         )
+
+    def related_transactions(
+        self,
+        *,
+        transaction_id: str,
+        target_time: datetime,
+        active_entities: dict[str, str],
+        limit: int,
+    ) -> tuple[int, list[dict[str, object]]]:
+        """Return prior shared-entity rows; callers validate target and result schema."""
+        if not self.transaction_parquet.is_file():
+            raise ArtifactUnavailableError("transaction")
+        if not active_entities:
+            return 0, []
+
+        comparisons = " OR ".join(f"{column} = ?" for column in active_entities)
+        where_clause = (
+            "transaction_time < ? AND transaction_id <> ? "
+            f"AND ({comparisons})"
+        )
+        parameters = [str(self.transaction_parquet), target_time, transaction_id]
+        parameters.extend(active_entities.values())
+        projection = ", ".join(
+            ("transaction_id", "transaction_time", *RELATION_ENTITY_COLUMNS)
+        )
+        try:
+            with duckdb.connect(":memory:") as connection:
+                count, distinct_count = connection.execute(
+                    "SELECT COUNT(*), COUNT(DISTINCT transaction_id) "
+                    f"FROM read_parquet(?) WHERE {where_clause}",
+                    parameters,
+                ).fetchone()
+                if count != distinct_count:
+                    raise DuplicateTransactionError(transaction_id)
+                if count == 0:
+                    return 0, []
+                cursor = connection.execute(
+                    f"SELECT {projection} FROM read_parquet(?) "
+                    f"WHERE {where_clause} "
+                    "ORDER BY transaction_time DESC, transaction_id ASC LIMIT ?",
+                    [*parameters, limit],
+                )
+                names = [description[0] for description in cursor.description]
+                rows = [
+                    dict(zip(names, row, strict=True)) for row in cursor.fetchall()
+                ]
+        except (duckdb.Error, OSError) as error:
+            raise RepositoryQueryError("transaction") from error
+        return int(count), rows
 
     @staticmethod
     def _select_one(

@@ -2,7 +2,7 @@
 
 > 编写日期：2026-09-22  
 > 计划投入：Week 4，约 20～24 小时  
-> 当前状态：路线 0～3 已完成；路线 4～6 尚未实现
+> 当前状态：路线 0～4 已完成；路线 5～6 尚未实现
 
 ## 最终目标与边界
 
@@ -79,6 +79,8 @@ transaction_id
 **交付与门禁：**同一交易的分数与现有 `/risk/predict` 一致；交叉配置合成模型和 IEEE-CIS 特征会被拒绝；缺失模型产生结构化 `dependency_error`。
 
 ## 路线 4：本地关系证据与图工具占位（约 4 小时）
+
+**进度：已完成。** 严格历史查询、四类实体、占位值排除、真实 IEEE-CIS 样例和图工具降级见 [路线 4 验证记录](../../reports/stage-03-route-4-relations.md)。
 
 **实现目标：**实现 `get_related_entities`：取目标交易的 card、device、email、address，只查询目标交易**严格之前**共享实体的交易，返回实体类型与 ID、关联交易 ID、相对时间差和匹配依据。默认排除交易唯一的 `unknown-*` 占位实体。结果稳定排序，限制返回行数并提供总数；同一 `TransactionDT` 的交易不能称为历史关联。`find_risky_neighbors` 只返回结构化 `unavailable`，指向 Stage 04。
 
