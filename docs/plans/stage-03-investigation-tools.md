@@ -6,7 +6,7 @@
 > 实际开始：2026-09-22
 > 实际结束：—
 
-详细的七条实施路线、每条路线的学习任务与验收方法见 [Stage 03 实施路线](stage-03-implementation-roadmap.md)。路线 0～2 已完成；路线 3～6 尚未实现。
+详细的七条实施路线、每条路线的学习任务与验收方法见 [Stage 03 实施路线](stage-03-implementation-roadmap.md)。路线 0～3 已完成；路线 4～6 尚未实现。
 
 ## 阶段目标
 
@@ -25,7 +25,7 @@
 - [x] 路线 1：统一工具契约与错误分类；
 - [x] `get_transaction`；
 - [x] `get_transaction_features`；
-- [ ] `get_risk_score`；
+- [x] `get_risk_score`；
 - [ ] `get_related_entities`；
 - [ ] `find_risky_neighbors` 的本地占位实现；
 - [x] 明确每个工具的输入、输出和错误模型；
@@ -54,7 +54,8 @@
 - 字段允许清单、禁止清单和时间/身份解释边界见 [`reports/stage-03-route-0-semantics.md`](../../reports/stage-03-route-0-semantics.md)；
 - 路线 1：五个工具的 Pydantic 请求/结果 schema、状态与错误码、输入拒绝和结果不变量已实现；契约测试及五个示例见 [`reports/stage-03-route-1-contracts.md`](../../reports/stage-03-route-1-contracts.md)；
 - 路线 2：两个只读工具通过小 fixture 测试和 IEEE-CIS 交易 `2987000` 的真实查询；查询、错误分支和学习笔记见 [`reports/stage-03-route-2-transaction-tools.md`](../../reports/stage-03-route-2-transaction-tools.md)；
-- 路线 3～6 尚无实施证据；不得因此将整个 Stage 03 标为 `Done`。
+- 路线 3：风险工具复用 Stage 02 `RiskPredictor`，完成配置路径/metadata 同源门禁、API 对比、真实 IEEE-CIS 分数核对与失败分类；证据见 [`reports/stage-03-route-3-risk-tool.md`](../../reports/stage-03-route-3-risk-tool.md)；
+- 路线 4～6 尚无实施证据；不得因此将整个 Stage 03 标为 `Done`。
 
 ## 风险与降级方案
 
@@ -73,6 +74,7 @@
 | 2026-09-22 | 特征文件没有数据源列，先以配置路径、验证哈希和模型 metadata 人工核对 | 相同 schema 不能证明同源 | 路线 3 实现机器可检查的同源门禁 |
 | 2026-09-22 | 统一结构化结果与固定错误码；无效请求不回显原始 ID | 便于后续工作流区分业务空结果与依赖故障 | 路线 2～5 的工具实现复用同一契约 |
 | 2026-09-22 | 查询绑定显式数据源与 Parquet 路径，并区分交易不存在与特征行缺失 | 缺失特征行说明管线产物不完整，不应被当作无交易 | 路线 3 继续实现模型与特征同源门禁 |
+| 2026-09-22 | 模型工具启动时交叉核对调查/训练来源、serving 特征路径与 champion metadata | 相同特征 schema 不能证明同源，错配必须先于推理被拒绝 | 不修改 Stage 02 预测行为；文件内容哈希仍需独立产物清单 |
 
 ## 计划变更
 
@@ -81,6 +83,7 @@
 - 路线 0 根据真实 IEEE-CIS 产物固定字段与来源约束，未修改模型或数据切分。
 - 路线 1 只实现五个工具的接口、错误分类与契约测试；真实查询和工作流继续留给路线 2～5。
 - 路线 2 实现交易/历史特征只读查询，新增 `feature_record_missing` 错误码；不包含模型或关系查询。
+- 路线 3 实现风险模型工具与配置/metadata 同源检查；仍不生成关系证据或调查报告。
 
 ## 阶段复盘
 

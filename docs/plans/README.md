@@ -9,7 +9,7 @@
 | Stage 00：环境与数据门禁 | Done | Week 0 | [stage-00-preflight.md](stage-00-preflight.md) |
 | Stage 01：工程骨架与数据管线 | Done | Week 1～2 | [stage-01-foundation-data.md](stage-01-foundation-data.md) |
 | Stage 02：机器学习服务 | Done | Week 3 | [stage-02-ml-service.md](stage-02-ml-service.md) |
-| Stage 03：调查工具 | In Progress（路线 0～2 完成） | Week 4 | [stage-03-investigation-tools.md](stage-03-investigation-tools.md) |
+| Stage 03：调查工具 | In Progress（路线 0～3 完成） | Week 4 | [stage-03-investigation-tools.md](stage-03-investigation-tools.md) |
 | Stage 04：图风险模型 | Planned | Week 5 | [stage-04-graph-risk.md](stage-04-graph-risk.md) |
 | Stage 05：RAG 与 Agent | Planned | Week 6～7 | [stage-05-rag-agent.md](stage-05-rag-agent.md) |
 | Stage 06：八周 MVP | Planned | Week 8 | [stage-06-mvp.md](stage-06-mvp.md) |
