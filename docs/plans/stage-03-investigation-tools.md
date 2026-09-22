@@ -1,10 +1,12 @@
 # Stage 03：确定性调查工具与无 LLM 工作流
 
-> 状态：Planned  
+> 状态：In Progress
 > 计划时间：Week 4  
 > 前置阶段：Stage 02
+> 实际开始：2026-09-22
+> 实际结束：—
 
-详细的七条实施路线、每条路线的学习任务与验收方法见 [Stage 03 实施路线](stage-03-implementation-roadmap.md)。路线已于 2026-09-22 编写；本阶段仍为 `Planned`，尚未开始业务代码。
+详细的七条实施路线、每条路线的学习任务与验收方法见 [Stage 03 实施路线](stage-03-implementation-roadmap.md)。路线 0 的语义与数据源门禁已完成；路线 1～6 尚未开始业务代码。
 
 ## 阶段目标
 
@@ -19,6 +21,8 @@
 
 ## 实现任务
 
+- [x] 路线 0：核对默认 IEEE-CIS 数据源、模型版本、字段边界和真实交易样例；
+- [ ] 路线 1：统一工具契约与错误分类；
 - [ ] `get_transaction`；
 - [ ] `get_transaction_features`；
 - [ ] `get_risk_score`；
@@ -45,7 +49,10 @@
 
 ## 验证证据
 
-待执行后填写。
+- 路线 0：原始数据、canonical Parquet、历史特征、XGBoost champion 的路径、来源、哈希和版本已核对；
+- 抽查交易 `2987000`：canonical 与特征行各 1 条、核心字段一致，模型返回 `xgboost-v1` 与 `dataset_source=ieee_cis`；
+- 字段允许清单、禁止清单和时间/身份解释边界见 [`reports/stage-03-route-0-semantics.md`](../../reports/stage-03-route-0-semantics.md)；
+- 路线 1～6 尚无实施证据；不得因此将整个 Stage 03 标为 `Done`。
 
 ## 风险与降级方案
 
@@ -61,11 +68,13 @@
 | 2026-09-22 | 默认演示使用 IEEE-CIS，模型与特征必须同源 | 真实数据和 XGBoost champion 已可用 | 合成数据仅作确定性测试 fixture |
 | 2026-09-22 | Stage 03 只提供严格历史的共享实体查询；风险邻居留给 Stage 04 | 当前没有图风险证据 | `find_risky_neighbors` 只返回 `unavailable` |
 | 2026-09-22 | 调查工具不暴露 `is_fraud` | 防止离线标签及未来关系泄漏 | 工具与测试必须实施字段和时间门禁 |
+| 2026-09-22 | 特征文件没有数据源列，先以配置路径、验证哈希和模型 metadata 人工核对 | 相同 schema 不能证明同源 | 路线 3 实现机器可检查的同源门禁 |
 
 ## 计划变更
 
 - 补充七条可验收实施路线，明确学习任务、工作时间和每日可见进度；
 - 明确 Stage 03 与 Stage 04 的关系查询边界，避免占位能力被误称为图风险证据。
+- 路线 0 根据真实 IEEE-CIS 产物固定字段与来源约束，未修改模型或数据切分。
 
 ## 阶段复盘
 

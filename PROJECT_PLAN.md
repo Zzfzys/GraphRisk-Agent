@@ -237,4 +237,6 @@ Stage 02 已于 2026-09-21 完成：
 - 25 项自动化测试全部通过，并用真实 Uvicorn 进程验证成功与错误响应；
 - 详细证据位于 `reports/stage-02-validation.md`。
 
-Stage 02 的原始指标来自合成数据；后续真实数据重跑选择 XGBoost 为 champion，验证集/测试集 PR-AUC 分别为 `0.1736`/`0.1522`。真实数据 API 预测成功，但单请求约 `802ms`，需要后续优化。风险等级阈值和模型概率尚未做业务校准。详细真实数据证据位于 `reports/ieee-cis-adapter-validation.md`，Stage 03 尚未开始。
+Stage 02 的原始指标来自合成数据；后续真实数据重跑选择 XGBoost 为 champion，验证集/测试集 PR-AUC 分别为 `0.1736`/`0.1522`。真实数据 API 预测成功，但单请求约 `802ms`，需要后续优化。风险等级阈值和模型概率尚未做业务校准。详细真实数据证据位于 `reports/ieee-cis-adapter-validation.md`。
+
+Stage 03 于 2026-09-22 开始。路线 0 已核对 IEEE-CIS 交易、历史特征与 XGBoost champion 的来源和版本，明确调查工具的字段允许/禁止清单、人工时间锚点与启发式身份的解释边界。路线 1～6 尚未实施；本阶段仍为 `In Progress`。证据位于 `reports/stage-03-route-0-semantics.md`。
