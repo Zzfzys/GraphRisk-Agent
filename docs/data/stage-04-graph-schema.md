@@ -82,4 +82,4 @@ T1 → C1, D1, e1.example, A1
 
 ## 5. 路线 2 产物与未完成项
 
-本文件中的参考构建器扫描内存中的小集合，用来证明语义和生成固定期望值。路线 2 已实现列投影和时序实体倒排索引，完成 50k/10k/10k 受控目标构建，并将输入文件、ID 清单、训练拟合的 `GraphFeatureEncoder`、图 schema 和采样参数写入 manifest。详细格式见[图产物契约](stage-04-graph-artifacts.md)。路线 3 才训练 GraphSAGE，路线 5 才让风险邻居工具返回真实模型证据。
+本文件中的参考构建器扫描内存中的小集合，用来证明语义和生成固定期望值。路线 2 已实现列投影和时序实体倒排索引，完成 50k/10k/10k 受控目标构建，并将输入文件、ID 清单、训练拟合的 `GraphFeatureEncoder`、图 schema 和采样参数写入 manifest。详细格式见[图产物契约](stage-04-graph-artifacts.md)。路线 3 已训练 GraphSAGE，见[训练契约](stage-04-graphsage-training.md)；路线 5 才让风险邻居工具返回真实模型证据。

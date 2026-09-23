@@ -2,7 +2,7 @@
 
 > 编写日期：2026-09-23
 > 学习预算：约 4.5 小时，包含在 Stage 04 的 23 小时总预算内
-> 当前状态：L0～L2 的实现示例和复盘材料已就绪；个人自测由学习者完成
+> 当前状态：L0～L3 的实现示例和复盘材料已就绪；个人自测由学习者完成
 > 配套实现路线：[stage-04-implementation-roadmap.md](stage-04-implementation-roadmap.md)
 
 ## 1. 学习方式
@@ -190,7 +190,7 @@ target label（只供 loss）
 
 - `src/graphrisk/models/tabular.py`：Stage 02 如何处理类别权重和分类模型；
 - `src/graphrisk/training/train_baselines.py`：模型选择、指标和 artifact metadata；
-- 路线 3 新增的 GraphSAGE forward、训练循环和 checkpoint 保存逻辑。
+- 路线 3 的[GraphSAGE 训练契约](../data/stage-04-graphsage-training.md)与[训练曲线复盘](../../reports/stage-04-route-3-training.md)、forward、训练循环和 checkpoint 保存逻辑。
 
 ### 动手任务
 

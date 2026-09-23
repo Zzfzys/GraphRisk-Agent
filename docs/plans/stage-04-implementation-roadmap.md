@@ -2,7 +2,7 @@
 
 > 编写日期：2026-09-23
 > 计划投入：Week 5，约 23 小时
-> 当前状态：路线 0～2 已完成；路线 3～7 未开始
+> 当前状态：路线 0～3 已完成；路线 4～7 未开始
 > 配套学习路线：[stage-04-learning-roadmap.md](stage-04-learning-roadmap.md)
 > 阶段总纲：[stage-04-graph-risk.md](stage-04-graph-risk.md)
 
@@ -198,6 +198,8 @@ flowchart LR
 ## 8. 路线 3：GraphSAGE 训练与版本化（约 5 小时）
 
 ### 实现目标
+
+**路线 3 已完成。** 两层 GraphSAGE、逐批严格历史图、训练集正例权重、验证 PR-AUC 选模与早停、冻结后单次测试、版本化 checkpoint 和 CPU 重新加载均已验收。真实 IEEE-CIS 50k/10k/10k 训练的最佳 epoch 为 2，验证/测试 PR-AUC 为 0.178343/0.103733。详见[训练契约](../data/stage-04-graphsage-training.md)和[路线 3 验证记录](../../reports/stage-04-route-3-training.md)。路线 4 仍需完成同 ID 受控比较。
 
 实现两层 GraphSAGE 交易节点分类器。每个样本是路线 2 生成的严格历史 ego graph，多个样本使用 PyG mini-batch 合并，根交易节点的 embedding 进入分类头。首版只保留少量可解释超参数：hidden size、dropout、fanout、batch size、learning rate 和 epoch 上限。
 

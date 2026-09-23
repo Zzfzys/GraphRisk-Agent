@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Literal
 
@@ -73,6 +74,8 @@ class GraphTraining(StrictConfig):
     random_seed: int = Field(strict=True, ge=0)
     batch_size: int = Field(strict=True, ge=1)
     hidden_channels: int = Field(strict=True, ge=1)
+    dropout: float = Field(default=0.20, strict=True, ge=0, lt=1)
+    learning_rate: float = Field(default=0.001, strict=True, gt=0, le=1)
     max_epochs: int = Field(strict=True, ge=1)
     early_stopping_patience: int = Field(strict=True, ge=1)
     device: Literal["auto", "cpu", "cuda"]
@@ -80,9 +83,12 @@ class GraphTraining(StrictConfig):
     @field_validator("model_version")
     @classmethod
     def model_version_must_not_be_blank(cls, value: str) -> str:
-        if not value.strip():
+        normalized = value.strip()
+        if not normalized:
             raise ValueError("model_version must not be blank")
-        return value.strip()
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", normalized) or normalized in (".", ".."):
+            raise ValueError("model_version must be a safe single directory name")
+        return normalized
 
     @model_validator(mode="after")
     def patience_fits_epoch_budget(self) -> "GraphTraining":

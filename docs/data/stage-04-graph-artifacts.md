@@ -45,4 +45,4 @@ uv run --offline pytest tests\unit\test_temporal_entity_index.py tests\integrati
 
 先确保 Stage 01/02 上游产物齐备。构建成功后，检查 `graph-manifest.json` 中 `indexed_transaction_count`、三个 `selected_target_counts`、`target_time_bounds`、`ego_statistics` 和 `content_sha256`。再次运行同一命令，内容哈希及 manifest 字节应不变。真实数据的当前验收数据见[路线 2 验证记录](../../reports/stage-04-route-2-artifacts.md)。
 
-路线 2 输出的是可复用、可核验的图输入；尚未训练 GraphSAGE，也没有风险邻居模型分数。路线 3 必须在这些目标 ID 上训练，不能把当前全局边表当作无时间截止的训练图。
+路线 2 输出的是可复用、可核验的图输入。路线 3 已在这些目标 ID 上训练 GraphSAGE，详见[训练契约](stage-04-graphsage-training.md)；逐交易分数表和风险邻居模型证据仍待路线 4/5。不能把当前全局边表当作无时间截止的训练图。

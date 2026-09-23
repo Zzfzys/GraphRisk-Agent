@@ -6,7 +6,7 @@ The approved scope and delivery gates are defined in [PROJECT_PLAN.md](PROJECT_P
 
 ## Current status
 
-Stages 00 through 03 are complete. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, a FastAPI risk prediction service, and a deterministic fraud investigation workflow with typed tools, evidence bindings and separate audit events. Stage 04 routes 0 through 2 have completed the graph environment gate, strict-history graph schema, and reproducible IEEE-CIS graph artifacts for 50k/10k/10k target transactions. GraphSAGE training and evaluation follow in later routes.
+Stages 00 through 03 are complete. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, a FastAPI risk prediction service, and a deterministic fraud investigation workflow with typed tools, evidence bindings and separate audit events. Stage 04 routes 0 through 3 have completed the graph environment gate, strict-history graph schema, reproducible IEEE-CIS graph artifacts for 50k/10k/10k target transactions, and a versioned GraphSAGE training run. Matched-ID comparison, fusion, and graph tools follow in later routes.
 
 ## Prerequisites
 
@@ -42,6 +42,14 @@ uv run --offline python scripts\build_graph_artifacts.py --config configs\graph_
 ```
 
 The command writes ignored Parquet, ID, encoder and manifest files under `artifacts/stage-04/ieee-cis`. See the [artifact contract](docs/data/stage-04-graph-artifacts.md) and [route 2 evidence](reports/stage-04-route-2-artifacts.md).
+
+Train GraphSAGE on those fixed graph targets:
+
+```powershell
+uv run --offline python scripts\train_graphsage.py --config configs\graph_ieee_cis.yaml
+```
+
+The versioned checkpoint and training history remain under the ignored artifact directory. See the [training contract](docs/data/stage-04-graphsage-training.md) and [route 3 evidence](reports/stage-04-route-3-training.md).
 
 ## Environment diagnostic
 

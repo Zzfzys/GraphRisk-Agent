@@ -49,8 +49,13 @@ def test_missing_stage_input_gives_actionable_error(
         ("sampling", "max_train_transactions", 0),
         ("sampling", "max_train_transactions", "100"),
         ("training", "model_version", "   "),
+        ("training", "model_version", "../escape"),
         ("training", "device", "tpu"),
         ("training", "batch_size", 0),
+        ("training", "dropout", 1.0),
+        ("training", "dropout", "0.2"),
+        ("training", "learning_rate", 0),
+        ("training", "learning_rate", "0.001"),
         ("training", "early_stopping_patience", 21),
     ],
 )

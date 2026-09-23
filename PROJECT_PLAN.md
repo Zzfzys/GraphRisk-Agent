@@ -1,6 +1,6 @@
 # GraphRisk-Agent 总体项目计划
 
-> 文档状态：执行中，Stage 00～03 已完成，Stage 04 路线 0～2 已完成
+> 文档状态：执行中，Stage 00～03 已完成，Stage 04 路线 0～3 已完成
 > 当前版本：v1.0  
 > 建立日期：2026-09-21  
 > 计划周期：Week 0 + 16 周  
@@ -192,7 +192,7 @@ flowchart TD
 
 ## 11. 当前已知条件与风险
 
-- 仓库已完成 Stage 00～03；Stage 04 已进入执行，路线 0～2 完成，下一步为 GraphSAGE 训练；
+- 仓库已完成 Stage 00～03；Stage 04 已进入执行，路线 0～3 完成，下一步为同集合评估、embedding 与融合；
 - 仓库内 Python 3.11、uv 锁文件和本地虚拟环境已可用；
 - Docker、PostgreSQL 和 Neo4j 尚未安装或不可用；
 - GPU 为 RTX 2060 6GB，适合受控规模 GraphSAGE 和量化小模型实验；
@@ -250,7 +250,7 @@ Stage 03 已于 2026-09-23 完成：
 - 两次真实 IEEE-CIS 调查报告哈希一致，失败恢复与受限文件门禁通过；
 - 详细证据位于 `reports/stage-03-validation.md`。
 
-Stage 04 正在执行；截至 2026-09-23，路线 0～2 已完成：
+Stage 04 正在执行；截至 2026-09-23，路线 0～3 已完成：
 
 - 锁定 torch/PyG，在 CPU 与 RTX 2060 CUDA 上运行最小 `SAGEConv`，通过环境、同源配置与上游产物门禁；
 - 建立五类节点、严格历史局部图、训练 ID 拟合的交易特征 encoder，以及十笔交易的固定节点/边 fixture；
@@ -259,4 +259,6 @@ Stage 04 正在执行；截至 2026-09-23，路线 0～2 已完成：
 - 路线 2 随后完成 DuckDB 列投影与源一致性校验、时间倒排索引、稳定节点/边表及可校验 manifest；
 - IEEE-CIS 50k/10k/10k 目标集合可重复构建，索引 511,959 笔历史交易，manifest 逐字节一致；峰值 RSS 抽样约 1,366 MiB；
 - 全仓库 146 项测试通过；路线 2 证据位于 `reports/stage-04-route-2-artifacts.md`；
-- GraphSAGE 训练、统一评估和图工具尚未完成，Stage 04 不标记为 Done。
+- 路线 3 在 RTX 2060 上完成 50k 训练，最佳 epoch 2、第 6 轮早停，验证/测试 PR-AUC 0.178343/0.103733；模型可在 CPU 重新加载；
+- 同种子合成实验与正式 CUDA 训练的每轮指标一致；全仓库 156 项测试通过，详见 `reports/stage-04-route-3-training.md`；
+- 同 ID 的 XGBoost/融合评估及图工具尚未完成，Stage 04 不标记为 Done。

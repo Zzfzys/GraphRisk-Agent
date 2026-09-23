@@ -10,6 +10,7 @@ import yaml
 from torch_geometric.data import Batch, Data
 
 from graphrisk.graph.build_artifacts import build_graph_artifacts, load_graph_artifacts
+from graphrisk.graph.train_graphsage import load_graphsage_checkpoint, train_graphsage
 from graphrisk.pipeline import run_pipeline
 
 
@@ -206,3 +207,63 @@ def test_graph_artifacts_reject_split_feature_drift(tmp_path: Path) -> None:
     altered.replace(train_path)
     with pytest.raises(ValueError, match="split files do not partition"):
         build_graph_artifacts(config)
+
+
+def test_graphsage_trains_and_reloads_on_small_temporal_source(tmp_path: Path) -> None:
+    config = _setup(tmp_path)
+    split_paths = {
+        name: tmp_path / f"data/processed/{name}_features.parquet"
+        for name in ("train", "validation", "test")
+    }
+    positives = []
+    with duckdb.connect(":memory:") as connection:
+        for name, path in split_paths.items():
+            ids = [
+                row[0]
+                for row in connection.execute(
+                    "SELECT transaction_id FROM read_parquet(?) "
+                    "ORDER BY transaction_time, transaction_id LIMIT ?",
+                    [str(path), 20 if name == "train" else 5],
+                ).fetchall()
+            ]
+            positives.extend(ids[:2] if name == "train" else ids[:1])
+    quoted = ", ".join(f"'{transaction_id}'" for transaction_id in positives)
+    source_paths = [
+        tmp_path / "data/interim/transactions.parquet",
+        tmp_path / "data/interim/features.parquet",
+        *split_paths.values(),
+    ]
+    for path in source_paths:
+        altered = path.with_name("altered-" + path.name)
+        with duckdb.connect(":memory:") as connection:
+            connection.from_parquet(str(path)).create_view("source")
+            connection.sql(
+                "SELECT * REPLACE (CASE WHEN transaction_id IN "
+                f"({quoted}) THEN 1 ELSE 0 END::TINYINT AS is_fraud) FROM source"
+            ).write_parquet(str(altered))
+        altered.replace(path)
+    build_graph_artifacts(config)
+    result = train_graphsage(config)
+    first_history = result.history_path.read_bytes()
+    repeated = train_graphsage(config)
+    assert repeated.history_path.read_bytes() == first_history
+    assert repeated.validation_pr_auc == result.validation_pr_auc
+    assert result.best_epoch in (1, 2)
+    assert 0 <= result.validation_pr_auc <= 1
+    assert 0 <= result.test_pr_auc <= 1
+    assert result.device == "cpu"
+    metadata = json.loads(result.metadata_path.read_text(encoding="utf-8"))
+    assert metadata["label_counts"]["train_positive"] == 2
+    assert metadata["positive_weight"] == 9.0
+    assert metadata["selected_by"] == "validation_pr_auc"
+    assert metadata["score_calibration"] == "uncalibrated sigmoid score"
+    store = load_graph_artifacts(tmp_path / "artifacts/stage-04/test/graph-manifest.json")
+    restored = load_graphsage_checkpoint(result.model_path, result.metadata_path, store)
+    graph = store.ego_graph(store.target_ids["validation"][0]).to_pyg(store.encoder)
+    with torch.no_grad():
+        assert torch.isfinite(restored(graph)).all()
+    config_data = yaml.safe_load(config.read_text(encoding="utf-8"))
+    config_data["training"]["model_version"] = "different-version"
+    _write_yaml(config, config_data)
+    with pytest.raises(ValueError, match="model_version"):
+        train_graphsage(config)
