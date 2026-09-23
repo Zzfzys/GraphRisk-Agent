@@ -2,7 +2,7 @@
 
 > 编写日期：2026-09-23
 > 计划投入：Week 5，约 23 小时
-> 当前状态：路线 0 已完成；路线 1～7 未开始
+> 当前状态：路线 0～1 已完成；路线 2～7 未开始
 > 配套学习路线：[stage-04-learning-roadmap.md](stage-04-learning-roadmap.md)
 > 阶段总纲：[stage-04-graph-risk.md](stage-04-graph-risk.md)
 
@@ -127,6 +127,8 @@ flowchart LR
 ## 6. 路线 1：图 schema、特征和时间语义（约 3 小时）
 
 ### 实现目标
+
+**路线 1 已完成。** 五类节点、严格历史局部图、训练 ID 拟合的特征编码、小型 PyG 导出和十笔交易 fixture 已实现。逐边预期、泄漏测试与学习解释见 [路线 1 验证记录](../../reports/stage-04-route-1-schema-time.md)和[图 schema 文档](../data/stage-04-graph-schema.md)。路线 2 仍需把参考构建器扩展为大规模时序索引。
 
 建立图数据契约和一个可以手算的 8～12 笔交易 fixture。节点类型为 Transaction、Card、Device、EmailDomain、Address；边表示交易使用某实体。`unknown-*` 等交易唯一占位实体不形成共享关系。
 

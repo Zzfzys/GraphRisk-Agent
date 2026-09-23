@@ -1,6 +1,6 @@
 # GraphRisk-Agent 总体项目计划
 
-> 文档状态：执行中，Stage 00～03 已完成
+> 文档状态：执行中，Stage 00～03 已完成，Stage 04 路线 0～1 已完成
 > 当前版本：v1.0  
 > 建立日期：2026-09-21  
 > 计划周期：Week 0 + 16 周  
@@ -192,7 +192,7 @@ flowchart TD
 
 ## 11. 当前已知条件与风险
 
-- 仓库已完成 Stage 00～03，下一阶段为 GraphSAGE 与图查询工具；
+- 仓库已完成 Stage 00～03；Stage 04 已进入执行，路线 0～1 完成，下一步为大规模时序图索引；
 - 仓库内 Python 3.11、uv 锁文件和本地虚拟环境已可用；
 - Docker、PostgreSQL 和 Neo4j 尚未安装或不可用；
 - GPU 为 RTX 2060 6GB，适合受控规模 GraphSAGE 和量化小模型实验；
@@ -249,3 +249,11 @@ Stage 03 已于 2026-09-23 完成：
 - 74 项聚焦测试和 105 项全量测试通过；
 - 两次真实 IEEE-CIS 调查报告哈希一致，失败恢复与受限文件门禁通过；
 - 详细证据位于 `reports/stage-03-validation.md`。
+
+Stage 04 正在执行；截至 2026-09-23，路线 0～1 已完成：
+
+- 锁定 torch/PyG，在 CPU 与 RTX 2060 CUDA 上运行最小 `SAGEConv`，通过环境、同源配置与上游产物门禁；
+- 建立五类节点、严格历史局部图、训练 ID 拟合的交易特征 encoder，以及十笔交易的固定节点/边 fixture；
+- 未来、同时间、占位实体和标签不能改变较早目标图；图 fixture 为 13 个节点、16 条逻辑边；
+- 全仓库 137 项测试通过；详细证据位于 `reports/stage-04-route-0-preflight.md` 和 `reports/stage-04-route-1-schema-time.md`；
+- 大规模图构建、GraphSAGE 训练、统一评估和图工具尚未完成，Stage 04 不标记为 Done。

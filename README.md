@@ -6,7 +6,7 @@ The approved scope and delivery gates are defined in [PROJECT_PLAN.md](PROJECT_P
 
 ## Current status
 
-Stages 00 through 03 are complete. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, a FastAPI risk prediction service, and a deterministic fraud investigation workflow with typed tools, evidence bindings and separate audit events. Stage 04 route 0 has completed its graph environment and experiment contract gates; graph construction and training follow in the next routes.
+Stages 00 through 03 are complete. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, a FastAPI risk prediction service, and a deterministic fraud investigation workflow with typed tools, evidence bindings and separate audit events. Stage 04 routes 0 and 1 have completed the graph environment gate and a small point-in-time graph schema with leakage tests. Large-scale indexing and GraphSAGE training follow in later routes.
 
 ## Prerequisites
 
@@ -32,6 +32,8 @@ uv run --offline python scripts\check_graph_environment.py --config configs\grap
 ```
 
 The command verifies seven upstream artifacts and runs a small PyG GraphSAGE layer on CPU and the selected device. See [route 0 evidence](reports/stage-04-route-0-preflight.md).
+
+The Stage 04 graph schema, allowed features and strict-history fixture are documented in [the graph schema](docs/data/stage-04-graph-schema.md) and [route 1 evidence](reports/stage-04-route-1-schema-time.md).
 
 ## Environment diagnostic
 

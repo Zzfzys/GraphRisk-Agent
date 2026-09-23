@@ -1,0 +1,12 @@
+[
+  {"transaction_id":"T0","minute":0,"amount":10,"card_id":"C1","device_id":"D0","email_domain":"e0.example","address_id":"A0","product_code":"W","is_fraud":0,"split":"train"},
+  {"transaction_id":"T1","minute":5,"amount":20,"card_id":"C1","device_id":"D1","email_domain":"e1.example","address_id":"A1","product_code":"H","is_fraud":0,"split":"train"},
+  {"transaction_id":"T2","minute":8,"amount":30,"card_id":"C2","device_id":"D2","email_domain":"e1.example","address_id":"A2","product_code":"W","is_fraud":1,"split":"train"},
+  {"transaction_id":"T3","minute":10,"amount":40,"card_id":"C1","device_id":"D2","email_domain":"e1.example","address_id":"A3","product_code":"Q","is_fraud":0,"split":"validation"},
+  {"transaction_id":"T4","minute":10,"amount":50,"card_id":"C1","device_id":"D4","email_domain":"e4.example","address_id":"A4","product_code":"Q","is_fraud":1,"split":"validation"},
+  {"transaction_id":"T5","minute":12,"amount":60,"card_id":"C1","device_id":"D5","email_domain":"e5.example","address_id":"A5","product_code":"Q","is_fraud":1,"split":"test"},
+  {"transaction_id":"T6","minute":3,"amount":70,"card_id":"unknown-card-6","device_id":"unknown-device-6","email_domain":"unknown-email-6","address_id":"unknown-address-6","product_code":"W","is_fraud":0,"split":"train"},
+  {"transaction_id":"T7","minute":4,"amount":80,"card_id":"unknown-card-7","device_id":"unknown-device-7","email_domain":"unknown-email-7","address_id":"unknown-address-7","product_code":"W","is_fraud":0,"split":"train"},
+  {"transaction_id":"T8","minute":6,"amount":90,"card_id":"C1","device_id":"D2","email_domain":"e1.example","address_id":"A8","product_code":"H","is_fraud":0,"split":"train"},
+  {"transaction_id":"T9","minute":2,"amount":100,"card_id":"C1","device_id":"D9","email_domain":"e9.example","address_id":"A9","product_code":"W","is_fraud":1,"split":"train"}
+]
