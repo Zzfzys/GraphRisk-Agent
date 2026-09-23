@@ -1,0 +1,30 @@
+project_name: graphrisk-agent
+dataset_source: ieee_cis
+
+paths:
+  data_config: configs/ieee_cis.yaml
+  training_config: configs/train_baseline_ieee_cis.yaml
+  artifact_dir: artifacts/stage-04/ieee-cis
+  train_ids: artifacts/stage-04/ieee-cis/train-ids.json
+  validation_ids: artifacts/stage-04/ieee-cis/validation-ids.json
+  test_ids: artifacts/stage-04/ieee-cis/test-ids.json
+  train_predictions: artifacts/stage-04/ieee-cis/train-predictions.parquet
+  validation_predictions: artifacts/stage-04/ieee-cis/validation-predictions.parquet
+  test_predictions: artifacts/stage-04/ieee-cis/test-predictions.parquet
+  graph_manifest: artifacts/stage-04/ieee-cis/graph-manifest.json
+
+sampling:
+  fanout: [10, 5]
+  max_train_transactions: 50000
+  max_validation_transactions: 10000
+  max_test_transactions: 10000
+  selection: chronological_prefix
+
+training:
+  model_version: graphsage-v1
+  random_seed: 20260921
+  batch_size: 128
+  hidden_channels: 64
+  max_epochs: 20
+  early_stopping_patience: 4
+  device: auto

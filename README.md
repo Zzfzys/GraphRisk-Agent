@@ -6,7 +6,7 @@ The approved scope and delivery gates are defined in [PROJECT_PLAN.md](PROJECT_P
 
 ## Current status
 
-Stages 00 through 03 are complete. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, a FastAPI risk prediction service, and a deterministic fraud investigation workflow with typed tools, evidence bindings and separate audit events. Stage 04 will replace the explicit graph-risk placeholder with a real graph model and query implementation.
+Stages 00 through 03 are complete. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, a FastAPI risk prediction service, and a deterministic fraud investigation workflow with typed tools, evidence bindings and separate audit events. Stage 04 route 0 has completed its graph environment and experiment contract gates; graph construction and training follow in the next routes.
 
 ## Prerequisites
 
@@ -23,7 +23,15 @@ uv sync --locked --python $projectPython
 uv run --offline pytest
 ```
 
-The managed Python runtime, package cache, and virtual environment remain inside the repository and are excluded from Git. `uv.toml` keeps uv's cache inside the workspace so the same commands work in restricted environments.
+The managed Python runtime, package cache, and virtual environment remain inside the repository and are excluded from Git. `pyproject.toml [tool.uv]` keeps uv's cache inside the workspace; the explicit PyTorch CUDA 12.8 index is configured there too. The first locked sync downloads a large PyTorch wheel.
+
+Check the Stage 04 graph environment after the IEEE-CIS Stage 01/02 artifacts exist:
+
+```powershell
+uv run --offline python scripts\check_graph_environment.py --config configs\graph_ieee_cis.yaml
+```
+
+The command verifies seven upstream artifacts and runs a small PyG GraphSAGE layer on CPU and the selected device. See [route 0 evidence](reports/stage-04-route-0-preflight.md).
 
 ## Environment diagnostic
 

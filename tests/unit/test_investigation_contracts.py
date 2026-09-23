@@ -228,6 +228,33 @@ def test_not_found_unavailable_and_dependency_failure_are_distinct() -> None:
     assert unavailable.evidence == []
 
 
+def test_graph_error_codes_separate_missing_score_from_missing_artifact() -> None:
+    no_score = FindRiskyNeighborsResult.failure(
+        code="graph_prediction_unavailable",
+        transaction_id="T1",
+        dataset_source="ieee_cis",
+    )
+    missing_artifact = FindRiskyNeighborsResult.failure(
+        code="graph_artifact_unavailable",
+        transaction_id="T1",
+        dataset_source="ieee_cis",
+    )
+    mismatch = FindRiskyNeighborsResult.failure(
+        code="data_source_mismatch",
+        transaction_id="T1",
+        dataset_source="ieee_cis",
+    )
+    assert (no_score.status, no_score.error.code) == (
+        "unavailable", "graph_prediction_unavailable"
+    )
+    assert (missing_artifact.status, missing_artifact.error.code) == (
+        "dependency_error", "graph_artifact_unavailable"
+    )
+    assert (mismatch.status, mismatch.error.code) == (
+        "dependency_error", "data_source_mismatch"
+    )
+
+
 def test_failure_cannot_contain_fabricated_evidence_or_mismatched_status() -> None:
     with pytest.raises(ValidationError, match="failed results require an error"):
         FindRiskyNeighborsResult(

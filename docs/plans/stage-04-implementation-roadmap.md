@@ -2,7 +2,7 @@
 
 > 编写日期：2026-09-23
 > 计划投入：Week 5，约 23 小时
-> 当前状态：规划完成，实施未开始
+> 当前状态：路线 0 已完成；路线 1～7 未开始
 > 配套学习路线：[stage-04-learning-roadmap.md](stage-04-learning-roadmap.md)
 > 阶段总纲：[stage-04-graph-risk.md](stage-04-graph-risk.md)
 
@@ -97,6 +97,8 @@ flowchart LR
 ### 实现目标
 
 在写图模型前确认依赖、设备、数据、产物和比较口径。新增 Stage 04 配置草案，明确数据源、随机种子、图 fanout、batch size、hidden size、epoch 上限、early stopping、CPU/GPU 选择、训练/验证/测试预测输出和产物目录。
+
+**路线 0 已完成。** 配置与同源校验、依赖锁、CPU/CUDA smoke、聚焦测试、全量回归和构建验证均通过。证据汇总于 [路线 0 记录](../../reports/stage-04-route-0-preflight.md)。
 
 检查 `torch` 与 `torch-geometric` 的 Python 3.11/Windows 兼容组合，将版本写入 `pyproject.toml` 与 `uv.lock`。只安装完成本阶段所需的最小依赖，不顺带引入 DGL、Lightning 或图数据库客户端。执行 CPU 张量、设备选择和最小 PyG `SAGEConv` smoke test；CUDA 不可用时自动使用 CPU，并记录实际设备。
 
@@ -234,6 +236,8 @@ flowchart LR
 - 辅助指标：ROC-AUC、Precision、Recall、F1、Recall@Top-K、Precision@Top-K；
 - 工程指标：构图耗时、训练耗时、单样本/批量推理延迟、产物大小；
 - 数据诊断：评估交易数、正例数、冷启动实体比例、被 fanout 截断比例。
+
+受控实验的主对比应让 XGBoost 在与 GraphSAGE 相同的训练交易 ID 上重新训练，并在相同验证/测试 ID 上评估；Stage 02 使用全量训练集的既有 champion 可作为额外参考行，但不得与受控实验主对比混写为同等训练预算。训练 ID 和评估 ID 的顺序、数量与 SHA-256 必须入报告。
 
 简单融合采用固定候选权重的加权平均：
 
