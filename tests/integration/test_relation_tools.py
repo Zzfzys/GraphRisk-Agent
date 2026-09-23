@@ -12,7 +12,7 @@ from graphrisk.investigation.relation_tools import (
     get_related_entities,
 )
 from graphrisk.investigation.repository import InvestigationRepository
-from graphrisk.graph.service import ScoredGraphNeighbor
+from graphrisk.graph.service import GraphRiskPrediction, ScoredGraphNeighbor
 
 
 @pytest.fixture
@@ -206,6 +206,15 @@ def test_graph_neighbor_tool_binds_model_and_each_relation_without_labels(reposi
         feature_parquet=repository.feature_parquet,
         startup_error=None,
         model_version="graphsage-test",
+        predict=lambda transaction_id: GraphRiskPrediction(
+            transaction_id=transaction_id,
+            graph_risk_score=0.4,
+            graph_model_version="graphsage-test",
+            controlled_xgboost_score=0.6,
+            controlled_xgboost_model_version="xgboost-controlled-v1",
+            fusion_score=0.5,
+            fusion_alpha=0.5,
+        ),
         find_neighbors=lambda transaction_id, limit: [
             ScoredGraphNeighbor(
                 transaction_id="H_multi",
@@ -222,8 +231,11 @@ def test_graph_neighbor_tool_binds_model_and_each_relation_without_labels(reposi
     assert result.data.score_scope == "held_out"
     assert result.data.probability_calibrated is False
     assert result.data.neighbors[0].seconds_before_target == 240
-    assert [ref.source_kind for ref in result.evidence] == ["model_artifact", "entity_link"]
-    assert [ref.record_id for ref in result.evidence] == ["graphsage-test", "H_multi"]
+    assert result.data.fusion_score == 0.5
+    assert [ref.source_kind for ref in result.evidence] == ["model_artifact", "model_artifact", "entity_link"]
+    assert [ref.record_id for ref in result.evidence] == [
+        "graphsage-test", "xgboost-controlled-v1", "H_multi"
+    ]
     assert "is_fraud" not in result.model_dump_json()
     assert "identity_key" not in result.model_dump_json()
     service.startup_error = "graph_model_version_mismatch"

@@ -182,6 +182,7 @@ def find_risky_neighbors(
     try:
         if repository.transaction_with_time(request.transaction_id) is None:
             return failed("transaction_not_found")
+        target_prediction = graph_service.predict(request.transaction_id)
         matches = graph_service.find_neighbors(request.transaction_id, limit=request.limit)
         neighbors = [
             RiskyNeighbor(
@@ -199,6 +200,11 @@ def find_risky_neighbors(
             transaction_id=request.transaction_id,
             neighbors=neighbors,
             graph_model_version=graph_service.model_version,
+            target_graph_risk_score=target_prediction.graph_risk_score,
+            controlled_xgboost_score=target_prediction.controlled_xgboost_score,
+            controlled_xgboost_model_version=target_prediction.controlled_xgboost_model_version,
+            fusion_score=target_prediction.fusion_score,
+            fusion_alpha=target_prediction.fusion_alpha,
         )
     except ArtifactUnavailableError:
         return failed("transaction_artifact_unavailable")
@@ -217,6 +223,11 @@ def find_risky_neighbors(
             EvidenceRef(
                 source_kind="model_artifact",
                 record_id=graph_service.model_version,
+                dataset_source=request.dataset_source,
+            ),
+            EvidenceRef(
+                source_kind="model_artifact",
+                record_id=target_prediction.controlled_xgboost_model_version,
                 dataset_source=request.dataset_source,
             ),
             *[

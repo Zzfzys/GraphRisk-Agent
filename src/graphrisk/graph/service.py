@@ -30,6 +30,10 @@ class GraphRiskPrediction:
     transaction_id: str
     graph_risk_score: float
     graph_model_version: str
+    controlled_xgboost_score: float
+    controlled_xgboost_model_version: str
+    fusion_score: float
+    fusion_alpha: float
     score_scope: str = "held_out"
 
 
@@ -70,6 +74,10 @@ class GraphRiskService:
         self.store: LoadedGraphArtifacts | None = None
         self.model: GraphSAGERiskModel | None = None
         self._scores: dict[str, float] = {}
+        self._tabular_scores: dict[str, float] = {}
+        self._fusion_scores: dict[str, float] = {}
+        self.controlled_model_version = "xgboost-controlled-v1"
+        self.fusion_alpha: float | None = None
         try:
             data_config = load_config(config.resolve_path(config.paths.data_config))
             if data_config.data.source != self.dataset_source:
@@ -100,6 +108,17 @@ class GraphRiskService:
             raise _SourceMismatch
         if comparison["graph_manifest_sha256"] != store.manifest["content_sha256"]:
             raise ValueError("comparison graph manifest hash differs")
+        alpha = float(comparison["selected_alpha"])
+        if (
+            not math.isfinite(alpha)
+            or alpha not in comparison["alpha_candidates"]
+            or comparison.get("selected_by") != "validation_pr_auc"
+            or not comparison.get("test_evaluated_after_alpha_selection")
+        ):
+            raise ValueError("fusion selection provenance is invalid")
+        tabular_path = comparison_dir / "xgboost-controlled.joblib"
+        if _sha256(tabular_path) != comparison["xgboost_model_sha256"]:
+            raise ValueError("controlled XGBoost model hash differs")
         for split in ("train", "validation", "test"):
             expected_ids = store.target_ids[split]
             if comparison["splits"][split]["ordered_id_sha256"] != _ids_sha256(expected_ids):
@@ -120,15 +139,20 @@ class GraphRiskService:
             expected_model_version=self.model_version,
         )
         scores: dict[str, float] = {}
+        tabular_scores: dict[str, float] = {}
+        fusion_scores: dict[str, float] = {}
         for split in ("validation", "test"):
             output = comparison["outputs"][f"{split}_predictions"]
             score_path = (comparison_dir / output["path"]).resolve()
             if not score_path.is_relative_to(comparison_dir) or _sha256(score_path) != output["sha256"]:
                 raise ValueError("graph prediction artifact hash differs")
-            # Column projection deliberately excludes is_fraud and all tabular scores.
+            # Column projection deliberately excludes labels and all entity fields.
             frame = pd.read_parquet(
                 score_path,
-                columns=("transaction_id", "split", "graphsage_score", "graphsage_model_version"),
+                columns=(
+                    "transaction_id", "split", "graphsage_score", "graphsage_model_version",
+                    "xgboost_score", "xgboost_model_version", "fusion_score",
+                ),
             )
             ids = tuple(frame["transaction_id"])
             if ids != store.target_ids[split] or frame["transaction_id"].duplicated().any():
@@ -137,15 +161,35 @@ class GraphRiskService:
                 raise ValueError("graph prediction split differs")
             if set(frame["graphsage_model_version"]) != {self.model_version}:
                 raise _VersionMismatch
-            values = frame["graphsage_score"].to_numpy(dtype=float)
-            if not all(math.isfinite(value) and 0 <= value <= 1 for value in values):
-                raise ValueError("graph scores must be finite and within [0,1]")
-            scores.update(zip(ids, (float(value) for value in values), strict=True))
+            if set(frame["xgboost_model_version"]) != {self.controlled_model_version}:
+                raise _VersionMismatch
+            graph_values = frame["graphsage_score"].to_numpy(dtype=float)
+            tabular_values = frame["xgboost_score"].to_numpy(dtype=float)
+            fusion_values = frame["fusion_score"].to_numpy(dtype=float)
+            if not all(
+                math.isfinite(value) and 0 <= value <= 1
+                for values in (graph_values, tabular_values, fusion_values)
+                for value in values
+            ):
+                raise ValueError("model scores must be finite and within [0,1]")
+            if any(
+                abs(value - (alpha * tabular + (1 - alpha) * graph)) > 1e-8
+                for value, tabular, graph in zip(
+                    fusion_values, tabular_values, graph_values, strict=True
+                )
+            ):
+                raise ValueError("fusion scores do not match frozen validation alpha")
+            scores.update(zip(ids, (float(value) for value in graph_values), strict=True))
+            tabular_scores.update(zip(ids, (float(value) for value in tabular_values), strict=True))
+            fusion_scores.update(zip(ids, (float(value) for value in fusion_values), strict=True))
         if len(scores) != len(store.target_ids["validation"]) + len(store.target_ids["test"]):
             raise ValueError("held-out graph score IDs overlap")
         self.store = store
         self.model = model
         self._scores = scores
+        self._tabular_scores = tabular_scores
+        self._fusion_scores = fusion_scores
+        self.fusion_alpha = alpha
 
     def _covered_target(self, transaction_id: str) -> tuple[LoadedGraphArtifacts, datetime]:
         if self.startup_error is not None or self.store is None:
@@ -163,7 +207,16 @@ class GraphRiskService:
             score = float(torch.sigmoid(self.model(graph)).item())
         if not math.isfinite(score) or abs(score - self._scores[transaction_id]) > 1e-5:
             raise ValueError("graph model score differs from verified prediction artifact")
-        return GraphRiskPrediction(transaction_id, score, self.model_version)
+        assert self.fusion_alpha is not None
+        return GraphRiskPrediction(
+            transaction_id=transaction_id,
+            graph_risk_score=score,
+            graph_model_version=self.model_version,
+            controlled_xgboost_score=self._tabular_scores[transaction_id],
+            controlled_xgboost_model_version=self.controlled_model_version,
+            fusion_score=self._fusion_scores[transaction_id],
+            fusion_alpha=self.fusion_alpha,
+        )
 
     def find_neighbors(self, transaction_id: str, *, limit: int) -> list[ScoredGraphNeighbor]:
         """Rank fanout-selected, strictly earlier, independently scored neighbors."""

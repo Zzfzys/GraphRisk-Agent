@@ -283,6 +283,8 @@ target label（只供 loss）
 
 ## 10. L6：工具失败、部分报告与工作流恢复（15 分钟）
 
+路线 6 的实际代码和三类失败分支见[工作流契约](../data/stage-04-investigation-workflow.md)及[验收记录](../../reports/stage-04-route-6-workflow.md)。对照 `tests/integration/test_investigation_workflow.py` 的空邻居、未覆盖和损坏产物测试完成以下练习。
+
 ### 要掌握的最小知识
 
 - `not_found`、`unavailable`、`dependency_error` 和空成功表示不同业务状态；

@@ -204,8 +204,33 @@ class RiskyNeighborsData(StrictModel):
     transaction_id: TransactionId
     neighbors: list[RiskyNeighbor]
     graph_model_version: str = Field(min_length=1)
+    target_graph_risk_score: float | None = Field(default=None, ge=0, le=1)
+    controlled_xgboost_score: float | None = Field(default=None, ge=0, le=1)
+    controlled_xgboost_model_version: str | None = Field(default=None, min_length=1)
+    fusion_score: float | None = Field(default=None, ge=0, le=1)
+    fusion_alpha: float | None = Field(default=None, ge=0, le=1)
     score_scope: Literal["held_out"] = "held_out"
     probability_calibrated: Literal[False] = False
+
+    @model_validator(mode="after")
+    def fusion_fields_are_complete_and_consistent(self) -> "RiskyNeighborsData":
+        fields = (
+            self.target_graph_risk_score,
+            self.controlled_xgboost_score,
+            self.controlled_xgboost_model_version,
+            self.fusion_score,
+            self.fusion_alpha,
+        )
+        if any(value is None for value in fields) and any(value is not None for value in fields):
+            raise ValueError("graph target and fusion fields must be provided together")
+        if all(value is not None for value in fields):
+            expected = (
+                self.fusion_alpha * self.controlled_xgboost_score
+                + (1 - self.fusion_alpha) * self.target_graph_risk_score
+            )
+            if abs(self.fusion_score - expected) > 1e-5:
+                raise ValueError("fusion score must match the frozen alpha formula")
+        return self
 
 
 PayloadT = TypeVar("PayloadT")

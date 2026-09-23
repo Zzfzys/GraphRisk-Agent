@@ -6,7 +6,7 @@ The approved scope and delivery gates are defined in [PROJECT_PLAN.md](PROJECT_P
 
 ## Current status
 
-Stages 00 through 03 are complete. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, a FastAPI risk prediction service, and a deterministic fraud investigation workflow with typed tools, evidence bindings and separate audit events. Stage 04 routes 0 through 5 have completed the graph environment gate, strict-history graph schema, reproducible IEEE-CIS graph artifacts for 50k/10k/10k target transactions, a versioned GraphSAGE training run, same-ID model comparison with embeddings, and a verified graph-risk neighbor tool. The existing investigation workflow receives that tool in route 6.
+Stages 00 through 03 are complete. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, a FastAPI risk prediction service, and a deterministic fraud investigation workflow with typed tools, evidence bindings and separate audit events. Stage 04 routes 0 through 6 have completed the graph environment gate, strict-history graph schema, reproducible IEEE-CIS graph artifacts for 50k/10k/10k target transactions, a versioned GraphSAGE training run, same-ID model comparison with embeddings, a verified graph-risk neighbor tool, and its deterministic workflow integration. Route 7 remains the stage-level acceptance and retrospective.
 
 ## Prerequisites
 
@@ -68,6 +68,14 @@ uv run --offline python scripts\query_graph_neighbors.py 3489059 --config config
 ```
 
 See the [graph service contract](docs/data/stage-04-graph-service.md) and [route 5 evidence](reports/stage-04-route-5-graph-service.md). A training target has no eligible held-out score and returns a structured unavailable result.
+
+Run the full five-tool investigation with the verified graph service and same-ID controlled fusion:
+
+```powershell
+uv run --offline python scripts\run_investigation.py 3489059 --data-config configs\ieee_cis.yaml --training-config configs\train_baseline_ieee_cis.yaml --relation-limit 3 --report-output reports\generated\stage04-report.json --audit-output reports\generated\stage04-audit.json
+```
+
+For IEEE-CIS, the CLI uses `configs/graph_ieee_cis.yaml` and comparison run `same-id-v4` by default. `--graph-config` and `--comparison-run` override them. The report contains separate Stage 02 XGBoost and route 4 controlled XGBoost scores; the fusion uses only the controlled score and the validation-selected alpha. See the [workflow contract](docs/data/stage-04-investigation-workflow.md) and [route 6 evidence](reports/stage-04-route-6-workflow.md). Raw reports and audits stay under ignored `reports/generated/`.
 
 ## Environment diagnostic
 

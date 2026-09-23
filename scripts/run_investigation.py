@@ -4,6 +4,8 @@ import argparse
 from pathlib import Path
 
 from graphrisk.config import load_config
+from graphrisk.graph.config import load_graph_config
+from graphrisk.graph.service import GraphRiskService
 from graphrisk.investigation.risk_tool import RiskModelTool
 from graphrisk.investigation.workflow import InvestigationWorkflow
 from graphrisk.training.config import load_training_config
@@ -16,7 +18,7 @@ def _write_json(path: Path, content: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Run the deterministic Stage 03 transaction investigation"
+        description="Run the deterministic GraphRisk transaction investigation"
     )
     parser.add_argument("transaction_id")
     parser.add_argument("--data-config", default="configs/ieee_cis.yaml")
@@ -24,6 +26,8 @@ def main() -> None:
         "--training-config", default="configs/train_baseline_ieee_cis.yaml"
     )
     parser.add_argument("--relation-limit", type=int, default=20)
+    parser.add_argument("--graph-config", type=Path)
+    parser.add_argument("--comparison-run", default="same-id-v4")
     parser.add_argument("--report-output", type=Path)
     parser.add_argument("--audit-output", type=Path)
     arguments = parser.parse_args()
@@ -31,7 +35,20 @@ def main() -> None:
     data_config = load_config(arguments.data_config)
     training_config = load_training_config(arguments.training_config)
     tool = RiskModelTool.from_configs(data_config, training_config)
-    run = InvestigationWorkflow(tool).run(
+    graph_config_path = arguments.graph_config
+    if graph_config_path is None and data_config.data.source == "ieee_cis":
+        graph_config_path = Path("configs/graph_ieee_cis.yaml")
+    graph_service = None
+    if graph_config_path is not None:
+        graph_config = load_graph_config(graph_config_path)
+        graph_service = GraphRiskService(
+            graph_config,
+            comparison_dir=(
+                graph_config.resolve_path(graph_config.paths.artifact_dir)
+                / "comparisons" / arguments.comparison_run
+            ),
+        )
+    run = InvestigationWorkflow(tool, graph_service=graph_service).run(
         {
             "transaction_id": arguments.transaction_id,
             "dataset_source": data_config.data.source,

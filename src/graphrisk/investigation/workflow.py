@@ -8,6 +8,7 @@ from typing import Literal, Mapping
 
 from pydantic import Field, model_validator
 
+from graphrisk.graph.service import GraphRiskService
 from graphrisk.investigation.contracts import (
     DatasetSource,
     ErrorCode,
@@ -49,7 +50,8 @@ class InvestigationRequest(StrictModel):
 
 class EvidenceBinding(StrictModel):
     section: Literal[
-        "transaction", "historical_features", "risk_score", "related_entities"
+        "transaction", "historical_features", "risk_score", "related_entities",
+        "risky_neighbors",
     ]
     source_tool: ToolName
     record_ids: list[str] = Field(min_length=1)
@@ -65,7 +67,7 @@ class CapabilityGap(StrictModel):
     tool: Literal["find_risky_neighbors"]
     status: Literal["unavailable"] = "unavailable"
     error: ToolError
-    planned_stage: Literal["Stage 04"] = "Stage 04"
+    planned_stage: Literal["Stage 04"] | None = None
 
 
 class InvestigationReport(StrictModel):
@@ -87,10 +89,10 @@ class InvestigationReport(StrictModel):
     def status_matches_sections(self) -> "InvestigationReport":
         if self.status in ("completed", "partial") and self.transaction.status != "ok":
             raise ValueError("completed or partial reports require transaction facts")
-        if self.status == "completed" and self.issues:
-            raise ValueError("completed reports cannot contain investigation issues")
-        if self.status == "partial" and not self.issues:
-            raise ValueError("partial reports require at least one investigation issue")
+        if self.status == "completed" and (self.issues or self.unavailable_capabilities):
+            raise ValueError("completed reports cannot contain issues or capability gaps")
+        if self.status == "partial" and not (self.issues or self.unavailable_capabilities):
+            raise ValueError("partial reports require an issue or capability gap")
         return self
 
 
@@ -103,6 +105,7 @@ class AuditEvent(StrictModel):
     duration_ms: float = Field(ge=0)
     status: ToolStatus
     error_code: ErrorCode | None = None
+    model_version: str | None = Field(default=None, min_length=1)
 
     @model_validator(mode="after")
     def timestamps_and_error_match(self) -> "AuditEvent":
@@ -144,11 +147,13 @@ class InvestigationWorkflow:
         self,
         risk_tool: RiskModelTool,
         *,
+        graph_service: GraphRiskService | None = None,
         clock: Callable[[], datetime] | None = None,
         monotonic_ns: Callable[[], int] | None = None,
         investigation_id_factory: Callable[[], str] | None = None,
     ) -> None:
         self.risk_tool = risk_tool
+        self.graph_service = graph_service
         self.repository = risk_tool.repository
         self._clock = clock or (lambda: datetime.now(UTC))
         self._monotonic_ns = monotonic_ns or time.perf_counter_ns
@@ -221,7 +226,7 @@ class InvestigationWorkflow:
             investigation_id,
             events,
             "find_risky_neighbors",
-            lambda: find_risky_neighbors(relation_request, self.repository),
+            lambda: find_risky_neighbors(relation_request, self.repository, self.graph_service),
             FindRiskyNeighborsResult,
             common_request,
             "query_failed",
@@ -263,6 +268,23 @@ class InvestigationWorkflow:
                     ],
                 )
             )
+        if graph.status == "ok" and graph.data is not None:
+            bindings.append(
+                EvidenceBinding(
+                    section="risky_neighbors",
+                    source_tool="find_risky_neighbors",
+                    record_ids=[
+                        transaction.transaction_id,
+                        graph.data.graph_model_version,
+                        *(
+                            [graph.data.controlled_xgboost_model_version]
+                            if graph.data.controlled_xgboost_model_version is not None
+                            else []
+                        ),
+                        *[neighbor.transaction_id for neighbor in graph.data.neighbors],
+                    ],
+                )
+            )
         unavailable = (
             [
                 CapabilityGap(
@@ -277,7 +299,7 @@ class InvestigationWorkflow:
             issues.append(self._issue(graph))
 
         report = InvestigationReport(
-            status="partial" if issues else "completed",
+            status="partial" if issues or unavailable else "completed",
             transaction_id=transaction.transaction_id,
             dataset_source=transaction.dataset_source,
             transaction=transaction,
@@ -288,7 +310,7 @@ class InvestigationWorkflow:
             evidence_bindings=bindings,
             issues=issues,
             unavailable_capabilities=unavailable,
-            limitations=self._limitations(transaction.dataset_source),
+            limitations=self._limitations(transaction.dataset_source, graph.status),
         )
         return InvestigationRun(
             report=report,
@@ -323,6 +345,11 @@ class InvestigationWorkflow:
             )
         completed_ns = self._monotonic_ns()
         completed_at = self._clock()
+        model_version = None
+        if result.data is not None:
+            model_version = getattr(result.data, "model_version", None) or getattr(
+                result.data, "graph_model_version", None
+            )
         events.append(
             AuditEvent(
                 investigation_id=investigation_id,
@@ -333,6 +360,7 @@ class InvestigationWorkflow:
                 duration_ms=max(0.0, (completed_ns - started_ns) / 1_000_000),
                 status=result.status,
                 error_code=result.error.code if result.error is not None else None,
+                model_version=model_version,
             )
         )
         return result
@@ -363,13 +391,22 @@ class InvestigationWorkflow:
         )
 
     @staticmethod
-    def _limitations(dataset_source: DatasetSource) -> list[str]:
+    def _limitations(dataset_source: DatasetSource, graph_status: ToolStatus) -> list[str]:
         limitations = [
             "The tabular risk score is not a calibrated fraud probability.",
             "Shared modeled entities do not establish a verified person or fraud conclusion.",
-            "Graph risk neighbors are unavailable until Stage 04.",
             "This workflow is read-only and does not execute enforcement actions.",
         ]
+        if graph_status == "ok":
+            limitations.extend([
+                "GraphSAGE neighbor scores and same-ID fusion scores are not calibrated fraud probabilities.",
+                "The controlled XGBoost score used in fusion differs from the Stage 02 service score.",
+                "High-scoring neighbors are model signals, not confirmed fraud cases.",
+            ])
+        else:
+            limitations.append(
+                "Graph risk evidence is unavailable for this request; other evidence remains independent."
+            )
         if dataset_source == "ieee_cis":
             limitations.append(
                 "IEEE-CIS event time uses an artificial anchor and only supports relative ordering."
