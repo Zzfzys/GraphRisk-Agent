@@ -1,12 +1,12 @@
 # Stage 03：确定性调查工具与无 LLM 工作流
 
-> 状态：In Progress
+> 状态：Done
 > 计划时间：Week 4  
 > 前置阶段：Stage 02
 > 实际开始：2026-09-22
-> 实际结束：—
+> 实际结束：2026-09-23
 
-详细的七条实施路线、每条路线的学习任务与验收方法见 [Stage 03 实施路线](stage-03-implementation-roadmap.md)。路线 0～5 已完成；路线 6 尚未实施总验收。
+详细的七条实施路线、每条路线的学习任务与验收方法见 [Stage 03 实施路线](stage-03-implementation-roadmap.md)。路线 0～6 已完成，最终证据见 [`reports/stage-03-validation.md`](../../reports/stage-03-validation.md)。
 
 ## 阶段目标
 
@@ -41,11 +41,11 @@
 
 ## 验收标准
 
-- [ ] 所有工具可单独调用；
-- [ ] 输出均可由 Pydantic schema 验证；
-- [ ] 工具错误不会变成无结构字符串；
-- [ ] 无 LLM 工作流能够完成一次基础交易调查；
-- [ ] 工具调用过程可追踪。
+- [x] 所有工具可单独调用；
+- [x] 输出均可由 Pydantic schema 验证；
+- [x] 工具错误不会变成无结构字符串；
+- [x] 无 LLM 工作流能够完成一次基础交易调查；
+- [x] 工具调用过程可追踪。
 
 ## 验证证据
 
@@ -57,7 +57,7 @@
 - 路线 3：风险工具复用 Stage 02 `RiskPredictor`，完成配置路径/metadata 同源门禁、API 对比、真实 IEEE-CIS 分数核对与失败分类；证据见 [`reports/stage-03-route-3-risk-tool.md`](../../reports/stage-03-route-3-risk-tool.md)；
 - 路线 4：本地共享实体关系工具与图风险占位实现已通过小 fixture 测试和 IEEE-CIS 实际抽查；证据见 [`reports/stage-03-route-4-relations.md`](../../reports/stage-03-route-4-relations.md)；
 - 路线 5：固定顺序工作流、确定性报告、独立审计和 CLI 已实现；重复执行、停止/降级分支及真实 IEEE-CIS 演示见 [`reports/stage-03-route-5-workflow.md`](../../reports/stage-03-route-5-workflow.md)；
-- 路线 6 尚无总验收证据；不得因此将整个 Stage 03 标为 `Done`。
+- 路线 6：74 项聚焦测试与 105 项全量测试通过；真实调查报告两次 SHA-256 一致，失败恢复、字段/时间门禁和 Git 受限文件检查通过；完整证据见 [`reports/stage-03-validation.md`](../../reports/stage-03-validation.md)。
 
 ## 风险与降级方案
 
@@ -90,7 +90,12 @@
 - 路线 3 实现风险模型工具与配置/metadata 同源检查；仍不生成关系证据或调查报告。
 - 路线 4 实现本地严格历史共享实体关系和图占位；路线 5 才组合工具生成报告与审计。
 - 路线 5 实现固定状态工作流、报告/审计 schema 和命令行入口；Stage 03 仍等待路线 6 总验收。
+- 路线 6 未增加产品范围；只完成独立/端到端门禁、真实演示、失败样例、交付检查与复盘。
 
 ## 阶段复盘
 
-阶段完成后填写。
+Stage 03 按原定边界完成。实际交付五个类型化工具、严格历史关系、风险模型绑定、固定状态工作流、确定性报告、证据绑定、独立审计和 CLI。真实 IEEE-CIS 报告可重复，已知图能力缺口明确降级，没有为了演示伪造 GraphSAGE 结果。
+
+实际限制包括：单次 CLI 冷启动约 6.5 秒，工具调用审计合计约 1.15 秒；模型分数和 0.30/0.70 等级阈值未校准；模型 metadata 尚未嵌入特征文件哈希；IEEE-CIS 时间锚点和实体映射不能当作真实日期或身份。以上不影响 Stage 03 的只读确定性调查目标，将分别在 Stage 04、Stage 07 或 Stage 09 继续处理。
+
+下一阶段输入为稳定工具契约、`find_risky_neighbors` 占位接口、严格历史关系语义、合成 fixture、真实 IEEE-CIS 演示、错误码、证据绑定和审计格式。Stage 04 必须在同一时间边界下构建训练图并提供真实图模型证据。

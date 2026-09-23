@@ -1,6 +1,6 @@
 # GraphRisk-Agent 总体项目计划
 
-> 文档状态：执行中，Stage 00～02 已完成
+> 文档状态：执行中，Stage 00～03 已完成
 > 当前版本：v1.0  
 > 建立日期：2026-09-21  
 > 计划周期：Week 0 + 16 周  
@@ -192,7 +192,7 @@ flowchart TD
 
 ## 11. 当前已知条件与风险
 
-- 仓库已完成 Stage 00～02，下一阶段为确定性调查工具；
+- 仓库已完成 Stage 00～03，下一阶段为 GraphSAGE 与图查询工具；
 - 仓库内 Python 3.11、uv 锁文件和本地虚拟环境已可用；
 - Docker、PostgreSQL 和 Neo4j 尚未安装或不可用；
 - GPU 为 RTX 2060 6GB，适合受控规模 GraphSAGE 和量化小模型实验；
@@ -239,4 +239,13 @@ Stage 02 已于 2026-09-21 完成：
 
 Stage 02 的原始指标来自合成数据；后续真实数据重跑选择 XGBoost 为 champion，验证集/测试集 PR-AUC 分别为 `0.1736`/`0.1522`。真实数据 API 预测成功，但单请求约 `802ms`，需要后续优化。风险等级阈值和模型概率尚未做业务校准。详细真实数据证据位于 `reports/ieee-cis-adapter-validation.md`。
 
-Stage 03 于 2026-09-22 开始。路线 0 已核对 IEEE-CIS 交易、历史特征与 XGBoost champion 的来源和版本，明确调查工具的字段允许/禁止清单、人工时间锚点与启发式身份的解释边界。路线 1 已完成五个工具的类型化契约、统一结果外壳和错误分类；路线 2 已实现交易/历史特征只读工具，并完成 IEEE-CIS 真实交易抽查；路线 3 已实现复用 `RiskPredictor` 的模型工具、配置/metadata 同源门禁和 API 对比；路线 4 已实现严格历史共享实体查询及图风险邻居占位；路线 5 已实现固定顺序工作流、确定性报告、独立审计和 CLI 演示。路线 6 尚未实施总验收，本阶段仍为 `In Progress`。证据位于 `reports/stage-03-route-0-semantics.md` 至 `reports/stage-03-route-5-workflow.md`。
+Stage 03 已于 2026-09-23 完成：
+
+- 建立五个类型化调查工具和稳定错误分类；
+- 实现交易事实、严格历史特征、XGBoost 分数与历史共享实体查询；
+- 模型工具检查调查/训练数据源、serving 路径和 champion metadata；
+- 图风险邻居在 Stage 04 前明确返回 `unavailable`，不伪造图证据；
+- 建立固定顺序的无 LLM 工作流、确定性报告、证据绑定和独立审计；
+- 74 项聚焦测试和 105 项全量测试通过；
+- 两次真实 IEEE-CIS 调查报告哈希一致，失败恢复与受限文件门禁通过；
+- 详细证据位于 `reports/stage-03-validation.md`。
