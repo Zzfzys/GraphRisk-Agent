@@ -226,7 +226,7 @@ target label（只供 loss）
 
 - `PROJECT_PLAN.md` 第 6 节的模型原则；
 - Stage 02 验证报告和真实 IEEE-CIS 指标；
-- 路线 4 生成的 same-ID 预测表和对比报告。
+- 路线 4 生成的[同 ID 比较契约](../data/stage-04-model-comparison.md)与[真实对比报告](../../reports/stage-04-route-4-comparison.md)；从 `artifacts/stage-04/ieee-cis/comparisons/same-id-v4/validation-predictions.parquet` 抽 10～20 行练习核对 ID 与融合公式。
 
 ### 动手任务
 

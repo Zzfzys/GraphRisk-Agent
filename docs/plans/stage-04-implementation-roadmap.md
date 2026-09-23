@@ -232,6 +232,8 @@ flowchart LR
 
 ## 9. 路线 4：同集合评估、embedding 与简单融合（约 3 小时）
 
+**路线 4 已完成。** 受控 XGBoost 使用 GraphSAGE 的 50,000 个训练目标，验证/测试各在相同 10,000 个目标上对比；验证集选出的 alpha 为 0.5。测试 PR-AUC：XGBoost 0.129566、GraphSAGE 0.103733、融合 0.128175；融合没有超过 XGBoost。逐交易分数、64 维 embedding、ID 哈希、冷启动/截断与延迟诊断见[比较契约](../data/stage-04-model-comparison.md)和[验收记录](../../reports/stage-04-route-4-comparison.md)。
+
 ### 实现目标
 
 为验证和测试目标输出 `transaction_id`、split、GraphSAGE score、模型版本和 embedding 引用。模型比较先对交易 ID 做 inner join 并断言一一对应，任何缺失或重复都直接失败。

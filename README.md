@@ -6,7 +6,7 @@ The approved scope and delivery gates are defined in [PROJECT_PLAN.md](PROJECT_P
 
 ## Current status
 
-Stages 00 through 03 are complete. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, a FastAPI risk prediction service, and a deterministic fraud investigation workflow with typed tools, evidence bindings and separate audit events. Stage 04 routes 0 through 3 have completed the graph environment gate, strict-history graph schema, reproducible IEEE-CIS graph artifacts for 50k/10k/10k target transactions, and a versioned GraphSAGE training run. Matched-ID comparison, fusion, and graph tools follow in later routes.
+Stages 00 through 03 are complete. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, a FastAPI risk prediction service, and a deterministic fraud investigation workflow with typed tools, evidence bindings and separate audit events. Stage 04 routes 0 through 4 have completed the graph environment gate, strict-history graph schema, reproducible IEEE-CIS graph artifacts for 50k/10k/10k target transactions, a versioned GraphSAGE training run, and same-ID XGBoost/GraphSAGE/fusion comparison with embeddings. Graph tools follow in later routes.
 
 ## Prerequisites
 
@@ -52,6 +52,14 @@ uv run --offline python scripts\train_graphsage.py --config configs\graph_ieee_c
 The versioned checkpoint and training history remain under the ignored artifact directory. See the [training contract](docs/data/stage-04-graphsage-training.md) and [route 3 evidence](reports/stage-04-route-3-training.md).
 
 For your own validation-only tuning runs, follow the [GraphSAGE self-training guide](docs/guides/graphsage-self-training.md). Trial runs use separate names and do not read held-out test labels.
+
+Compare GraphSAGE with a controlled XGBoost trained on the same 50k target IDs, then select a fixed-weight fusion using validation data:
+
+```powershell
+uv run --offline python scripts\compare_graphsage.py --config configs\graph_ieee_cis.yaml --run-name my-first-comparison
+```
+
+Use a new run name for each repeat. Outputs are ignored under `artifacts/stage-04/ieee-cis/comparisons/<run-name>/`. See the [comparison contract](docs/data/stage-04-model-comparison.md) and [route 4 evidence](reports/stage-04-route-4-comparison.md). The first controlled test did not show a fusion PR-AUC improvement over XGBoost.
 
 ## Environment diagnostic
 

@@ -10,7 +10,9 @@ import yaml
 from torch_geometric.data import Batch, Data
 
 import graphrisk.graph.train_graphsage as graph_training_module
+import graphrisk.graph.compare_models as comparison_module
 from graphrisk.graph.build_artifacts import build_graph_artifacts, load_graph_artifacts
+from graphrisk.graph.compare_models import compare_same_ids
 from graphrisk.graph.train_graphsage import load_graphsage_checkpoint, train_graphsage
 from graphrisk.pipeline import run_pipeline
 
@@ -265,6 +267,51 @@ def test_graphsage_trains_and_reloads_on_small_temporal_source(
     graph = store.ego_graph(store.target_ids["validation"][0]).to_pyg(store.encoder)
     with torch.no_grad():
         assert torch.isfinite(restored(graph)).all()
+    observed_splits = []
+    original_split_loader = comparison_module._load_split
+    original_choose_alpha = comparison_module._choose_alpha
+
+    def observed_load(training_config, path, split):
+        observed_splits.append(split)
+        return original_split_loader(training_config, path, split)
+
+    def observed_alpha(labels, tabular, graph_scores):
+        assert observed_splits == ["train", "validation"]
+        return original_choose_alpha(labels, tabular, graph_scores)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(comparison_module, "_load_split", observed_load)
+        patch.setattr(comparison_module, "_choose_alpha", observed_alpha)
+        comparison = compare_same_ids(config)
+    assert observed_splits == ["train", "validation", "test"]
+    assert comparison.selected_alpha in comparison_module.ALPHAS
+    comparison_metadata = json.loads(comparison.metadata_path.read_text(encoding="utf-8"))
+    assert comparison_metadata["splits"]["train"]["count"] == 20
+    assert comparison_metadata["splits"]["validation"]["count"] == 5
+    assert comparison_metadata["splits"]["test"]["count"] == 5
+    encoder_metadata = json.loads((tmp_path / "artifacts/stage-04/test/encoder.json").read_text(encoding="utf-8"))
+    assert comparison_metadata["xgboost_train_id_sha256"] == encoder_metadata["train_id_sha256"]
+    assert comparison.test_metrics["graphsage"]["pr_auc"] == pytest.approx(result.test_pr_auc)
+    sample = json.loads((comparison.output_dir / "embedding-sample.json").read_text(encoding="utf-8"))
+    assert sample["embedding_dimensions"] == 8
+    assert len(sample["sample"]) == 3
+    assert all(len(item["first_eight_dimensions"]) == 8 for item in sample["sample"])
+    with duckdb.connect(":memory:") as connection:
+        for split in ("validation", "test"):
+            rows = connection.execute(
+                "SELECT transaction_id, is_fraud, embedding_file "
+                "FROM read_parquet(?)",
+                [str(comparison.output_dir / f"{split}-predictions.parquet")],
+            ).fetchall()
+            embedding_rows = connection.execute(
+                "SELECT transaction_id FROM read_parquet(?)",
+                [str(comparison.output_dir / f"{split}-embeddings.parquet")],
+            ).fetchall()
+            assert tuple(row[0] for row in rows) == store.target_ids[split]
+            assert [row[0] for row in rows] == [row[0] for row in embedding_rows]
+            assert all(row[2] == f"{split}-embeddings.parquet" for row in rows)
+    with pytest.raises(FileExistsError, match="completed run"):
+        compare_same_ids(config)
     config_data = yaml.safe_load(config.read_text(encoding="utf-8"))
     config_data["training"]["dropout"] = 0.30
     _write_yaml(config, config_data)

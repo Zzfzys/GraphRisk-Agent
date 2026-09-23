@@ -23,7 +23,7 @@ class GraphSAGERiskModel(nn.Module):
         self.dropout = nn.Dropout(dropout)
         self.classifier = nn.Linear(hidden_channels, 1)
 
-    def forward(self, graph: Data | Batch) -> Tensor:
+    def encode_root(self, graph: Data | Batch) -> Tensor:
         if graph.x.ndim != 2 or graph.x.shape[1] != self.input_channels:
             raise ValueError("GraphSAGE graph feature dimension does not match checkpoint")
         if graph.edge_index.ndim != 2 or graph.edge_index.shape[0] != 2:
@@ -39,4 +39,7 @@ class GraphSAGERiskModel(nn.Module):
         features = self.dropout(features)
         features = self.conv2(features, graph.edge_index).relu()
         features = self.dropout(features)
-        return self.classifier(features[roots]).squeeze(-1)
+        return features[roots]
+
+    def forward(self, graph: Data | Batch) -> Tensor:
+        return self.classifier(self.encode_root(graph)).squeeze(-1)
