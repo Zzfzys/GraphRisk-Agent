@@ -54,5 +54,6 @@ uv run --offline python scripts\build_features.py --config configs\ieee_cis.yaml
 uv run --offline python scripts\train_baselines.py --config configs\train_baseline.yaml
 uv run --offline python scripts\train_baselines.py --config configs\train_baseline_ieee_cis.yaml
 uv run --offline python scripts\list_mlflow_runs.py --config configs\train_baseline.yaml
+uv run --offline python scripts\run_investigation.py 2987100 --data-config configs\ieee_cis.yaml --training-config configs\train_baseline_ieee_cis.yaml --relation-limit 3
 uv run --offline uvicorn api.main:app --host 127.0.0.1 --port 8000
 ```

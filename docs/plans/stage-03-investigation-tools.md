@@ -6,7 +6,7 @@
 > 实际开始：2026-09-22
 > 实际结束：—
 
-详细的七条实施路线、每条路线的学习任务与验收方法见 [Stage 03 实施路线](stage-03-implementation-roadmap.md)。路线 0～4 已完成；路线 5～6 尚未实现。
+详细的七条实施路线、每条路线的学习任务与验收方法见 [Stage 03 实施路线](stage-03-implementation-roadmap.md)。路线 0～5 已完成；路线 6 尚未实施总验收。
 
 ## 阶段目标
 
@@ -29,8 +29,8 @@
 - [x] `get_related_entities`；
 - [x] `find_risky_neighbors` 的本地占位实现；
 - [x] 明确每个工具的输入、输出和错误模型；
-- [ ] 建立不依赖 LLM 的顺序调查流程；
-- [ ] 为成功、空结果、无效参数和服务失败编写测试。
+- [x] 建立不依赖 LLM 的顺序调查流程；
+- [x] 为成功、空结果、无效参数和服务失败编写测试。
 
 ## 交付物
 
@@ -56,7 +56,8 @@
 - 路线 2：两个只读工具通过小 fixture 测试和 IEEE-CIS 交易 `2987000` 的真实查询；查询、错误分支和学习笔记见 [`reports/stage-03-route-2-transaction-tools.md`](../../reports/stage-03-route-2-transaction-tools.md)；
 - 路线 3：风险工具复用 Stage 02 `RiskPredictor`，完成配置路径/metadata 同源门禁、API 对比、真实 IEEE-CIS 分数核对与失败分类；证据见 [`reports/stage-03-route-3-risk-tool.md`](../../reports/stage-03-route-3-risk-tool.md)；
 - 路线 4：本地共享实体关系工具与图风险占位实现已通过小 fixture 测试和 IEEE-CIS 实际抽查；证据见 [`reports/stage-03-route-4-relations.md`](../../reports/stage-03-route-4-relations.md)；
-- 路线 5～6 尚无实施证据；不得因此将整个 Stage 03 标为 `Done`。
+- 路线 5：固定顺序工作流、确定性报告、独立审计和 CLI 已实现；重复执行、停止/降级分支及真实 IEEE-CIS 演示见 [`reports/stage-03-route-5-workflow.md`](../../reports/stage-03-route-5-workflow.md)；
+- 路线 6 尚无总验收证据；不得因此将整个 Stage 03 标为 `Done`。
 
 ## 风险与降级方案
 
@@ -77,6 +78,7 @@
 | 2026-09-22 | 查询绑定显式数据源与 Parquet 路径，并区分交易不存在与特征行缺失 | 缺失特征行说明管线产物不完整，不应被当作无交易 | 路线 3 继续实现模型与特征同源门禁 |
 | 2026-09-22 | 模型工具启动时交叉核对调查/训练来源、serving 特征路径与 champion metadata | 相同特征 schema 不能证明同源，错配必须先于推理被拒绝 | 不修改 Stage 02 预测行为；文件内容哈希仍需独立产物清单 |
 | 2026-09-23 | 共享实体关系仅使用严格历史、有效实体和有限结果；图风险邻居固定返回 `unavailable` | 共享关系不是 GNN 风险结论，缺失占位值会形成假连接 | Stage 04 接管真正的图模型邻居查询 |
+| 2026-09-23 | 报告内容与运行审计分离；后续工具失败时保留已有证据 | 内容幂等性不应被 trace ID 和运行时间破坏，单个依赖失败也不应抹掉事实 | Stage 05 可在确定性报告之上接入受控 Agent |
 
 ## 计划变更
 
@@ -87,6 +89,7 @@
 - 路线 2 实现交易/历史特征只读查询，新增 `feature_record_missing` 错误码；不包含模型或关系查询。
 - 路线 3 实现风险模型工具与配置/metadata 同源检查；仍不生成关系证据或调查报告。
 - 路线 4 实现本地严格历史共享实体关系和图占位；路线 5 才组合工具生成报告与审计。
+- 路线 5 实现固定状态工作流、报告/审计 schema 和命令行入口；Stage 03 仍等待路线 6 总验收。
 
 ## 阶段复盘
 
