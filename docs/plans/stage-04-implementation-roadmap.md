@@ -270,6 +270,8 @@ embedding 只作为版本化机器表示输出，可用于后续检索或可视�
 
 ## 10. 路线 5：图模型服务与 `find_risky_neighbors`（约 3 小时）
 
+**路线 5 已完成。** `GraphRiskService` 启动时一次加载并校验图、checkpoint 和 held-out 分数；`find_risky_neighbors` 从严格历史 ego graph 返回具名共享实体、GraphSAGE 分数、时间差和模型证据。训练 in-sample 分数被排除；真实 IEEE-CIS 固定目标已有成功、空结果和未覆盖状态验收。见[服务契约](../data/stage-04-graph-service.md)与[验收记录](../../reports/stage-04-route-5-graph-service.md)。完整调查工作流注入属于路线 6。
+
 ### 实现目标
 
 实现图产物加载器、图风险预测入口和 Stage 03 预留的 `find_risky_neighbors`。加载器验证数据源、模型版本、特征 schema、图 manifest 和必要文件，不在每次工具调用中重复加载模型。

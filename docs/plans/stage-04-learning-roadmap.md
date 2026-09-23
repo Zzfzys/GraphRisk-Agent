@@ -257,9 +257,9 @@ target label（只供 loss）
 ### 对照项目阅读
 
 - `src/graphrisk/investigation/contracts.py` 中 `RiskyNeighbor` 与 `RiskyNeighborsData`；
-- `src/graphrisk/investigation/relation_tools.py` 中 Stage 03 占位实现；
+- `src/graphrisk/investigation/relation_tools.py` 中真实图工具及未注入服务时的 Stage 03 兼容状态；
 - `src/graphrisk/investigation/risk_tool.py` 的数据源和模型 artifact 门禁；
-- 路线 5 新增的图 artifact loader 和邻居查询测试。
+- 路线 5 的[图服务契约](../data/stage-04-graph-service.md)、[真实验收记录](../../reports/stage-04-route-5-graph-service.md)、`src/graphrisk/graph/service.py` 与邻居查询测试。
 
 ### 动手任务
 

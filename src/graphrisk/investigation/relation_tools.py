@@ -6,6 +6,7 @@ from typing import Mapping
 
 from pydantic import ValidationError
 
+from graphrisk.graph.service import GraphRiskService, GraphTargetNotCoveredError
 from graphrisk.investigation.contracts import (
     EntityRef,
     EvidenceRef,
@@ -15,6 +16,8 @@ from graphrisk.investigation.contracts import (
     GetRelatedEntitiesResult,
     RelatedEntitiesData,
     RelatedTransaction,
+    RiskyNeighbor,
+    RiskyNeighborsData,
     TransactionData,
     validate_tool_request,
 )
@@ -144,7 +147,9 @@ def _related_transaction(
 
 
 def find_risky_neighbors(
-    raw_request: Mapping[str, object], repository: InvestigationRepository
+    raw_request: Mapping[str, object],
+    repository: InvestigationRepository,
+    graph_service: GraphRiskService | None = None,
 ) -> FindRiskyNeighborsResult:
     request, failure = validate_tool_request(
         FindRiskyNeighborsRequest, FindRiskyNeighborsResult, raw_request
@@ -152,13 +157,75 @@ def find_risky_neighbors(
     if failure is not None:
         return failure
     assert request is not None
-    code = (
-        "data_source_mismatch"
-        if request.dataset_source != repository.dataset_source
-        else "capability_unavailable"
-    )
-    return FindRiskyNeighborsResult.failure(
-        code=code,
+    def failed(code):
+        return FindRiskyNeighborsResult.failure(
+            code=code,
+            transaction_id=request.transaction_id,
+            dataset_source=request.dataset_source,
+        )
+
+    if request.dataset_source != repository.dataset_source:
+        return failed("data_source_mismatch")
+    if graph_service is None:
+        return failed("capability_unavailable")
+    if graph_service.dataset_source != request.dataset_source:
+        return failed("data_source_mismatch")
+    if graph_service.startup_error is not None:
+        return failed(graph_service.startup_error)
+    if graph_service.transaction_parquet is None or graph_service.feature_parquet is None:
+        return failed("graph_artifact_unavailable")
+    if (
+        graph_service.transaction_parquet.resolve() != repository.transaction_parquet.resolve()
+        or graph_service.feature_parquet.resolve() != repository.feature_parquet.resolve()
+    ):
+        return failed("data_source_mismatch")
+    try:
+        if repository.transaction_with_time(request.transaction_id) is None:
+            return failed("transaction_not_found")
+        matches = graph_service.find_neighbors(request.transaction_id, limit=request.limit)
+        neighbors = [
+            RiskyNeighbor(
+                transaction_id=match.transaction_id,
+                graph_risk_score=match.graph_risk_score,
+                seconds_before_target=match.seconds_before_target,
+                shared_entities=[
+                    EntityRef(entity_type=entity_type, entity_id=entity_id)
+                    for entity_type, entity_id in match.shared_entities
+                ],
+            )
+            for match in matches
+        ]
+        data = RiskyNeighborsData(
+            transaction_id=request.transaction_id,
+            neighbors=neighbors,
+            graph_model_version=graph_service.model_version,
+        )
+    except ArtifactUnavailableError:
+        return failed("transaction_artifact_unavailable")
+    except DuplicateTransactionError:
+        return failed("duplicate_transaction")
+    except GraphTargetNotCoveredError:
+        return failed("graph_prediction_unavailable")
+    except (RepositoryQueryError, ValidationError, TypeError, ValueError, RuntimeError):
+        return failed("graph_artifact_unavailable")
+    return FindRiskyNeighborsResult(
+        status="ok",
         transaction_id=request.transaction_id,
         dataset_source=request.dataset_source,
+        data=data,
+        evidence=[
+            EvidenceRef(
+                source_kind="model_artifact",
+                record_id=graph_service.model_version,
+                dataset_source=request.dataset_source,
+            ),
+            *[
+                EvidenceRef(
+                    source_kind="entity_link",
+                    record_id=neighbor.transaction_id,
+                    dataset_source=request.dataset_source,
+                )
+                for neighbor in neighbors
+            ],
+        ],
     )

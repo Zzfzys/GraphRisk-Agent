@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
 
 import duckdb
 import pandas as pd
@@ -11,6 +12,7 @@ from graphrisk.investigation.relation_tools import (
     get_related_entities,
 )
 from graphrisk.investigation.repository import InvestigationRepository
+from graphrisk.graph.service import ScoredGraphNeighbor
 
 
 @pytest.fixture
@@ -180,7 +182,7 @@ def test_duplicate_target_or_related_transaction_is_not_silently_used(
     assert result.error is not None and result.error.code == "duplicate_transaction"
 
 
-def test_graph_placeholder_is_explicitly_unavailable_without_evidence(repository) -> None:
+def test_graph_tool_without_service_is_explicitly_unavailable_without_evidence(repository) -> None:
     result = find_risky_neighbors(_request(), repository)
     assert result.status == "unavailable"
     assert result.error is not None and result.error.code == "capability_unavailable"
@@ -188,10 +190,47 @@ def test_graph_placeholder_is_explicitly_unavailable_without_evidence(repository
     assert result.evidence == []
 
 
-def test_graph_placeholder_still_validates_input_and_source(repository) -> None:
+def test_graph_tool_still_validates_input_and_source_without_service(repository) -> None:
     invalid = find_risky_neighbors(_request(" "), repository)
     assert invalid.error is not None and invalid.error.code == "invalid_transaction_id"
     wrong_source = _request()
     wrong_source["dataset_source"] = "ieee_cis"
     mismatch = find_risky_neighbors(wrong_source, repository)
     assert mismatch.error is not None and mismatch.error.code == "data_source_mismatch"
+
+
+def test_graph_neighbor_tool_binds_model_and_each_relation_without_labels(repository) -> None:
+    service = SimpleNamespace(
+        dataset_source="synthetic",
+        transaction_parquet=repository.transaction_parquet,
+        feature_parquet=repository.feature_parquet,
+        startup_error=None,
+        model_version="graphsage-test",
+        find_neighbors=lambda transaction_id, limit: [
+            ScoredGraphNeighbor(
+                transaction_id="H_multi",
+                graph_risk_score=0.8,
+                seconds_before_target=240,
+                shared_entities=(("card", "card-A"), ("device", "device-A")),
+            )
+        ][:limit],
+    )
+    result = find_risky_neighbors(_request(limit=1), repository, service)
+    assert result.status == "ok"
+    assert result.data is not None
+    assert result.data.graph_model_version == "graphsage-test"
+    assert result.data.score_scope == "held_out"
+    assert result.data.probability_calibrated is False
+    assert result.data.neighbors[0].seconds_before_target == 240
+    assert [ref.source_kind for ref in result.evidence] == ["model_artifact", "entity_link"]
+    assert [ref.record_id for ref in result.evidence] == ["graphsage-test", "H_multi"]
+    assert "is_fraud" not in result.model_dump_json()
+    assert "identity_key" not in result.model_dump_json()
+    service.startup_error = "graph_model_version_mismatch"
+    mismatch = find_risky_neighbors(_request(limit=1), repository, service)
+    assert mismatch.status == "dependency_error"
+    assert mismatch.error is not None and mismatch.error.code == "graph_model_version_mismatch"
+    service.startup_error = None
+    service.transaction_parquet = repository.transaction_parquet.with_name("other.parquet")
+    wrong_binding = find_risky_neighbors(_request(limit=1), repository, service)
+    assert wrong_binding.error is not None and wrong_binding.error.code == "data_source_mismatch"

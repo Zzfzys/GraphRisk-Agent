@@ -28,6 +28,7 @@ ErrorCode = Literal[
     "model_artifact_unavailable",
     "graph_artifact_unavailable",
     "graph_prediction_unavailable",
+    "graph_model_version_mismatch",
     "data_source_mismatch",
     "duplicate_transaction",
     "query_failed",
@@ -48,6 +49,7 @@ ERROR_STATUS: dict[ErrorCode, FailureStatus] = {
     "model_artifact_unavailable": "dependency_error",
     "graph_artifact_unavailable": "dependency_error",
     "graph_prediction_unavailable": "unavailable",
+    "graph_model_version_mismatch": "dependency_error",
     "data_source_mismatch": "dependency_error",
     "duplicate_transaction": "dependency_error",
     "query_failed": "dependency_error",
@@ -67,6 +69,7 @@ ERROR_MESSAGES: dict[ErrorCode, str] = {
     "model_artifact_unavailable": "The risk model is unavailable.",
     "graph_artifact_unavailable": "The graph model or graph data artifact is unavailable.",
     "graph_prediction_unavailable": "No eligible graph prediction is available for this transaction.",
+    "graph_model_version_mismatch": "The graph score artifact uses a different model version.",
     "data_source_mismatch": "The requested and configured data sources do not match.",
     "duplicate_transaction": "The transaction ID is not unique in the selected dataset.",
     "query_failed": "The investigation data query failed.",
@@ -193,6 +196,7 @@ class RelatedEntitiesData(StrictModel):
 class RiskyNeighbor(StrictModel):
     transaction_id: TransactionId
     graph_risk_score: float = Field(ge=0, le=1)
+    seconds_before_target: int = Field(gt=0)
     shared_entities: list[EntityRef] = Field(min_length=1)
 
 
@@ -200,6 +204,8 @@ class RiskyNeighborsData(StrictModel):
     transaction_id: TransactionId
     neighbors: list[RiskyNeighbor]
     graph_model_version: str = Field(min_length=1)
+    score_scope: Literal["held_out"] = "held_out"
+    probability_calibrated: Literal[False] = False
 
 
 PayloadT = TypeVar("PayloadT")

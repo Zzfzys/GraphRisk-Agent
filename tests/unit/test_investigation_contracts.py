@@ -177,6 +177,7 @@ def test_success_payloads_are_typed_and_round_trip() -> None:
                     RiskyNeighbor(
                         transaction_id="2986999",
                         graph_risk_score=0.8,
+                        seconds_before_target=60,
                         shared_entities=[EntityRef(entity_type="card", entity_id="card-a")],
                     )
                 ],

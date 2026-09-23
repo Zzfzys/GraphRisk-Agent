@@ -6,7 +6,7 @@ The approved scope and delivery gates are defined in [PROJECT_PLAN.md](PROJECT_P
 
 ## Current status
 
-Stages 00 through 03 are complete. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, a FastAPI risk prediction service, and a deterministic fraud investigation workflow with typed tools, evidence bindings and separate audit events. Stage 04 routes 0 through 4 have completed the graph environment gate, strict-history graph schema, reproducible IEEE-CIS graph artifacts for 50k/10k/10k target transactions, a versioned GraphSAGE training run, and same-ID XGBoost/GraphSAGE/fusion comparison with embeddings. Graph tools follow in later routes.
+Stages 00 through 03 are complete. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, a FastAPI risk prediction service, and a deterministic fraud investigation workflow with typed tools, evidence bindings and separate audit events. Stage 04 routes 0 through 5 have completed the graph environment gate, strict-history graph schema, reproducible IEEE-CIS graph artifacts for 50k/10k/10k target transactions, a versioned GraphSAGE training run, same-ID model comparison with embeddings, and a verified graph-risk neighbor tool. The existing investigation workflow receives that tool in route 6.
 
 ## Prerequisites
 
@@ -60,6 +60,14 @@ uv run --offline python scripts\compare_graphsage.py --config configs\graph_ieee
 ```
 
 Use a new run name for each repeat. Outputs are ignored under `artifacts/stage-04/ieee-cis/comparisons/<run-name>/`. See the [comparison contract](docs/data/stage-04-model-comparison.md) and [route 4 evidence](reports/stage-04-route-4-comparison.md). The first controlled test did not show a fusion PR-AUC improvement over XGBoost.
+
+Query held-out, strictly earlier scored neighbors with the route 5 graph service:
+
+```powershell
+uv run --offline python scripts\query_graph_neighbors.py 3489059 --config configs\graph_ieee_cis.yaml --comparison-run same-id-v4 --limit 5
+```
+
+See the [graph service contract](docs/data/stage-04-graph-service.md) and [route 5 evidence](reports/stage-04-route-5-graph-service.md). A training target has no eligible held-out score and returns a structured unavailable result.
 
 ## Environment diagnostic
 

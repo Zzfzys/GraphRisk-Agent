@@ -14,6 +14,11 @@ import graphrisk.graph.compare_models as comparison_module
 from graphrisk.graph.build_artifacts import build_graph_artifacts, load_graph_artifacts
 from graphrisk.graph.compare_models import compare_same_ids
 from graphrisk.graph.train_graphsage import load_graphsage_checkpoint, train_graphsage
+from graphrisk.graph.config import load_graph_config
+from graphrisk.graph.service import GraphRiskService
+from graphrisk.config import load_config
+from graphrisk.investigation.relation_tools import find_risky_neighbors
+from graphrisk.investigation.repository import InvestigationRepository
 from graphrisk.pipeline import run_pipeline
 
 
@@ -312,6 +317,59 @@ def test_graphsage_trains_and_reloads_on_small_temporal_source(
             assert all(row[2] == f"{split}-embeddings.parquet" for row in rows)
     with pytest.raises(FileExistsError, match="completed run"):
         compare_same_ids(config)
+    graph_config = load_graph_config(config)
+    repository = InvestigationRepository.from_config(load_config(tmp_path / "configs/dev.yaml"))
+    service = GraphRiskService(graph_config, comparison_dir=comparison.output_dir)
+    assert service.startup_error is None
+    target_id = store.target_ids["validation"][0]
+    prediction = service.predict(target_id)
+    assert prediction.transaction_id == target_id
+    assert prediction.score_scope == "held_out"
+    request = {"transaction_id": target_id, "dataset_source": "synthetic", "limit": 5}
+    found = find_risky_neighbors(request, repository, service)
+    assert found.status == "ok"
+    assert found.data is not None
+    assert found.data.graph_model_version == "graphsage-test"
+    assert "is_fraud" not in found.model_dump_json()
+    request["transaction_id"] = store.target_ids["train"][0]
+    uncovered = find_risky_neighbors(request, repository, service)
+    assert uncovered.error is not None and uncovered.error.code == "graph_prediction_unavailable"
+    request["transaction_id"] = "absent"
+    absent = find_risky_neighbors(request, repository, service)
+    assert absent.error is not None and absent.error.code == "transaction_not_found"
+    comparison_path = comparison.metadata_path
+    original_comparison = comparison_path.read_bytes()
+    changed_comparison = json.loads(original_comparison)
+    changed_comparison["graph_model_path"] = str(comparison.output_dir / "missing-model.pt")
+    comparison_path.write_text(json.dumps(changed_comparison), encoding="utf-8")
+    missing_model = GraphRiskService(graph_config, comparison_dir=comparison.output_dir)
+    assert missing_model.startup_error == "graph_artifact_unavailable"
+    unavailable = find_risky_neighbors(
+        {"transaction_id": target_id, "dataset_source": "synthetic", "limit": 5},
+        repository, missing_model,
+    )
+    assert unavailable.error is not None and unavailable.error.code == "graph_artifact_unavailable"
+    comparison_path.write_bytes(original_comparison)
+    model_metadata_path = result.metadata_path
+    original_model_metadata = model_metadata_path.read_bytes()
+    changed_model_metadata = json.loads(original_model_metadata)
+    changed_model_metadata["model_version"] = "wrong-version"
+    model_metadata_path.write_text(json.dumps(changed_model_metadata), encoding="utf-8")
+    wrong_version = GraphRiskService(graph_config, comparison_dir=comparison.output_dir)
+    assert wrong_version.startup_error == "graph_model_version_mismatch"
+    model_metadata_path.write_bytes(original_model_metadata)
+    changed_comparison = json.loads(original_comparison)
+    changed_comparison["dataset_source"] = "ieee_cis"
+    comparison_path.write_text(json.dumps(changed_comparison), encoding="utf-8")
+    wrong_source = GraphRiskService(graph_config, comparison_dir=comparison.output_dir)
+    assert wrong_source.startup_error == "data_source_mismatch"
+    comparison_path.write_bytes(original_comparison)
+    prediction_path = comparison.output_dir / "validation-predictions.parquet"
+    original_prediction = prediction_path.read_bytes()
+    prediction_path.write_bytes(original_prediction + b"corrupt")
+    corrupt = GraphRiskService(graph_config, comparison_dir=comparison.output_dir)
+    assert corrupt.startup_error == "graph_artifact_unavailable"
+    prediction_path.write_bytes(original_prediction)
     config_data = yaml.safe_load(config.read_text(encoding="utf-8"))
     config_data["training"]["dropout"] = 0.30
     _write_yaml(config, config_data)
