@@ -6,7 +6,7 @@ The approved scope and delivery gates are defined in [PROJECT_PLAN.md](PROJECT_P
 
 ## Current status
 
-Stages 00 through 03 are complete. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, a FastAPI risk prediction service, and a deterministic fraud investigation workflow with typed tools, evidence bindings and separate audit events. Stage 04 routes 0 through 6 have completed the graph environment gate, strict-history graph schema, reproducible IEEE-CIS graph artifacts for 50k/10k/10k target transactions, a versioned GraphSAGE training run, same-ID model comparison with embeddings, a verified graph-risk neighbor tool, and its deterministic workflow integration. Route 7 remains the stage-level acceptance and retrospective.
+Stages 00 through 04 have passed their engineering acceptance gates. The repository contains an installable package, a deterministic point-in-time data pipeline, three tabular baselines with MLflow tracking, a FastAPI risk prediction service, and a five-tool deterministic fraud investigation workflow with separate report and audit records. Stage 04 adds reproducible IEEE-CIS temporal graph artifacts for 50k/10k/10k target transactions, a versioned GraphSAGE run, same-ID controlled XGBoost and fusion comparisons, and a verified graph-risk neighbor tool integrated into the workflow. The [Stage 04 acceptance report](reports/stage-04-validation.md) records the test result, failed graph recovery cases, and the fact that fusion did not outperform controlled XGBoost on test PR-AUC. Policy RAG, LLM Agent orchestration, and human approval belong to later stages.
 
 ## Prerequisites
 
