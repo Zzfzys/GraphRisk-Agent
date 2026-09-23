@@ -199,7 +199,7 @@ flowchart LR
 
 ### 实现目标
 
-**路线 3 已完成。** 两层 GraphSAGE、逐批严格历史图、训练集正例权重、验证 PR-AUC 选模与早停、冻结后单次测试、版本化 checkpoint 和 CPU 重新加载均已验收。真实 IEEE-CIS 50k/10k/10k 训练的最佳 epoch 为 2，验证/测试 PR-AUC 为 0.178343/0.103733。详见[训练契约](../data/stage-04-graphsage-training.md)和[路线 3 验证记录](../../reports/stage-04-route-3-training.md)。路线 4 仍需完成同 ID 受控比较。
+**路线 3 已完成。** 两层 GraphSAGE、逐批严格历史图、训练集正例权重、验证 PR-AUC 选模与早停、冻结后单次测试、版本化 checkpoint 和 CPU 重新加载均已验收。真实 IEEE-CIS 50k/10k/10k 训练的最佳 epoch 为 2，验证/测试 PR-AUC 为 0.178343/0.103733。后续新增独立运行名与仅验证集调参入口，见[自助指南](../guides/graphsage-self-training.md)。训练契约与正式结果见[训练契约](../data/stage-04-graphsage-training.md)和[路线 3 验证记录](../../reports/stage-04-route-3-training.md)。路线 4 仍需完成同 ID 受控比较。
 
 实现两层 GraphSAGE 交易节点分类器。每个样本是路线 2 生成的严格历史 ego graph，多个样本使用 PyG mini-batch 合并，根交易节点的 embedding 进入分类头。首版只保留少量可解释超参数：hidden size、dropout、fanout、batch size、learning rate 和 epoch 上限。
 

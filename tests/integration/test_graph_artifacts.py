@@ -9,6 +9,7 @@ import torch
 import yaml
 from torch_geometric.data import Batch, Data
 
+import graphrisk.graph.train_graphsage as graph_training_module
 from graphrisk.graph.build_artifacts import build_graph_artifacts, load_graph_artifacts
 from graphrisk.graph.train_graphsage import load_graphsage_checkpoint, train_graphsage
 from graphrisk.pipeline import run_pipeline
@@ -209,7 +210,9 @@ def test_graph_artifacts_reject_split_feature_drift(tmp_path: Path) -> None:
         build_graph_artifacts(config)
 
 
-def test_graphsage_trains_and_reloads_on_small_temporal_source(tmp_path: Path) -> None:
+def test_graphsage_trains_and_reloads_on_small_temporal_source(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     config = _setup(tmp_path)
     split_paths = {
         name: tmp_path / f"data/processed/{name}_features.parquet"
@@ -263,6 +266,36 @@ def test_graphsage_trains_and_reloads_on_small_temporal_source(tmp_path: Path) -
     with torch.no_grad():
         assert torch.isfinite(restored(graph)).all()
     config_data = yaml.safe_load(config.read_text(encoding="utf-8"))
+    config_data["training"]["dropout"] = 0.30
+    _write_yaml(config, config_data)
+    original_load = graph_training_module._load_labels
+    original_verify = graph_training_module._verify_label_provenance
+
+    def no_test_labels(path, ids, split):
+        assert split != "test"
+        return original_load(path, ids, split)
+
+    def no_test_provenance(graph_config, paths):
+        assert "test" not in paths
+        return original_verify(graph_config, paths)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(graph_training_module, "_load_labels", no_test_labels)
+        patch.setattr(graph_training_module, "_verify_label_provenance", no_test_provenance)
+        trial = train_graphsage(config, evaluate_test=False, run_name="dropout03")
+    trial_metadata = json.loads(trial.metadata_path.read_text(encoding="utf-8"))
+    assert trial.test_pr_auc is None
+    assert trial_metadata["test_evaluated"] is False
+    assert trial_metadata["test_metrics"] is None
+    assert "test_positive" not in trial_metadata["label_counts"]
+    assert trial_metadata["dropout"] == 0.30
+    assert result.metadata_path.is_file()  # the original full evaluation is preserved
+    with pytest.raises(FileExistsError, match="completed run"):
+        train_graphsage(config, evaluate_test=False, run_name="dropout03")
+    with pytest.raises(ValueError, match="requires a run_name"):
+        train_graphsage(config, evaluate_test=False)
+    with pytest.raises(ValueError, match="safe single directory"):
+        train_graphsage(config, evaluate_test=False, run_name="../escape")
     config_data["training"]["model_version"] = "different-version"
     _write_yaml(config, config_data)
     with pytest.raises(ValueError, match="model_version"):

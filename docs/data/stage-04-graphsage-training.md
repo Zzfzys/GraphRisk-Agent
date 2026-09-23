@@ -14,7 +14,7 @@
 
 训练固定 Python、NumPy、PyTorch 随机种子，并设置 CUDA CuBLAS 确定性工作区。CPU 可独立运行；`auto` 在 CUDA 可用时选 GPU，否则记录回退原因。`cuda` 显式请求却不可用时失败。mini-batch 逐批从时序索引构图，不把 50,000 个 PyG 图对象全部缓存。当前参数位于图配置：两层、64 维隐藏层、dropout 0.20、学习率 0.001、batch 128、最多 20 轮、验证无提升 4 轮后早停。
 
-每轮记录训练加权 BCE loss、验证 PR-AUC 与 ROC-AUC。仅当验证 PR-AUC **严格提升**时保存最佳权重；并列时保留较早 epoch。早停和超参数选择不看测试集。恢复最佳权重后才读取测试标签，测试集评估一次。当前路线只产出模型和总体指标；逐交易分数表、同 ID XGBoost 对比和融合留给路线 4。
+每轮记录训练加权 BCE loss、验证 PR-AUC 与 ROC-AUC。仅当验证 PR-AUC **严格提升**时保存最佳权重；并列时保留较早 epoch。早停和超参数选择不看测试集。调参时使用 `--validation-only --run-name <唯一名称>`：它保存独立 checkpoint，但不检查或读取测试标签，metadata 的 `test_evaluated=false`、`test_metrics=null`。不带 `--validation-only` 的最终运行恢复最佳权重后才读取测试标签，测试集评估一次。详细步骤见[自助训练与调参指南](../guides/graphsage-self-training.md)。当前路线只产出模型和总体指标；逐交易分数表、同 ID XGBoost 对比和融合留给路线 4。
 
 ## 版本化文件和加载门禁
 
@@ -30,7 +30,9 @@ uv run --offline python scripts\train_graphsage.py --config configs\graph_ieee_c
 |---|---|
 | `model.pt` | 最佳 epoch 的纯 `state_dict` 张量；保存为 CPU 权重以便跨设备加载 |
 | `training-history.json` | 每轮 train loss、validation PR-AUC、validation ROC-AUC |
-| `metadata.json` | 模型版本、数据源、图 manifest 哈希、特征清单、超参数、ID 规模、标签计数、最佳 epoch、设备/显存、验证与测试指标、文件 SHA-256 |
+| `metadata.json` | 模型版本、可选运行名、数据源、图 manifest 哈希、特征清单、超参数、ID 规模、标签计数、最佳 epoch、设备/显存、验证指标、可选测试指标、文件 SHA-256 |
+
+指定 `--run-name` 时写到 `models/<model_version>/runs/<run_name>/`，避免调参覆盖正式基线；已完成的同名运行会被拒绝。`--validation-only` 必须配合运行名。只调整学习率、dropout、隐藏维度、batch、轮数或设备时可复用同一图 manifest；修改 fanout、目标数、随机种子、模型版本或数据源则必须在隔离产物目录重建图。
 
 加载时先核验 checkpoint 与 metadata 文件、模型 SHA-256、数据源、期望模型版本、图 manifest 内容哈希和特征 schema，然后使用 `torch.load(..., map_location=明确设备, weights_only=True)` 并严格加载权重。缺失、损坏或不匹配时产生明确错误。真实训练证据见[路线 3 验证记录](../../reports/stage-04-route-3-training.md)。
 

@@ -53,3 +53,5 @@ uv run --offline pytest -q
 聚焦模型、配置和小型端到端测试通过；全仓库 156 项测试通过。模型与测试在 PyTorch/PyG 锁定依赖下运行，后续代码变动需重新核对 checkpoint 的适用版本。
 
 学习重点：`BCEWithLogitsLoss` 接收未 sigmoid 的 logit，正例权重只改变训练损失；PR-AUC 用于从多个 epoch 中选择模型；两层 GraphSAGE 的根表示只聚合严格历史局部图。训练 loss 下降并不保证较晚时间段的排序质量提升。下一步路线 4 才导出逐交易分数、完成同 ID 的 XGBoost/融合评估和误差分析。
+
+后续自助实验可用 `--validation-only --run-name <名称>`，将候选写入独立目录并保持测试标签未读取。该模式通过合成源端到端测试；上表真实 IEEE-CIS 正式训练指标不因新增入口改变。操作步骤见[自助训练与调参指南](../docs/guides/graphsage-self-training.md)。

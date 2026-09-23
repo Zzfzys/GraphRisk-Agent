@@ -51,6 +51,8 @@ uv run --offline python scripts\train_graphsage.py --config configs\graph_ieee_c
 
 The versioned checkpoint and training history remain under the ignored artifact directory. See the [training contract](docs/data/stage-04-graphsage-training.md) and [route 3 evidence](reports/stage-04-route-3-training.md).
 
+For your own validation-only tuning runs, follow the [GraphSAGE self-training guide](docs/guides/graphsage-self-training.md). Trial runs use separate names and do not read held-out test labels.
+
 ## Environment diagnostic
 
 ```powershell

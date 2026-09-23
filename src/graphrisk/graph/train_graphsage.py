@@ -8,6 +8,7 @@ import math
 import os
 import pickle
 import random
+import re
 import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -34,7 +35,7 @@ class GraphTrainingResult:
     history_path: Path
     best_epoch: int
     validation_pr_auc: float
-    test_pr_auc: float
+    test_pr_auc: float | None
     training_seconds: float
     device: str
 
@@ -163,8 +164,28 @@ def _evaluate(
     return metrics, scores
 
 
-def train_graphsage(config_path: str | Path) -> GraphTrainingResult:
+def train_graphsage(
+    config_path: str | Path,
+    *,
+    evaluate_test: bool = True,
+    run_name: str | None = None,
+) -> GraphTrainingResult:
     config = load_graph_config(config_path)
+    if not evaluate_test and run_name is None:
+        raise ValueError("validation-only training requires a run_name to preserve the baseline")
+    if run_name is not None and (
+        not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", run_name)
+        or run_name in (".", "..")
+    ):
+        raise ValueError("run_name must be a safe single directory name")
+    artifact_root = config.resolve_path(config.paths.artifact_dir)
+    output_dir = artifact_root / "models" / config.training.model_version
+    if run_name is not None:
+        output_dir = output_dir / "runs" / run_name
+        if (output_dir / "metadata.json").exists():
+            raise FileExistsError(f"GraphSAGE run_name already has a completed run: {run_name}")
+    if not output_dir.resolve().is_relative_to(artifact_root):
+        raise ValueError("GraphSAGE output directory must stay inside graph artifact_dir")
     manifest_path = config.resolve_path(config.paths.graph_manifest)
     store = load_graph_artifacts(
         manifest_path, expected_dataset_source=config.dataset_source
@@ -282,21 +303,20 @@ def train_graphsage(config_path: str | Path) -> GraphTrainingResult:
         batch_size=config.training.batch_size,
         device=device,
     )
-    # Held-out test labels are read only after the best validation epoch is frozen.
-    _verify_label_provenance(config, {"test": split_paths["test"]})
-    test_labels = _load_labels(split_paths["test"], store.target_ids["test"], "test")
-    test_metrics, _ = _evaluate(
-        model,
-        store,
-        "test",
-        test_labels,
-        batch_size=config.training.batch_size,
-        device=device,
-    )
-    output_dir = config.resolve_path(config.paths.artifact_dir) / "models" / config.training.model_version
-    artifact_root = config.resolve_path(config.paths.artifact_dir)
-    if not output_dir.resolve().is_relative_to(artifact_root):
-        raise ValueError("graph model_version must resolve inside graph artifact_dir")
+    test_labels = None
+    test_metrics = None
+    if evaluate_test:
+        # Held-out test labels are read only after validation has frozen the weights.
+        _verify_label_provenance(config, {"test": split_paths["test"]})
+        test_labels = _load_labels(split_paths["test"], store.target_ids["test"], "test")
+        test_metrics, _ = _evaluate(
+            model,
+            store,
+            "test",
+            test_labels,
+            batch_size=config.training.batch_size,
+            device=device,
+        )
     output_dir.mkdir(parents=True, exist_ok=True)
     model_path = output_dir / "model.pt"
     temporary = output_dir / "model.pt.tmp"
@@ -308,6 +328,7 @@ def train_graphsage(config_path: str | Path) -> GraphTrainingResult:
     metadata = {
         "model_name": "graphsage",
         "model_version": config.training.model_version,
+        "run_name": run_name,
         "dataset_source": config.dataset_source,
         "created_at": datetime.now(UTC).isoformat(),
         "graph_manifest_path": str(manifest_path),
@@ -332,12 +353,18 @@ def train_graphsage(config_path: str | Path) -> GraphTrainingResult:
             "train_negative": negatives,
             "validation_positive": int(validation_labels.sum()),
             "validation_negative": int(len(validation_labels) - validation_labels.sum()),
-            "test_positive": int(test_labels.sum()),
-            "test_negative": int(len(test_labels) - test_labels.sum()),
+            **(
+                {
+                    "test_positive": int(test_labels.sum()),
+                    "test_negative": int(len(test_labels) - test_labels.sum()),
+                }
+                if test_labels is not None else {}
+            ),
         },
         "positive_weight": positive_weight,
         "validation_metrics": best_validation_metrics,
         "test_metrics": test_metrics,
+        "test_evaluated": evaluate_test,
         "training_seconds": training_seconds,
         "device_requested": config.training.device,
         "device_actual": str(device),
@@ -356,7 +383,7 @@ def train_graphsage(config_path: str | Path) -> GraphTrainingResult:
         history_path=history_path,
         best_epoch=best_epoch,
         validation_pr_auc=best_validation_metrics["pr_auc"],
-        test_pr_auc=test_metrics["pr_auc"],
+        test_pr_auc=test_metrics["pr_auc"] if test_metrics is not None else None,
         training_seconds=training_seconds,
         device=str(device),
     )
