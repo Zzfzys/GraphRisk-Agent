@@ -2,7 +2,7 @@
 
 > 编写日期：2026-09-23
 > 计划投入：Week 5，约 23 小时
-> 当前状态：路线 0～1 已完成；路线 2～7 未开始
+> 当前状态：路线 0～2 已完成；路线 3～7 未开始
 > 配套学习路线：[stage-04-learning-roadmap.md](stage-04-learning-roadmap.md)
 > 阶段总纲：[stage-04-graph-risk.md](stage-04-graph-risk.md)
 
@@ -167,6 +167,8 @@ flowchart LR
 ## 7. 路线 2：可复现图产物与 ego graph 构建（约 3.5 小时）
 
 ### 实现目标
+
+**路线 2 已完成。** DuckDB 列投影、输入一致性校验、时序实体倒排索引、50k/10k/10k 目标构建、持久化产物、训练 ID 专用 encoder 和可核验 manifest 已实现。参考 fixture 与索引输出一致，两次真实数据构建得到相同 manifest；详细见[图产物契约](../data/stage-04-graph-artifacts.md)和[路线 2 验证记录](../../reports/stage-04-route-2-artifacts.md)。
 
 实现只读图构建管线：从 canonical transaction 和 point-in-time features 读取必要列，按时间和交易 ID 建立实体倒排索引，为目标交易生成有界的严格历史 ego graph，并输出可供训练和查询复用的产物。
 

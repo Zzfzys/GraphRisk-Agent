@@ -235,35 +235,44 @@ class TemporalEgoBuilder:
             for row in candidates[:max_history_per_entity]:
                 selected[row.transaction_id] = row
 
-        history = _sort_recent(selected.values())
-        included = (target, *history)
-        transaction_nodes = [
-            GraphNode("transaction", row.transaction_id, row) for row in included
-        ]
-        entities = sorted(
-            {entity for row in included for entity in row.valid_entities()},
-            key=lambda item: (NODE_TYPES.index(item[0]), item[1]),
+        return assemble_ego_graph(target, selected.values())
+
+
+def assemble_ego_graph(
+    target: GraphTransaction, history_rows: Iterable[GraphTransaction]
+) -> TemporalEgoGraph:
+    """Apply the Stage 04 node/edge ordering to a bounded historical selection."""
+    history = _sort_recent(history_rows)
+    if any(row.transaction_time >= target.transaction_time for row in history):
+        raise ValueError("ego graph history must be strictly earlier than target")
+    included = (target, *history)
+    transaction_nodes = [
+        GraphNode("transaction", row.transaction_id, row) for row in included
+    ]
+    entities = sorted(
+        {entity for row in included for entity in row.valid_entities()},
+        key=lambda item: (NODE_TYPES.index(item[0]), item[1]),
+    )
+    nodes = tuple(
+        transaction_nodes
+        + [GraphNode(node_type, entity_id) for node_type, entity_id in entities]
+    )
+    index = {node.key: position for position, node in enumerate(nodes)}
+    edges = tuple(
+        sorted(
+            {
+                (index[("transaction", row.transaction_id)], index[entity])
+                for row in included
+                for entity in row.valid_entities()
+            }
         )
-        nodes = tuple(
-            transaction_nodes
-            + [GraphNode(node_type, entity_id) for node_type, entity_id in entities]
-        )
-        index = {node.key: position for position, node in enumerate(nodes)}
-        edges = tuple(
-            sorted(
-                {
-                    (index[("transaction", row.transaction_id)], index[entity])
-                    for row in included
-                    for entity in row.valid_entities()
-                }
-            )
-        )
-        return TemporalEgoGraph(
-            target_transaction_id=target_transaction_id,
-            nodes=nodes,
-            edges=edges,
-            selected_history_ids=tuple(row.transaction_id for row in history),
-        )
+    )
+    return TemporalEgoGraph(
+        target_transaction_id=target.transaction_id,
+        nodes=nodes,
+        edges=edges,
+        selected_history_ids=tuple(row.transaction_id for row in history),
+    )
 
 
 def _sort_recent(rows: Iterable[GraphTransaction]) -> list[GraphTransaction]:

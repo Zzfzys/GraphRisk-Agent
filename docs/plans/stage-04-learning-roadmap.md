@@ -2,7 +2,7 @@
 
 > 编写日期：2026-09-23
 > 学习预算：约 4.5 小时，包含在 Stage 04 的 23 小时总预算内
-> 当前状态：规划完成，学习未开始
+> 当前状态：L0～L2 的实现示例和复盘材料已就绪；个人自测由学习者完成
 > 配套实现路线：[stage-04-implementation-roadmap.md](stage-04-implementation-roadmap.md)
 
 ## 1. 学习方式
@@ -146,7 +146,7 @@ h_v_new = activation(W_self * h_v + W_neighbor * neighbor_summary(v))
 ### 对照项目阅读
 
 - 路线 1 产生的图 fixture 和期望边表；
-- 路线 2 的图构建器、节点映射和 manifest；
+- 路线 2 的[图产物契约](../data/stage-04-graph-artifacts.md)、[验收与复盘](../../reports/stage-04-route-2-artifacts.md)、节点映射和 manifest；
 - Stage 01 的 Parquet schema 校验方式，用于对比“表格契约”和“图契约”。
 
 ### 动手任务
