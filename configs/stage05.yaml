@@ -6,6 +6,7 @@ paths:
   data_config: configs/ieee_cis.yaml
   training_config: configs/train_baseline_ieee_cis.yaml
   graph_config: configs/graph_ieee_cis.yaml
+  policy_source_dir: data/policies/stage05
   policy_artifact_dir: artifacts/stage-05/policy
   run_dir: reports/generated/stage05
 

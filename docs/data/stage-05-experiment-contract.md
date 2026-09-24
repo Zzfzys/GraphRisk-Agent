@@ -35,4 +35,4 @@ Stage 05 派生审计与报告分离：记录 `investigation_id`、节点/工具
 
 ## 继续门禁
 
-路线 0 的锁定依赖、fake 图和真实生成端 smoke 已有证据，可进入路线 1。路线 2 的 dense 检索仍需单独做 embedding 资源门禁；路线 4～8 还须逐项验证正式工具编排、报告引用和审批安全，Stage 05 整体保持 `In Progress`。
+路线 0 的锁定依赖、fake 图和真实生成端 smoke 已有证据。路线 1 的[原创模拟政策语料](stage-05-policy-corpus.md)也已通过来源、日期和重复导入门禁。路线 2 的 dense 检索仍需单独做 embedding 资源门禁；路线 4～8 还须逐项验证正式工具编排、报告引用和审批安全，Stage 05 整体保持 `In Progress`。

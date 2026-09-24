@@ -42,6 +42,8 @@
 
 **自测。** 如果新版覆盖了旧版，检索能否因为旧版文本更相似就引用它？若一段文字没有许可或来源记录，为什么不能悄悄加入知识库？
 
+路线 1 的[语料清单](../data/stage-05-policy-corpus.md)提供了 2026-06-30／07-01 的手算例子和一对故意冲突的规则；[验收记录](../../reports/stage-05-route-1-policy-corpus.md)给出可复现的 manifest 哈希。个人自测仍需学习者亲自解释版本选择与冲突为何不能交给相似度或模型自行裁定。
+
 ## 4. L2：切分、embedding 与检索（2h）
 
 **边实现边学。** 阅读 [LangChain 检索概念](https://docs.langchain.com/oss/python/langchain/knowledge-base)中 Document、切分、embedding、vector store 和 retriever 的区别，同时检查本项目实际索引契约。理解检索分数的方向和范围由具体实现决定，不能把 TF-IDF 相似度和向量距离当作同一概率。

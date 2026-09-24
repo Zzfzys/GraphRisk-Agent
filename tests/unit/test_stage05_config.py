@@ -30,6 +30,9 @@ def test_stage05_config_binds_existing_ieee_sources_and_ignored_outputs() -> Non
     assert config.generation.model_id == "qwen2.5:0.5b"
     assert config.generation.model_revision.startswith("a8b0c5157701")
     assert config.graph_comparison_run == "same-id-v4"
+    assert config.resolve_path(config.paths.policy_source_dir) == (
+        Path.cwd() / "data/policies/stage05"
+    ).resolve()
     assert config.resolve_path(config.paths.policy_artifact_dir) == (
         Path.cwd() / "artifacts/stage-05/policy"
     ).resolve()
@@ -100,6 +103,10 @@ def test_unconfigured_or_dense_backend_cannot_claim_unverified_model(raw_config)
 
 
 def test_output_paths_and_comparison_name_cannot_escape_project(raw_config) -> None:
+    candidate = deepcopy(raw_config)
+    candidate["paths"]["policy_source_dir"] = "data/raw/ieee-cis"
+    with pytest.raises(ValueError, match="data/policies"):
+        _bound(candidate).validate_paths()
     candidate = deepcopy(raw_config)
     candidate["paths"]["policy_artifact_dir"] = "reports/policy"
     with pytest.raises(ValueError, match="artifacts"):

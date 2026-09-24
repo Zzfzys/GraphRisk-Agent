@@ -24,6 +24,7 @@ class Stage05Paths(StrictConfig):
     data_config: Path
     training_config: Path
     graph_config: Path
+    policy_source_dir: Path
     policy_artifact_dir: Path
     run_dir: Path
 
@@ -123,6 +124,9 @@ class Stage05Config(StrictConfig):
         return (path if path.is_absolute() else self._project_root / path).resolve()
 
     def validate_paths(self) -> None:
+        source_root = (self._project_root / "data" / "policies").resolve()
+        if not self.resolve_path(self.paths.policy_source_dir).is_relative_to(source_root):
+            raise ValueError("Stage 05 policy_source_dir must reside under data/policies")
         allowed = (
             (self.paths.policy_artifact_dir, self._project_root / "artifacts"),
             (self.paths.run_dir, self._project_root / "reports" / "generated"),
