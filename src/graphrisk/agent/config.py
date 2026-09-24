@@ -31,6 +31,7 @@ class Stage05Paths(StrictConfig):
 class Stage05Generation(StrictConfig):
     provider: Literal["unconfigured", "fake", "local_http", "api"]
     model_id: str | None = None
+    model_revision: str | None = None
     endpoint: str | None = None
     max_output_tokens: int = Field(strict=True, ge=32, le=4096)
     request_timeout_seconds: float = Field(strict=True, gt=0, le=300)
@@ -38,15 +39,17 @@ class Stage05Generation(StrictConfig):
     @model_validator(mode="after")
     def provider_has_required_fields(self) -> "Stage05Generation":
         if self.provider == "unconfigured":
-            if self.model_id is not None or self.endpoint is not None:
-                raise ValueError("unconfigured generation cannot declare model_id or endpoint")
+            if self.model_id is not None or self.model_revision is not None or self.endpoint is not None:
+                raise ValueError("unconfigured generation cannot declare model_id, revision or endpoint")
             return self
         if self.model_id is None or not self.model_id.strip():
             raise ValueError("configured generation requires a non-empty model_id")
         if self.provider == "fake":
-            if self.endpoint is not None:
-                raise ValueError("fake generation cannot declare an endpoint")
+            if self.endpoint is not None or self.model_revision is not None:
+                raise ValueError("fake generation cannot declare a model revision or endpoint")
             return self
+        if self.model_revision is None or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{7,127}", self.model_revision):
+            raise ValueError("HTTP generation requires a safe model_revision of 8-128 characters")
         if self.endpoint is None:
             raise ValueError("HTTP generation requires an endpoint")
         parsed = urlsplit(self.endpoint)

@@ -1,6 +1,6 @@
 # Stage 05 路线 0：实验与信任边界契约
 
-> 2026-09-24 冻结的设计边界。此文档定义后续路线的输入、派生输出和审计责任；政策检索、LangGraph 和生成器尚未实现。
+> 2026-09-24 冻结的设计边界。此文档定义后续路线的输入、派生输出和审计责任；LangGraph 与本地生成端已通过路线 0 smoke，但政策检索、正式 Agent 和报告生成仍未实现。
 
 ## 输入与来源
 
@@ -31,8 +31,8 @@ Stage 05 派生审计与报告分离：记录 `investigation_id`、节点/工具
 
 ## 资源与预算
 
-配置在 [stage05.yaml](../../configs/stage05.yaml) 中：每次调查最多 12 步、2 次模型调用、2 次政策查询、1 次重试、总时长 300 秒；单次生成输出不超过 512 Token、请求超时 120 秒。Stage 05 API 预算上限 30 元，24 元为停止阈值，处于项目总预算 100～200 元之内。当前 `generation.provider: unconfigured`，禁止将此配置描述为已接通模型。待真实模型选定后，记录服务地址/协议、精确版本、许可、设备、峰值内存、短请求延迟、结构化输出结果和费用来源；未经 smoke 不切换为 `local_http` 或 `api`。词法检索基线暂用已有 scikit-learn；它不代表本地 embedding 已通过验证。
+配置在 [stage05.yaml](../../configs/stage05.yaml) 中：每次调查最多 12 步、2 次模型调用、2 次政策查询、1 次重试、总时长 300 秒；单次生成输出不超过 512 Token、请求超时 180 秒。Stage 05 API 预算上限 30 元，24 元为停止阈值，处于项目总预算 100～200 元之内。`generation.provider: local_http` 绑定 loopback Ollama、模型名称及实际 digest；路线 0 的真实 JSON smoke 已通过，性能与版本见[门禁记录](../../reports/stage-05-route-0-preflight.md)。这只证明本地生成端可调用，不证明它能够生成有依据的政策结论。词法检索基线暂用已有 scikit-learn；它不代表本地 embedding 已通过验证。
 
 ## 继续门禁
 
-路线 1 的公开模拟政策准备可以独立进行。涉及 LangGraph 的路线 4，以及真实草稿、审批和端到端 LLM 验收，须先获得锁定的 LangGraph 依赖和 fake 图 smoke；路线 5 还须有至少一个真实生成端 smoke。没有这些证据，阶段保持 `In Progress`，对应项标记阻塞。
+路线 0 的锁定依赖、fake 图和真实生成端 smoke 已有证据，可进入路线 1。路线 2 的 dense 检索仍需单独做 embedding 资源门禁；路线 4～8 还须逐项验证正式工具编排、报告引用和审批安全，Stage 05 整体保持 `In Progress`。

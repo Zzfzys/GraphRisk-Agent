@@ -26,7 +26,9 @@ def _bound(raw: dict[str, object]) -> Stage05Config:
 
 def test_stage05_config_binds_existing_ieee_sources_and_ignored_outputs() -> None:
     config = load_stage05_config("configs/stage05.yaml")
-    assert config.generation.provider == "unconfigured"
+    assert config.generation.provider == "local_http"
+    assert config.generation.model_id == "qwen2.5:0.5b"
+    assert config.generation.model_revision.startswith("a8b0c5157701")
     assert config.graph_comparison_run == "same-id-v4"
     assert config.resolve_path(config.paths.policy_artifact_dir) == (
         Path.cwd() / "artifacts/stage-05/policy"
@@ -62,7 +64,7 @@ def test_api_stop_threshold_must_fit_cap(raw_config) -> None:
 
 def test_model_and_endpoint_must_match_provider(raw_config) -> None:
     candidate = deepcopy(raw_config)
-    candidate["generation"].update(provider="local_http", model_id="local-v1", endpoint="https://example.com")
+    candidate["generation"]["endpoint"] = "https://example.com"
     with pytest.raises(ValidationError, match="loopback HTTP"):
         Stage05Config.model_validate(candidate)
     candidate["generation"]["endpoint"] = "http://127.0.0.1:11434/api"
@@ -75,8 +77,19 @@ def test_model_and_endpoint_must_match_provider(raw_config) -> None:
         Stage05Config.model_validate(candidate)
 
 
+def test_http_model_revision_is_required_and_safe(raw_config) -> None:
+    candidate = deepcopy(raw_config)
+    candidate["generation"]["model_revision"] = None
+    with pytest.raises(ValidationError, match="model_revision"):
+        Stage05Config.model_validate(candidate)
+    candidate["generation"]["model_revision"] = "../other"
+    with pytest.raises(ValidationError, match="model_revision"):
+        Stage05Config.model_validate(candidate)
+
+
 def test_unconfigured_or_dense_backend_cannot_claim_unverified_model(raw_config) -> None:
     candidate = deepcopy(raw_config)
+    candidate["generation"].update(provider="unconfigured", model_id=None, model_revision=None, endpoint=None)
     candidate["generation"]["model_id"] = "claimed-model"
     with pytest.raises(ValidationError, match="unconfigured generation"):
         Stage05Config.model_validate(candidate)

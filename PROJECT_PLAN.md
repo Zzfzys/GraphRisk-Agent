@@ -1,6 +1,6 @@
 # GraphRisk-Agent 总体项目计划
 
-> 文档状态：执行中，Stage 00～04 的工程门禁已完成；Stage 05 路线 0 执行中
+> 文档状态：执行中，Stage 00～04 的工程门禁已完成；Stage 05 路线 0 已通过
 > 当前版本：v1.0  
 > 建立日期：2026-09-21  
 > 计划周期：Week 0 + 16 周  
@@ -192,7 +192,7 @@ flowchart TD
 
 ## 11. 当前已知条件与风险
 
-- 仓库已完成 Stage 00～04 的工程门禁；Stage 04 的同 ID 比较和图工具已经接入调查工作流，Stage 05 路线 0 已启动，LangGraph 与真实生成模型的本地门禁尚未通过；
+- 仓库已完成 Stage 00～04 的工程门禁；Stage 04 的同 ID 比较和图工具已经接入调查工作流，Stage 05 路线 0 的 LangGraph 与真实本地生成 smoke 已通过；
 - 仓库内 Python 3.11、uv 锁文件和本地虚拟环境已可用；
 - Docker、PostgreSQL 和 Neo4j 尚未安装或不可用；
 - GPU 为 RTX 2060 6GB，适合受控规模 GraphSAGE 和量化小模型实验；
@@ -266,4 +266,4 @@ Stage 04 的工程门禁已于 2026-09-24 完成，路线 0～7 的证据见 `re
 - 路线 7 的 54 项聚焦测试、166 项全量测试、真实双运行报告哈希、两类失败恢复、离线锁文件、构建和受限文件门禁通过；
 - Stage 04 工程状态为 `Done`，个人学习路线仍需学习者自行完成自测；政策 RAG、LLM Agent 和人工审批仍属于 Stage 05 及后续阶段。
 
-Stage 05 于 2026-09-24 开始路线 0：已冻结同源配置、显式政策适用日期、报告/审计边界和本阶段 24/30 元 API 停止/总额阈值，复验 Stage 04 正式调查五工具均为 `ok`。当前 LangGraph 依赖与真实生成端不可用，路线 0 的 fake 图和真实模型 smoke 仍阻塞，不能据此声称 Stage 05 LLM 能力已实现。具体证据见 `reports/stage-05-route-0-preflight.md`。
+Stage 05 于 2026-09-24 开始路线 0：已冻结同源配置、显式政策适用日期、报告/审计边界和本阶段 24/30 元 API 停止/总额阈值，复验 Stage 04 正式调查五工具均为 `ok`。同日用户安装 LangGraph 和 Ollama 后，路线 0 完成：LangGraph 1.2.12 fake 状态图、本地 `qwen2.5:0.5b` 的 digest 核对与真实结构化 JSON smoke 均通过；聚焦 22 项、全量 188 项测试通过。它只证明本地能力可用，尚未实现政策 RAG、正式调查 Agent 和人工审批。路线 0 的完整证据与限制见 `reports/stage-05-route-0-preflight.md`。

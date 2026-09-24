@@ -9,13 +9,14 @@ paths:
   policy_artifact_dir: artifacts/stage-05/policy
   run_dir: reports/generated/stage05
 
-# No real generation provider has passed the route 0 smoke yet.
+# Route 0 smoke model; report quality and citation correctness remain unverified.
 generation:
-  provider: unconfigured
-  model_id: null
-  endpoint: null
+  provider: local_http
+  model_id: qwen2.5:0.5b
+  model_revision: a8b0c51577010a279d933d14c2a8ab4b268079d44c5c8830c0a93900f1827c67
+  endpoint: http://127.0.0.1:11434/api/generate
   max_output_tokens: 512
-  request_timeout_seconds: 120.0
+  request_timeout_seconds: 180.0
 
 retrieval:
   backend: tfidf
