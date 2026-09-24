@@ -1,6 +1,6 @@
 # Stage 05 学习路线：跟着政策 RAG 与受控 Agent 的实现学习
 
-> 状态：Planned；本文件是学习和自测安排，不表示 Stage 05 已开始
+> 状态：In Progress；路线 0 的信任边界和资源记录已形成，个人 L0 自测待学习者完成
 > 对应实现：[stage-05-implementation-roadmap.md](stage-05-implementation-roadmap.md)
 > 阶段总纲：[stage-05-rag-agent.md](stage-05-rag-agent.md)
 > 学习预算：两周约 14 小时，**包含**在 44 小时总预算内；每天安排 30～60 分钟
@@ -31,6 +31,8 @@
 **动手练习。** 对同一条调查请求，写明 `transaction_id` 与 `policy_as_of` 分别从哪里来；在路线 0 smoke 记录本地模型名称/版本、内存或显存、短请求延迟、结构化输出成功与否。不要凭模型参数规模推断它能在 RTX 2060 6GB 上运行。
 
 **自测。** 为什么 fake provider 通过全部测试仍不足以宣布 LLM 功能完成？为什么审计可以保存模型版本和费用，却不应记录原始交易宽表或 API key？
+
+路线 0 当前的可对照材料是[实验与信任边界契约](../data/stage-05-experiment-contract.md)和[资源门禁记录](../../reports/stage-05-route-0-preflight.md)。当前没有真实模型 smoke，练习表中的延迟/结构化输出应填写“未测”，不能猜值。
 
 ## 3. L1：语料出处与政策时间（1.5h）
 

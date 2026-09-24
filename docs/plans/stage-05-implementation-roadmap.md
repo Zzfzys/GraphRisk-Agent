@@ -1,6 +1,6 @@
 # Stage 05 实现路线：政策 RAG 与受控调查 Agent
 
-> 状态：Planned；本文件只规定执行顺序，尚未开始安装依赖或编写 Stage 05 代码
+> 状态：In Progress；路线 0 的同源配置与 Stage 04 复验已完成，LangGraph/真实生成 smoke 阻塞
 > 对应总纲：[stage-05-rag-agent.md](stage-05-rag-agent.md)
 > 配套学习：[stage-05-learning-roadmap.md](stage-05-learning-roadmap.md)
 > 预算：Week 6～7 共约 44 小时，其中实现、测试、复盘约 30 小时，穿插学习约 14 小时
@@ -66,6 +66,8 @@ Stage 05 的“Agent”是能处理检索、证据、失败和审批分支的受
 **学习任务（L0，1h）。** 画出“Stage 04 确定性证据 → 政策检索 → 草稿 → 校验 → 审批”的信任边界；读 LangGraph StateGraph、持久化与中断的官方文档，区分同进程恢复和跨进程持久化。
 
 **验收与证据。** 配置对来源、路径、预算、模型版本和无效参数给出可行动错误；CPU 可运行；fake provider 的离线最小状态图可启动；至少一个真实生成端完成短 smoke，或明确阻塞而不进入后续 LLM 门禁。记录依赖锁、显存/内存、延迟、费用估算和采用/降级决定。
+
+**2026-09-24 执行记录。** 已冻结 [实验与信任边界契约](../data/stage-05-experiment-contract.md)，增加 `configs/stage05.yaml`、同源和预算校验、显式政策日期输入；正式 Stage 04 调查五工具均为 `ok`，配置测试 17 项通过，详见[路线 0 门禁记录](../../reports/stage-05-route-0-preflight.md)。本机没有 LangGraph、生成模型、embedding 模型或可用 API 凭据；PyPI 不可达，因此依赖锁、fake StateGraph 和真实生成 smoke 均未完成。本路线保持阻塞，后续 LLM 路线不得按已通过处理。政策语料准备可独立推进。
 
 ## 5. 路线 1：政策语料与出处
 

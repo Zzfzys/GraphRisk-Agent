@@ -11,7 +11,7 @@
 | Stage 02：机器学习服务 | Done | Week 3 | [stage-02-ml-service.md](stage-02-ml-service.md) |
 | Stage 03：调查工具 | Done | Week 4 | [stage-03-investigation-tools.md](stage-03-investigation-tools.md) |
 | Stage 04：图风险模型 | Done（工程验收；个人学习自测待完成） | Week 5 | [总纲](stage-04-graph-risk.md) · [实现路线](stage-04-implementation-roadmap.md) · [学习路线](stage-04-learning-roadmap.md) · [总验收](../../reports/stage-04-validation.md) |
-| Stage 05：RAG 与 Agent | Planned | Week 6～7 | [stage-05-rag-agent.md](stage-05-rag-agent.md) |
+| Stage 05：RAG 与 Agent | In Progress（路线 0 模型/依赖门禁阻塞） | Week 6～7 | [stage-05-rag-agent.md](stage-05-rag-agent.md) · [路线 0 记录](../../reports/stage-05-route-0-preflight.md) |
 | Stage 06：八周 MVP | Planned | Week 8 | [stage-06-mvp.md](stage-06-mvp.md) |
 | Stage 07：评估强化与基础设施 | Planned | Week 9～10 | [stage-07-hardening-platform.md](stage-07-hardening-platform.md) |
 | Stage 08：本地模型与 GraphRAG | Planned | Week 11～12 | [stage-08-local-model-graphrag.md](stage-08-local-model-graphrag.md) |
