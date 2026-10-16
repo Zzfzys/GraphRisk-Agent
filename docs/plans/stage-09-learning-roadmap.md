@@ -224,6 +224,12 @@
 三次各30分钟：①列六类依赖与真假模型分母；②跑14项CI合同测试、静态/Git字节检查，解释网络隔离/anyio与skip失败；③跑CPU，Docker就绪时观察真库24和15各自账号，核对公开产物白名单，并解释为什么本地容器通过不能填写GitHub Actions通过。完成自己的依赖表和失败/修复记录后再勾L6。
 
 
-## 2026-10-16：本地Git版本收口执行中
+## 2026-10-16：本地 Git 版本收口完成，远程 CI 仍 Pending
 
-[版本收口记录](../../reports/stage-09-git-closeout.md)：从bfbdc40建立codex/stage09-version-closeout，整理Stage05～09积累源码/测试/文档与CI为本地集成基线；先审查秘密/数据边界，再提交和干净检出验证。本轮没有远程推送，远程CI仍Pending；原路线7/8和后续GNN检索未启动，模型决定及本人学习状态不变。
+[版本收口报告](../../reports/stage-09-git-closeout.md)：已从 bfbdc40 建立 `codex/stage09-version-closeout`，集成提交 `cc1da7dc92779c5260ea64721b313c8a52d43120` 保存 553 份工程文件，最终文档另作提交，最终 HEAD 与可恢复 Git bundle 哈希见本轮私有 acceptance。排除了秘密、交易原始数据、权重、缓存和本地助手状态；C 盘原始字节快照与 E 盘旧源码另存，E 盘 main 的 317 行原工作区状态不变。
+
+从集成提交独立干净检出后，278 Python AST、47 冻结文件字节往返、Windows CPU 815 passed/1 符号链接权限 skip、真库 24 零 skip 及 15 受限账号机制探针、GraphRAG 91+3、两个 wheel 通过。复用锁定的 E 盘环境，源码导入来自检出；不宣称冷缓存安装或本轮新镜像验证。Git 行尾规范化后的检出指纹 b1009e… 与原始字节 a80fccc… 分开记录；最终文档提交不改变已测运行代码树。
+
+无 Git 远端、无推送、无远程 run URL；下一步是核对远端和公开边界并补路线 6 远程证据。原路线 7/8 及后续 GNN 检索仍未启动。两个账本不变，原路线 6 的 435 份清单核对通过；新增真实训练/LLM/费用均 0，GNN 不晋级和本人学习 Pending 不变，Stage 09 整体仍 In Progress。
+
+本轮 Git 学习材料已齐，本人未代签：用 30 分钟亲自观察 `git log -2 --oneline`、`git status` 和分支，解释“本地提交、bundle 备份、远端推送、CI 运行”四者的区别，并按报告将 bundle 恢复到新目录后核对 HEAD；不要用 reset/clean 覆盖现有 E 盘旧工作区。

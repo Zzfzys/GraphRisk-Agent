@@ -398,6 +398,10 @@ Stage08 工程完工（2026-10-07）：用户导入的 DeepSeek 2026-09-30 小�
 [路线6报告](reports/stage-09-route-6-ci.md)：Windows/Linux各815 passed/1平台skip，24真库零skip与15机制探针、独立GraphRAG91+3、两个wheel、新镜像和47冻结文件Git往返通过。14项CI契约与8项换行检查已纳入；输入指纹a80fccc…，旧530闭包/账本不变，新真实数据fit/LLM/付费0。五类workflow已就绪；当前无Git远端/commit/run URL，远程not_run，路线6整体未关闭，L6本人Pending。原路线7/8及后续GNN检索未启动，Stage09仍In Progress；模型不晋级及全部旧负结果保留。
 
 
-## 2026-10-16：本地Git版本收口执行中
+## 2026-10-16：本地 Git 版本收口完成，远程 CI 仍 Pending
 
-[版本收口记录](reports/stage-09-git-closeout.md)：从bfbdc40建立codex/stage09-version-closeout，整理Stage05～09积累源码/测试/文档与CI为本地集成基线；先审查秘密/数据边界，再提交和干净检出验证。本轮没有远程推送，远程CI仍Pending；原路线7/8和后续GNN检索未启动，模型决定及本人学习状态不变。
+[版本收口报告](reports/stage-09-git-closeout.md)：已从 bfbdc40 建立 `codex/stage09-version-closeout`，集成提交 `cc1da7dc92779c5260ea64721b313c8a52d43120` 保存 553 份工程文件，最终文档另作提交，最终 HEAD 与可恢复 Git bundle 哈希见本轮私有 acceptance。排除了秘密、交易原始数据、权重、缓存和本地助手状态；C 盘原始字节快照与 E 盘旧源码另存，E 盘 main 的 317 行原工作区状态不变。
+
+从集成提交独立干净检出后，278 Python AST、47 冻结文件字节往返、Windows CPU 815 passed/1 符号链接权限 skip、真库 24 零 skip 及 15 受限账号机制探针、GraphRAG 91+3、两个 wheel 通过。复用锁定的 E 盘环境，源码导入来自检出；不宣称冷缓存安装或本轮新镜像验证。Git 行尾规范化后的检出指纹 b1009e… 与原始字节 a80fccc… 分开记录；最终文档提交不改变已测运行代码树。
+
+无 Git 远端、无推送、无远程 run URL；下一步是核对远端和公开边界并补路线 6 远程证据。原路线 7/8 及后续 GNN 检索仍未启动。两个账本不变，原路线 6 的 435 份清单核对通过；新增真实训练/LLM/费用均 0，GNN 不晋级和本人学习 Pending 不变，Stage 09 整体仍 In Progress。

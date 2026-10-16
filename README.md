@@ -10,7 +10,7 @@ On Windows, start each project PowerShell terminal by dot-sourcing scripts/enter
 
 Latest engineering state (2026-10-16): Stage 08 is accepted; Stage 09 routes 0–5/5A and the 5B model/coverage work have evidence. Enhanced XGBoost passed its three-fold baseline gate; GNN incremental benefit failed and was not promoted. Original route 6 passed local Windows/Linux CPU, isolated PostgreSQL, independent GraphRAG, package and image checks. Remote GitHub Actions, personal learning/review, and original routes 7–8 remain pending. See the [5B acceptance](reports/stage-09-route-5b-7-acceptance.md), [local CI acceptance](reports/stage-09-route-6-ci.md), and [cross-chat handoff](docs/plans/stage-09-cross-chat-handoff.md).
 
-A local Git closeout is in progress on `codex/stage09-version-closeout`. It captures the accumulated Stage 05–09 implementation as an integration baseline, without reconstructing fictional historical commits. Raw data, model weights, secrets, caches and generated run evidence remain outside Git. See the [Git closeout record](reports/stage-09-git-closeout.md).
+Local Git closeout is complete on `codex/stage09-version-closeout`: integration commit `cc1da7d` captures 553 tracked files, and a documentation commit records clean-checkout validation. CPU (815 passed/1 platform skip), isolated database (24 tests and 15 probes), independent GraphRAG (91+3), and two wheel checks passed from that checkout. A verified local Git bundle preserves the final branch. The existing E-drive main worktree is preserved separately; no remote push or GitHub Actions run has occurred. Raw data, model weights, secrets, caches and generated run evidence remain outside Git. See the [Git closeout record](reports/stage-09-git-closeout.md).
 
 ### Earlier stage evidence
 
