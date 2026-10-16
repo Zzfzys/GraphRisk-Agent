@@ -226,7 +226,7 @@ target label（只供 loss）
 
 - `PROJECT_PLAN.md` 第 6 节的模型原则；
 - Stage 02 验证报告和真实 IEEE-CIS 指标；
-- 路线 4 生成的[同 ID 比较契约](../data/stage-04-model-comparison.md)与[真实对比报告](../../reports/stage-04-route-4-comparison.md)；从 `artifacts/stage-04/ieee-cis/comparisons/same-id-v4/validation-predictions.parquet` 抽 10～20 行练习核对 ID 与融合公式。
+- 路线 4 生成的[同 ID 比较契约](../data/stage-04-model-comparison.md)与[历史对比报告](../../reports/stage-04-route-4-comparison.md)；当前 checkpoint 的可运行产物是 `artifacts/stage-04/ieee-cis/comparisons/stage05-route8/validation-predictions.parquet`，从中抽 10～20 行练习核对 ID 与融合公式。旧 `same-id-v4` 产物用于理解历史实验，不能与当前模型文件混用。
 
 ### 动手任务
 

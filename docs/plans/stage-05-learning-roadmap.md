@@ -1,6 +1,6 @@
 # Stage 05 学习路线：跟着政策 RAG 与受控 Agent 的实现学习
 
-> 状态：In Progress；路线 0 工程门禁已通过，个人 L0 自测待学习者完成
+> 状态：In Progress；路线 0～6 工程门禁已通过，个人 L0～L6 自测待学习者完成
 > 对应实现：[stage-05-implementation-roadmap.md](stage-05-implementation-roadmap.md)
 > 阶段总纲：[stage-05-rag-agent.md](stage-05-rag-agent.md)
 > 学习预算：两周约 14 小时，**包含**在 44 小时总预算内；每天安排 30～60 分钟
@@ -52,6 +52,8 @@
 
 **自测。** 检索命中了同主题但过期版本，算成功吗？`top_k=3` 返回空列表时，Agent 应如何表述？
 
+**路线 2 可对照材料。** 阅读[索引和检索契约](../data/stage-05-policy-index.md)，运行 `uv run --offline python scripts/build_policy_index.py --config configs/stage05.yaml`，然后用 `scripts/retrieve_policy.py` 分别查询 `2026-06-30` 和 `2026-07-01` 的“共享设备 人工复核”。核对旧版/新版文档 ID、来源行号和 `index_version`：相同查询在日期边界两侧可以改变候选，但不应改变索引版本。再查 `zzzxxyyqv`，确认 `no_match` 与空 `hits`。词法命中顺序不是政策裁决；同时有效的“可信设备例外”与“共享设备复核”冲突，须保留给后续报告与人工判断。真实 embedding 的候选与速度以路线 2 验收记录为准，不以 fake provider 的测试结果代替。
+
 ## 5. L3：检索评估（1.5h）
 
 **边实现边学。** 看路线 3 的固定查询集，理解标注的是“可支持答案的准确片段”，而非只要文档标题相关就算对。开发集调检索参数，冻结集只报告结果；每次改评估集都应有版本和理由。
@@ -59,6 +61,8 @@
 **动手练习。** 对一个正确片段排在第 2 位、另一个排在第 4 位的例子手算 Recall@1/3/5 与 MRR。再把失败归为未召回、召回旧版、无答案误召回、chunk 太窄或排序靠后。
 
 **自测。** 为什么 Recall@3 高仍可能生成错误政策结论？为什么不能删掉冻结集里最难的无答案问题来提高分数？
+
+**路线 3 可对照材料。** 阅读[冻结集与逐题验收](../../reports/stage-05-route-3-retrieval-evaluation.md)。先不看答案，手算 F03 在 TF-IDF 第 3 位时的 Recall@1/3 和 MRR，再算 F06 在 dense 第 2 位的对应值；核对答案 0/1/1÷3 与 0/1/1÷2。把 D12/D14 首轮误召回归因到通用词重合，解释为何只把 dense 相似度从 0.45 调高也可能伤害同义改写召回。个人自测不因脚本通过而自动勾选。
 
 ## 6. L4：LangGraph 状态、节点与边（1.5h）
 
@@ -68,6 +72,8 @@
 
 **自测。** 为什么不能让 LLM 自行决定“图工具失败但报告仍标 completed”？怎样阻止一个节点无限回到检索节点？
 
+**路线 4 可对照材料。** 读[工作流契约](../data/stage-05-graph-workflow.md)和[验收记录](../../reports/stage-05-route-4-graph-workflow.md)。用 `tests/unit/test_stage05_graph_workflow.py` 的 fixture 画出正常 6 节点、交易不存在时只到调查节点、政策无命中仍走到结构校验的路径，再解释真实交易为何以 `partial_evidence` 结束。分别指出计划参数由 Pydantic 校验、状态分支由代码裁决、fake provider 只产生占位草稿；测试通过不自动勾选个人 L4 自测。
+
 ## 7. L5：结构化报告与证据归因（2h）
 
 **边实现边学。** 理解 Pydantic schema 只能证明字段结构合法，不能自动证明一句政策解释被引用片段支持。模型的职责是根据允许证据写草稿；代码要核对引用 ID、版本、适用日期和交易/模型证据绑定。
@@ -76,11 +82,15 @@
 
 **自测。** 为什么在 prompt 中写“请不要幻觉”不足以保证可引用结论？交易分数为什么不能改写成“欺诈概率 90%”？
 
+**路线 5 可对照材料。** 阅读[派生报告契约](../data/stage-05-reporting.md)与[验收记录](../../reports/stage-05-route-5-reporting.md)，从 `tests/unit/test_stage05_reporting.py` 中挑一条正常、一条过期/篡改和一条无可验证前提的政策路径，逐项说明 schema、出处、时效、前提和人工复核分别能挡住什么。特别解释首轮真实模型为何错误选择“可信设备例外”，以及最终原文摘录为何仍不能自动证明规则适用于目标交易。个人 L5 自测不因脚本通过而自动勾选。
+
 ## 8. L6：审批、`interrupt` 与恢复（1.5h）
 
 **边实现边学。** 官方 [LangGraph interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts)说明：中断需要检查点和相同 thread ID；恢复时中断所在节点从开头重跑。Stage 05 只验证同进程暂停/恢复，跨进程耐久恢复留待 Stage 07。
 
 **动手练习。** 为 pending、approved、rejected、expired 写出允许的输入和下一状态；再模拟“报告内容改变但仍拿旧审批批准”“同一批准重复提交”“换 thread ID 恢复”。逐项检查建议状态和审计，确认没有任何真实封禁动作。
+
+**路线 6 可对照材料。** 阅读[审批契约](../data/stage-05-approval.md)和[验收记录](../../reports/stage-05-route-6-approval.md)，对照 `tests/unit/test_stage05_approval.py` 的 `snapshot.next`、中断载荷和连续审计事件。亲自解释为什么 `await_approval` 在 `interrupt` 之前不能写一次性副作用，为什么改动报告后即使原审批曾经批准，也不能沿用旧报告哈希。`demo-reviewer` 只是本地演示标识，不能据此声称完成身份认证。个人 L6 自测仍由学习者自行完成。
 
 **自测。** 为什么 `interrupt` 前不能放会发送邮件或修改账户的非幂等操作？人工批准在本阶段究竟批准了什么？
 
@@ -92,6 +102,8 @@
 
 **自测。** 为什么重复调用超时节点可能重复计费？为什么模型输出的“审批已通过”不能替代实际 `interrupt` 恢复结果？
 
+**路线 7 可对照材料。** 运行 `uv run --offline python scripts/evaluate_stage05_agent.py`，从[17 个冻结案例](../../data/evaluation/stage05_agent_cases_v1.yaml)各挑一条暂时性故障、不可重试故障、旧版引用、注入文本和批准/拒绝路径，对照[逐案验收](../../reports/stage-05-route-7-reliability-evaluation.md)手算调用次数与状态。特别注意总截止时间对同步本地计算只在调用返回后检查，费用预留在网络超时后不退回。个人 L7 的错误分类和审计解读仍需亲自完成。
+
 ## 10. L8：结果复盘与 90 秒讲解（1h）
 
 **边实现边学。** 阅读路线 8 的真实演示和失败报告，把“解决了什么、证据是什么、边界在哪里”连成一条完整叙事。Stage 04 图模型测试 PR-AUC 未超过受控 XGBoost，Stage 05 不能因加入 LLM 而把这个结果重新包装为模型优势。
@@ -99,6 +111,8 @@
 **动手练习。** 用 90 秒讲清：输入交易与 `policy_as_of`；Stage 04 的时间门禁；政策 chunk 的版本化引用；一条无证据或图失败分支；高风险建议如何暂停审批；当前仍缺少的生产能力。录音或写稿后，尝试不看文档复述。
 
 **自测。** 面试官问“你的 Agent 比固定脚本多做了什么？如果政策文本带恶意指令会怎样？”时，能否用具体状态边、引用检查和测试案例回答，而不是只报框架名称？
+
+**路线 8 可对照材料。** 阅读[端到端验收与失败复盘](../../reports/stage-05-route-8-acceptance.md)，从真实运行产物中依次找出 test split 归属、GraphSAGE 与 XGBoost 的不同分数、政策 `chunk_id` 与原文、报告哈希、`pending→rejected` 审批审计，再对照无政策和模型断连分支。用约 90 秒说明：输入交易与显式政策日期；五工具和版本化检索如何提供证据；小模型只选候选片段，代码如何确定状态并核对引用；人工拒绝没有触发外部处置；图模型测试 PR-AUC 没有超过受控 XGBoost，政策语料和 17 案例也不足以证明线上质量。个人讲解、自测与复述仍由学习者完成，不因工程路线标记 Done 而自动勾选。
 
 ## 11. 学习完成自检
 

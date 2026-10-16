@@ -51,3 +51,7 @@ reports/generated/
 .vscode/
 .DS_Store
 Thumbs.db
+/.secrets/
+
+# Local coding-assistant state is not project source.
+/.workbuddy/

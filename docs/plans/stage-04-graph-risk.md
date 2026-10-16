@@ -54,6 +54,7 @@
 - 路线 2 已用索引构建 50k/10k/10k 真实目标图，重复 manifest 逐字节一致，见[图产物契约](../data/stage-04-graph-artifacts.md)与[路线 2 验证记录](../../reports/stage-04-route-2-artifacts.md)。
 - 路线 3 已用 RTX 2060 训练 50k 目标，并以验证 PR-AUC 选择第 2 轮权重，冻结后测试一次、CPU 重新加载成功；见[训练契约](../data/stage-04-graphsage-training.md)与[路线 3 验证记录](../../reports/stage-04-route-3-training.md)。
 - 路线 4 已完成同 50k 训练目标的受控 XGBoost、同 ID 验证/测试预测、64 维 embedding 与验证集融合选择；测试 PR-AUC 为 XGBoost 0.129566、GraphSAGE 0.103733、融合 0.128175，见[比较契约](../data/stage-04-model-comparison.md)与[验收记录](../../reports/stage-04-route-4-comparison.md)。
+- **当前运行补记（2026-09-26）：**上行是当时 checkpoint 的历史结果。后续训练覆盖了固定 `models/graphsage-v1/model.pt`，旧 `same-id-v4` 比较哈希已与当前文件不符，图服务正确拒绝加载。Stage 05 路线 8 保留旧产物并为当前 checkpoint 新建 `stage05-route8` 同 ID 比较；测试 PR-AUC 为 XGBoost 0.129566、GraphSAGE 0.085999、融合 0.118062。当前 CLI 默认使用新运行，详见[重新绑定与端到端验收](../../reports/stage-05-route-8-acceptance.md)。这两组指标属于不同 checkpoint，不可混称为同一次实验。
 - 路线 5 已实现一次加载的图服务、冻结模型预测和仅使用 held-out 分数的严格历史风险邻居工具；真实 IEEE-CIS 成功/空/未覆盖案例及损坏产物测试见[服务契约](../data/stage-04-graph-service.md)与[验收记录](../../reports/stage-04-route-5-graph-service.md)。
 - 路线 6 已将图服务注入五工具确定性工作流，增加目标图分数、受控 XGBoost、冻结融合、邻居路径和独立证据绑定；成功、空邻居、未覆盖、损坏和来源错配均有回归测试。真实目标两次报告哈希相同，见[工作流契约](../data/stage-04-investigation-workflow.md)与[验收记录](../../reports/stage-04-route-6-workflow.md)。
 - 路线 7 已复核全部工程门禁：54 项图/调查聚焦测试与 166 项全量测试通过，离线锁文件、CPU/CUDA smoke、sdist/wheel、受限文件检查通过；固定测试集首笔真实调查报告双运行哈希相同，训练目标未覆盖和缺失对比产物均安全降级。完整指标、限制与 Stage 05 输入见[Stage 04 总验收](../../reports/stage-04-validation.md)。

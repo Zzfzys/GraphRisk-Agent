@@ -27,7 +27,7 @@ def main() -> None:
     )
     parser.add_argument("--relation-limit", type=int, default=20)
     parser.add_argument("--graph-config", type=Path)
-    parser.add_argument("--comparison-run", default="same-id-v4")
+    parser.add_argument("--comparison-run", default="stage05-route8")
     parser.add_argument("--report-output", type=Path)
     parser.add_argument("--audit-output", type=Path)
     arguments = parser.parse_args()

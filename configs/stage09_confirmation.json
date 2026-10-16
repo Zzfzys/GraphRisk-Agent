@@ -1,0 +1,18 @@
+{
+  "schema_version": "stage09-5b-confirmation-v1",
+  "gnn_candidate": "c4-core-graph",
+  "xgboost_candidate": "x3",
+  "device": "cuda", "cpu_threads": 4, "batch_size": 256,
+  "max_epochs": 25, "patience": 10, "train_probe_count": 10000,
+  "history_per_entity": 5, "core_clip": 10.0,
+  "fusion_selection": "one_alpha_per_fold_mean_three_seed_calibration_AP_tie_larger_xgb",
+  "confirmation": "nine_new_gnn_three_new_xgb_fits_no_development_search",
+  "outer_release": "all_fits_and_alphas_sealed_before_single_label_batch",
+  "bootstrap_iterations": 1000, "bootstrap_seed": 20261009,
+  "bootstrap_interval": 0.95,
+  "stability": "paired_block_AP_and_relative_recall_CI_lower_above_zero",
+  "historical_test": "fold3_fixed_models_and_alpha_one_descriptive_batch_not_blind",
+  "maximum_prepare_seconds": 7200,
+  "maximum_evaluation_seconds": 7200,
+  "new_generation_calls": 0, "paid_calls": 0
+}

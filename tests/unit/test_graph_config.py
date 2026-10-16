@@ -56,13 +56,15 @@ def test_missing_stage_input_gives_actionable_error(
         ("training", "dropout", "0.2"),
         ("training", "learning_rate", 0),
         ("training", "learning_rate", "0.001"),
-        ("training", "early_stopping_patience", 21),
+        ("training", "early_stopping_patience", "above_max_epochs"),
     ],
 )
 def test_invalid_graph_settings_are_rejected(
     raw_config: dict[str, object], section: str, field: str, invalid: object
 ) -> None:
     candidate = deepcopy(raw_config)
+    if invalid == "above_max_epochs":
+        invalid = candidate["training"]["max_epochs"] + 1
     candidate[section][field] = invalid
     with pytest.raises(ValidationError):
         GraphExperimentConfig.model_validate(candidate)

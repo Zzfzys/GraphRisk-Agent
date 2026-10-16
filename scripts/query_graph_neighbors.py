@@ -13,7 +13,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Query strictly historical scored graph neighbors")
     parser.add_argument("transaction_id")
     parser.add_argument("--config", default="configs/graph_ieee_cis.yaml")
-    parser.add_argument("--comparison-run", default="same-id-v4")
+    parser.add_argument("--comparison-run", default="stage05-route8")
     parser.add_argument("--limit", type=int, default=5)
     arguments = parser.parse_args()
     graph_config = load_graph_config(arguments.config)

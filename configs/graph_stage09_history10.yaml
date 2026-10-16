@@ -1,0 +1,30 @@
+project_name: graphrisk-agent
+dataset_source: ieee_cis
+paths:
+  data_config: configs/ieee_cis.yaml
+  training_config: configs/train_baseline_ieee_cis.yaml
+  artifact_dir: artifacts/stage-09/route3/20261007-baselines-v1/history-cap-10
+  train_ids: artifacts/stage-09/route3/20261007-baselines-v1/history-cap-10/train-ids.json
+  validation_ids: artifacts/stage-09/route3/20261007-baselines-v1/history-cap-10/validation-ids.json
+  test_ids: artifacts/stage-09/route3/20261007-baselines-v1/history-cap-10/test-ids.json
+  train_predictions: artifacts/stage-09/route3/20261007-baselines-v1/history-cap-10/train-predictions.parquet
+  validation_predictions: artifacts/stage-09/route3/20261007-baselines-v1/history-cap-10/validation-predictions.parquet
+  test_predictions: artifacts/stage-09/route3/20261007-baselines-v1/history-cap-10/test-predictions.parquet
+  graph_manifest: artifacts/stage-09/route3/20261007-baselines-v1/history-cap-10/graph-manifest.json
+sampling:
+  fanout: [10, 10]
+  max_train_transactions: 50000
+  max_validation_transactions: 10000
+  max_test_transactions: 10000
+  selection: chronological_prefix
+training:
+  model_version: graphsage-v1
+  random_seed: 20260921
+  batch_size: 256
+  hidden_channels: 64
+  dropout: 0.20
+  learning_rate: 0.001
+  max_epochs: 50
+  early_stopping_patience: 10
+  device: cpu
+

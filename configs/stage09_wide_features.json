@@ -1,0 +1,17 @@
+{
+  "schema_version": "stage09-5b-features-v1",
+  "statistics_fold": "fold-1",
+  "profiles": ["core", "source_as_received"],
+  "unknown_source_timing": "separate_sensitivity_group_not_verified_causal",
+  "numeric_imputation": "train_median",
+  "numeric_missing_indicators": "all_retained_numeric_columns",
+  "categorical_encoding": "train_vocabulary_distinct_missing_unknown",
+  "feature_selection": "train_constant_and_exact_duplicate_only",
+  "labels_in_side_table": false,
+  "duckdb_memory_mib": 768,
+  "duckdb_threads": 1,
+  "maximum_spill_gib": 5,
+  "statistics_batch_columns": 8,
+  "transform_batch_rows": 4096,
+  "maximum_pipeline_seconds": 3600
+}

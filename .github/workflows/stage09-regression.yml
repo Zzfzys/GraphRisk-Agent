@@ -1,0 +1,112 @@
+name: Stage09 layered regression
+on:
+  pull_request:
+  push:
+    branches: [main, master, 'codex/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: stage09-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  UV_PYTHON_INSTALL_DIR: ${{ github.workspace }}/.uv-python
+  UV_CACHE_DIR: ${{ github.workspace }}/.uv-cache
+  UV_PROJECT_ENVIRONMENT: ${{ github.workspace }}/.venv
+  PYTHONDONTWRITEBYTECODE: '1'
+  CUDA_VISIBLE_DEVICES: '-1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+jobs:
+  cpu:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.12.19'
+          enable-cache: false
+      - run: uv sync --locked --group demo
+      - run: uv run --offline python scripts/stage09_ci.py static --output-root reports/generated/stage09/ci
+      - run: uv run --offline python scripts/stage09_ci.py cpu --output-root reports/generated/stage09/ci
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cpu-summary
+          path: reports/generated/stage09/ci/*/public-summary.json
+  database:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.12.19'
+          enable-cache: false
+      - run: uv sync --locked --group demo
+      - run: uv run --offline python scripts/stage09_ci.py database --output-root reports/generated/stage09/ci
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: database-summary
+          path: reports/generated/stage09/ci/database/public-summary.json
+  graphrag:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        layer: [graphrag-core, graphrag-demo]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.12.19'
+          enable-cache: false
+      - name: Install independent locked runtime and a separate locked test runner
+        run: |
+          unset UV_PROJECT_ENVIRONMENT
+          uv sync --locked --project projects/enterprise-graphrag
+          uv sync --locked --project projects/enterprise-graphrag/demo
+          uv sync --locked --project ci/test-runner
+      - name: Test without the main ML environment
+        run: |
+          unset UV_PROJECT_ENVIRONMENT
+          if [ '${{ matrix.layer }}' = graphrag-core ]; then
+            runtime=projects/enterprise-graphrag/.venv/bin/python
+          else
+            runtime=projects/enterprise-graphrag/demo/.venv/bin/python
+          fi
+          uv run --offline --project ci/test-runner python scripts/stage09_ci.py '${{ matrix.layer }}' --python "$runtime" --output-root reports/generated/stage09/ci
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ${{ matrix.layer }}-summary
+          path: reports/generated/stage09/ci/${{ matrix.layer }}/public-summary.json
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.12.19'
+          enable-cache: false
+      - run: uv sync --locked --group demo
+      - run: uv run --offline python scripts/stage09_ci.py package --output-root reports/generated/stage09/ci
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: package-summary
+          path: reports/generated/stage09/ci/package/public-summary.json
+  image:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build current source without private inputs
+        run: docker build --tag graphrisk-ci:${{ github.run_id }} .
+      - name: Check installed imports and image boundary without network
+        run: docker run --rm --network none --entrypoint python --mount type=bind,source="$GITHUB_WORKSPACE/scripts/stage09_image_smoke.py",target=/smoke.py,readonly graphrisk-ci:${{ github.run_id }} /smoke.py

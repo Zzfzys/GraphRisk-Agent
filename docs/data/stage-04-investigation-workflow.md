@@ -1,6 +1,6 @@
 # Stage 04 路线 6：确定性调查工作流契约
 
-`InvestigationWorkflow` 继续按固定顺序调用 `get_transaction`、`get_transaction_features`、`get_risk_score`、`get_related_entities`、`find_risky_neighbors`。首个工具找不到交易时立即停止；之后任一工具失败不会覆盖已成功的证据。`scripts/run_investigation.py` 对 IEEE-CIS 默认注入 `configs/graph_ieee_cis.yaml` 的 `GraphRiskService` 和 `same-id-v4` 对比产物；服务在运行调查前只加载一次。可用 `--graph-config` 和 `--comparison-run` 指定其它版本化产物。
+`InvestigationWorkflow` 继续按固定顺序调用 `get_transaction`、`get_transaction_features`、`get_risk_score`、`get_related_entities`、`find_risky_neighbors`。首个工具找不到交易时立即停止；之后任一工具失败不会覆盖已成功的证据。`scripts/run_investigation.py` 对 IEEE-CIS 默认注入 `configs/graph_ieee_cis.yaml` 的 `GraphRiskService` 和 `stage05-route8` 对比产物；服务在运行调查前只加载一次。可用 `--graph-config` 和 `--comparison-run` 指定其它版本化产物。旧 `same-id-v4` 对比产物绑定了历史 checkpoint 哈希，不能与当前模型文件混用。
 
 ## 报告中的分数与证据
 

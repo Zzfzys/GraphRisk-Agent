@@ -11,7 +11,7 @@
 独立查看真实 IEEE-CIS 结果：
 
 ```powershell
-uv run --offline python scripts\query_graph_neighbors.py 3489059 --config configs\graph_ieee_cis.yaml --comparison-run same-id-v4 --limit 5
+uv run --offline python scripts\query_graph_neighbors.py 3489059 --config configs\graph_ieee_cis.yaml --comparison-run stage05-route8 --limit 5
 ```
 
 `3489059` 是固定的测试目标示例；相同产物与请求得到相同业务内容。首次命令会校验文件并构建内存索引，因此冷启动比后续同进程调用慢。路线 5 的[验收记录](../../reports/stage-04-route-5-graph-service.md)说明成功、空结果与失败案例。

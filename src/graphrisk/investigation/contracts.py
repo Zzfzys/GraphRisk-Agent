@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, Any, Generic, Literal, Mapping, Self, TypeVar
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, ValidationError, model_validator
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, ValidationError, model_validator, model_serializer
 
 DatasetSource = Literal["synthetic", "ieee_cis"]
 TransactionId = Annotated[
@@ -28,6 +28,7 @@ ErrorCode = Literal[
     "model_artifact_unavailable",
     "graph_artifact_unavailable",
     "graph_prediction_unavailable",
+    "prediction_out_of_coverage",
     "graph_model_version_mismatch",
     "data_source_mismatch",
     "duplicate_transaction",
@@ -49,6 +50,7 @@ ERROR_STATUS: dict[ErrorCode, FailureStatus] = {
     "model_artifact_unavailable": "dependency_error",
     "graph_artifact_unavailable": "dependency_error",
     "graph_prediction_unavailable": "unavailable",
+    "prediction_out_of_coverage": "unavailable",
     "graph_model_version_mismatch": "dependency_error",
     "data_source_mismatch": "dependency_error",
     "duplicate_transaction": "dependency_error",
@@ -69,6 +71,7 @@ ERROR_MESSAGES: dict[ErrorCode, str] = {
     "model_artifact_unavailable": "The risk model is unavailable.",
     "graph_artifact_unavailable": "The graph model or graph data artifact is unavailable.",
     "graph_prediction_unavailable": "No eligible graph prediction is available for this transaction.",
+    "prediction_out_of_coverage": "This transaction is outside the registered independent prediction coverage.",
     "graph_model_version_mismatch": "The graph score artifact uses a different model version.",
     "data_source_mismatch": "The requested and configured data sources do not match.",
     "duplicate_transaction": "The transaction ID is not unique in the selected dataset.",
@@ -195,9 +198,28 @@ class RelatedEntitiesData(StrictModel):
 
 class RiskyNeighbor(StrictModel):
     transaction_id: TransactionId
-    graph_risk_score: float = Field(ge=0, le=1)
+    graph_risk_score: float | None = Field(default=None, ge=0, le=1)
     seconds_before_target: int = Field(gt=0)
     shared_entities: list[EntityRef] = Field(min_length=1)
+    evidence_role: Literal["scored", "relation_only"] = "scored"
+    score_unavailable_reason: Literal["outside_independent_score_scope", "different_model_scope"] | None = None
+
+    @model_validator(mode="after")
+    def distinguish_relation_and_score(self):
+        if self.evidence_role == "relation_only":
+            if self.graph_risk_score is not None or self.score_unavailable_reason is None:
+                raise ValueError("relation_only requires null score and an explicit reason")
+        elif self.graph_risk_score is None or self.score_unavailable_reason is not None:
+            raise ValueError("scored neighbor requires an eligible score and no missing-score reason")
+        return self
+
+    @model_serializer(mode="wrap")
+    def keep_legacy_scored_shape(self, handler):
+        value=handler(self)
+        if self.evidence_role == "scored":
+            value.pop("evidence_role",None)
+            value.pop("score_unavailable_reason",None)
+        return value
 
 
 class RiskyNeighborsData(StrictModel):
@@ -210,10 +232,25 @@ class RiskyNeighborsData(StrictModel):
     fusion_score: float | None = Field(default=None, ge=0, le=1)
     fusion_alpha: float | None = Field(default=None, ge=0, le=1)
     score_scope: Literal["held_out"] = "held_out"
+    score_role: Literal["legacy_fusion", "experimental"] = "legacy_fusion"
     probability_calibrated: Literal[False] = False
+
+    @model_serializer(mode="wrap")
+    def serialize_role(self, handler):
+        value = handler(self)
+        if self.score_role == "legacy_fusion":
+            value.pop("score_role", None)
+        return value
 
     @model_validator(mode="after")
     def fusion_fields_are_complete_and_consistent(self) -> "RiskyNeighborsData":
+        if self.score_role == "experimental":
+            if self.target_graph_risk_score is None or any(value is not None for value in (
+                self.controlled_xgboost_score, self.controlled_xgboost_model_version, self.fusion_score, self.fusion_alpha)):
+                raise ValueError("experimental graph requires target score and forbids fusion fields")
+            return self
+        if any(n.evidence_role=='relation_only' for n in self.neighbors):
+            raise ValueError('relation-only neighbors require the experimental score role')
         fields = (
             self.target_graph_risk_score,
             self.controlled_xgboost_score,

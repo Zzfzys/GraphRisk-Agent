@@ -6,3 +6,9 @@
 *.yml text eol=lf
 *.json text eol=lf
 *.ps1 text eol=crlf
+
+# Frozen contracts hash exact bytes, including historical CRLF. Do not normalize.
+data/evaluation/** -text
+data/policies/** -text
+tests/fixtures/** -text
+projects/enterprise-graphrag/data/** -text

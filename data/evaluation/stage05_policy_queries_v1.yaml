@@ -1,0 +1,220 @@
+# Stage 05 route 3. Labels were authored from the source policies before retrieval scoring.
+schema_version: "1.0"
+corpus_sha256: 5944138255497bb595d46513a7100045363d1f35d99fd2607954567e64145513
+cases:
+  - case_id: D01
+    split: development
+    kind: answerable
+    tags: [version, threshold]
+    query: "2026年6月设备关联8个账户，哪条规则要求人工核查？"
+    policy_as_of: "2026-06-30"
+    expected_chunk_ids: [policy-dc6d395f92da538bb6c180d1]
+    forbidden_chunk_ids: [policy-5f3069ff0c7ef7a0ab2f20e0]
+  - case_id: D02
+    split: development
+    kind: answerable
+    tags: [version, threshold]
+    query: "新版共享设备规则需要几个不同账户才进入人工复核？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-5f3069ff0c7ef7a0ab2f20e0]
+    forbidden_chunk_ids: [policy-dc6d395f92da538bb6c180d1]
+  - case_id: D03
+    split: development
+    kind: answerable
+    tags: [exception, paraphrase]
+    query: "有独立批准记录的可信终端同时关联很多账号，还要进共享设备复核队列吗？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-092e2446a628d02ed97a7b85]
+  - case_id: D04
+    split: development
+    kind: answerable
+    tags: [conflict]
+    query: "可信设备例外和共享设备核查相冲突时，谁来裁定？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-611851f6661c58db726d4f52]
+  - case_id: D05
+    split: development
+    kind: answerable
+    tags: [velocity]
+    query: "同一卡片前10分钟发生4次交易尝试，需要列为什么线索？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-806535ad98348fa6dea5d847]
+  - case_id: D06
+    split: development
+    kind: answerable
+    tags: [time, paraphrase]
+    query: "速度规则计算窗口时，同一时间戳的交易能算历史吗？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-806535ad98348fa6dea5d847]
+  - case_id: D07
+    split: development
+    kind: answerable
+    tags: [graph]
+    query: "报告历史风险邻居时要列哪些交易和共享实体证据？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-97f6eb79d2a992d3cc2fd187]
+  - case_id: D08
+    split: development
+    kind: answerable
+    tags: [graph, missing_evidence]
+    query: "目标交易没有held-out图分数时，报告该怎么写？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-de085f3a3a86c56432a259a5]
+  - case_id: D09
+    split: development
+    kind: answerable
+    tags: [approval]
+    query: "高风险建议提交人工审批时必须绑定哪些信息？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-f47fb037db9ea572cc95cef8]
+  - case_id: D10
+    split: development
+    kind: answerable
+    tags: [approval, paraphrase]
+    query: "报告修改后还能沿用之前的批准吗？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-33a9677b279241e7f045478d]
+  - case_id: D11
+    split: development
+    kind: answerable
+    tags: [abstention]
+    query: "找不到可支持政策结论的片段，报告应该怎么表述？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-0bf288130ad967e9c6d373c4]
+  - case_id: D12
+    split: development
+    kind: unanswerable
+    tags: [out_of_scope]
+    query: "员工差旅报销政策是什么？"
+    policy_as_of: "2026-07-01"
+    refusal_reason: "语料没有员工差旅报销制度"
+  - case_id: D13
+    split: development
+    kind: unanswerable
+    tags: [out_of_scope]
+    query: "银行卡每日提现额度是多少？"
+    policy_as_of: "2026-07-01"
+    refusal_reason: "语料没有提现额度规则"
+  - case_id: D14
+    split: development
+    kind: unanswerable
+    tags: [out_of_scope]
+    query: "客户身份证OCR核验的置信度阈值是多少？"
+    policy_as_of: "2026-07-01"
+    refusal_reason: "语料没有证件OCR核验规则"
+  - case_id: D15
+    split: development
+    kind: unanswerable
+    tags: [no_active_policy, version]
+    query: "共享设备达到8个账户时要复核吗？"
+    policy_as_of: "2025-12-31"
+    refusal_reason: "查询日期早于所有模拟政策生效日期"
+  - case_id: F01
+    split: frozen
+    kind: answerable
+    tags: [version, paraphrase]
+    query: "六月末同一设备一天连着八个账号，触发旧规则吗？"
+    policy_as_of: "2026-06-30"
+    expected_chunk_ids: [policy-dc6d395f92da538bb6c180d1]
+    forbidden_chunk_ids: [policy-5f3069ff0c7ef7a0ab2f20e0]
+  - case_id: F02
+    split: frozen
+    kind: answerable
+    tags: [version, paraphrase]
+    query: "七月开始，设备在24小时连着五个不同账户怎么处理？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-5f3069ff0c7ef7a0ab2f20e0]
+    forbidden_chunk_ids: [policy-dc6d395f92da538bb6c180d1]
+  - case_id: F03
+    split: frozen
+    kind: answerable
+    tags: [version]
+    query: "七月的共享设备核查还采用旧版八账户门槛吗？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-568d34751e7152dedfa624bd]
+    forbidden_chunk_ids: [policy-dc6d395f92da538bb6c180d1]
+  - case_id: F04
+    split: frozen
+    kind: answerable
+    tags: [version, inference_limit]
+    query: "旧版政策允许仅凭共同设备断定两个账号属于同一个人吗？"
+    policy_as_of: "2026-06-30"
+    expected_chunk_ids: [policy-6675acd96fe0ad61a285de87]
+    forbidden_chunk_ids: [policy-568d34751e7152dedfa624bd]
+  - case_id: F05
+    split: frozen
+    kind: answerable
+    tags: [exception, paraphrase]
+    query: "一台设备已经有可信标记和审批记录，却关联五个账户，能豁免共享设备复核吗？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-092e2446a628d02ed97a7b85]
+  - case_id: F06
+    split: frozen
+    kind: answerable
+    tags: [conflict, paraphrase]
+    query: "可信设备例外与新版设备共享规定互相矛盾，系统可以自行选一条吗？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-611851f6661c58db726d4f52]
+  - case_id: F07
+    split: frozen
+    kind: answerable
+    tags: [velocity, paraphrase]
+    query: "一张卡在十分钟内连续试了四笔交易，政策建议调查什么？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-806535ad98348fa6dea5d847]
+  - case_id: F08
+    split: frozen
+    kind: answerable
+    tags: [velocity, inference_limit]
+    query: "出现速度异常就能直接拒绝交易吗？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-f3e97de14c089820dca66b40]
+  - case_id: F09
+    split: frozen
+    kind: answerable
+    tags: [graph, time]
+    query: "同一时间或目标之后的邻居关系能写成历史证据吗？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-97f6eb79d2a992d3cc2fd187]
+  - case_id: F10
+    split: frozen
+    kind: answerable
+    tags: [graph, inference_limit]
+    query: "GraphSAGE分数和共享匿名实体足以证明欺诈吗？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-de085f3a3a86c56432a259a5]
+  - case_id: F11
+    split: frozen
+    kind: answerable
+    tags: [approval, action_limit]
+    query: "复核员正式批准前，系统可以封禁账户或发送通知吗？"
+    policy_as_of: "2026-07-01"
+    expected_chunk_ids: [policy-e6dc2ce6d9b7d96205006bfc]
+  - case_id: F12
+    split: frozen
+    kind: unanswerable
+    tags: [out_of_scope]
+    query: "员工年假请假流程需要谁审批？"
+    policy_as_of: "2026-07-01"
+    refusal_reason: "语料没有员工休假制度"
+  - case_id: F13
+    split: frozen
+    kind: unanswerable
+    tags: [out_of_scope]
+    query: "贷款利率浮动上限是多少？"
+    policy_as_of: "2026-07-01"
+    refusal_reason: "语料没有贷款定价规则"
+  - case_id: F14
+    split: frozen
+    kind: unanswerable
+    tags: [hard_negative]
+    query: "银行卡CVV校验失败后账户冻结多少天？"
+    policy_as_of: "2026-07-01"
+    refusal_reason: "语料没有CVV校验或冻结期限规则"
+  - case_id: F15
+    split: frozen
+    kind: unanswerable
+    tags: [no_active_policy, version]
+    query: "设备关联八个账户时是否必须人工复核？"
+    policy_as_of: "2025-12-31"
+    refusal_reason: "查询日期早于所有模拟政策生效日期"

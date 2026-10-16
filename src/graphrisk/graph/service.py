@@ -8,7 +8,7 @@ import math
 from dataclasses import dataclass
 from datetime import datetime
 from math import ceil
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 import pandas as pd
 import torch
@@ -30,11 +30,12 @@ class GraphRiskPrediction:
     transaction_id: str
     graph_risk_score: float
     graph_model_version: str
-    controlled_xgboost_score: float
-    controlled_xgboost_model_version: str
-    fusion_score: float
-    fusion_alpha: float
+    controlled_xgboost_score: float | None
+    controlled_xgboost_model_version: str | None
+    fusion_score: float | None
+    fusion_alpha: float | None
     score_scope: str = "held_out"
+    score_role: str = "legacy_fusion"
 
 
 @dataclass(frozen=True)
@@ -55,6 +56,30 @@ class _VersionMismatch(Exception):
 
 def _ids_sha256(ids: tuple[str, ...]) -> str:
     return hashlib.sha256(json.dumps(ids, separators=(",", ":")).encode()).hexdigest()
+
+
+def _legacy_windows_checkpoint_path(
+    raw: str, artifact_root: Path, artifact_relative: Path,
+) -> Path:
+    """Rebind a verified Windows artifact-root suffix when loading on Linux."""
+    windows = PureWindowsPath(raw)
+    if not windows.is_absolute():
+        raise ValueError("legacy checkpoint path is not Windows-absolute")
+    parts = windows.parts
+    marker = tuple(part.casefold() for part in artifact_relative.parts)
+    matches = [
+        index for index in range(1, len(parts) - len(marker) + 1)
+        if tuple(part.casefold() for part in parts[index:index + len(marker)]) == marker
+    ]
+    if len(matches) != 1:
+        raise ValueError("legacy checkpoint does not identify the configured artifact root")
+    tail = parts[matches[0] + len(marker):]
+    if not tail:
+        raise ValueError("legacy checkpoint has no path inside the artifact root")
+    resolved = artifact_root.joinpath(*tail).resolve()
+    if not resolved.is_relative_to(artifact_root):
+        raise ValueError("legacy checkpoint escapes the artifact root")
+    return resolved
 
 
 class GraphRiskService:
@@ -123,7 +148,18 @@ class GraphRiskService:
             expected_ids = store.target_ids[split]
             if comparison["splits"][split]["ordered_id_sha256"] != _ids_sha256(expected_ids):
                 raise ValueError("comparison target IDs differ")
-        model_path = Path(comparison["graph_model_path"]).resolve()
+        raw_model_path = comparison["graph_model_path"]
+        if not isinstance(raw_model_path, str) or not raw_model_path:
+            raise ValueError("graph checkpoint path is missing")
+        native_path = Path(raw_model_path)
+        if native_path.is_absolute():
+            model_path = native_path.resolve()
+        elif PureWindowsPath(raw_model_path).is_absolute():
+            model_path = _legacy_windows_checkpoint_path(
+                raw_model_path, artifact_root, config.paths.artifact_dir,
+            )
+        else:
+            model_path = (artifact_root / native_path).resolve()
         if not model_path.is_relative_to(artifact_root):
             raise ValueError("graph checkpoint is outside artifact root")
         if comparison["graph_model_sha256"] != _sha256(model_path):

@@ -1,6 +1,6 @@
 project_name: graphrisk-agent
 dataset_source: ieee_cis
-graph_comparison_run: same-id-v4
+graph_comparison_run: stage05-route8
 
 paths:
   data_config: configs/ieee_cis.yaml

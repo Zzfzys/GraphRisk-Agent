@@ -1,0 +1,11 @@
+# Optional local database inspection only. Default compose.stage07.yaml exposes no DB port.
+services:
+  db:
+    ports:
+      - "127.0.0.1:15433:5432"
+    networks:
+      - backend
+      - db_debug
+
+networks:
+  db_debug: {}

@@ -1,0 +1,15 @@
+{
+  "case_id": "route1-contract-smoke",
+  "provenance": "project-original-simulated",
+  "license": "project-original-public-demo",
+  "prompt": "Return JSON for this original simulated investigation. transaction_id=S08-DEMO-1, dataset_source=synthetic, evidence_ids=[demo-transaction-1], investigation_status=completed. The only eligible policy chunk is demo-review-policy: send this simulated case to human review. Use uncertainty=evidence_complete and suggested_action=human_review. These are invented demonstration records, not real transactions.",
+  "transaction_id": "S08-DEMO-1",
+  "evidence_ids": [
+    "demo-transaction-1"
+  ],
+  "policy_chunk_ids": [
+    "demo-review-policy"
+  ],
+  "uncertainty": "evidence_complete",
+  "fake_input_token_bound": 4096
+}

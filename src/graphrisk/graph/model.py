@@ -26,15 +26,29 @@ class GraphSAGERiskModel(nn.Module):
     def encode_root(self, graph: Data | Batch) -> Tensor:
         if graph.x.ndim != 2 or graph.x.shape[1] != self.input_channels:
             raise ValueError("GraphSAGE graph feature dimension does not match checkpoint")
-        if graph.edge_index.ndim != 2 or graph.edge_index.shape[0] != 2:
-            raise ValueError("GraphSAGE edge_index must have shape [2, edges]")
+        if (graph.edge_index.ndim != 2 or graph.edge_index.shape[0] != 2
+                or graph.edge_index.dtype != torch.long):
+            raise ValueError("GraphSAGE edge_index must be a long tensor with shape [2, edges]")
+        if graph.edge_index.numel() and (
+            torch.any(graph.edge_index < 0) or torch.any(graph.edge_index >= graph.x.shape[0])
+        ):
+            raise ValueError("GraphSAGE edge_index is outside the graph")
         roots = graph.root_index
         if roots.ndim != 1 or roots.dtype != torch.long:
             raise ValueError("GraphSAGE root_index must be a one-dimensional long tensor")
         if roots.numel() == 0 or torch.any(roots < 0) or torch.any(roots >= graph.x.shape[0]):
             raise ValueError("GraphSAGE root_index is outside the graph")
-        if isinstance(graph, Batch) and roots.numel() != graph.num_graphs:
-            raise ValueError("GraphSAGE requires exactly one root per graph in the batch")
+        if isinstance(graph, Batch):
+            if roots.numel() != graph.num_graphs:
+                raise ValueError("GraphSAGE requires exactly one root per graph in the batch")
+            if not torch.equal(graph.batch[roots], torch.arange(graph.num_graphs, device=roots.device)):
+                raise ValueError("GraphSAGE each root must belong to its corresponding graph")
+            if graph.edge_index.numel() and torch.any(
+                graph.batch[graph.edge_index[0]] != graph.batch[graph.edge_index[1]]
+            ):
+                raise ValueError("GraphSAGE batch contains a cross-graph message edge")
+        elif roots.numel() != 1:
+            raise ValueError("GraphSAGE requires exactly one root for a single graph")
         features = self.conv1(graph.x, graph.edge_index).relu()
         features = self.dropout(features)
         features = self.conv2(features, graph.edge_index).relu()

@@ -1,0 +1,72 @@
+{
+  "schema_version": "stage09-5b-v1",
+  "dataset": "ieee_cis",
+  "execution_drive": "E",
+  "output_root": "reports/generated/stage09/route5b",
+  "artifact_root": "artifacts/stage-09/route5b",
+  "confirmation_seeds": [20260921, 20260928, 20261007],
+  "windows": [
+    {"name": "fold-1", "train_end": 0.50, "inner_end": 0.60, "outer_end": 0.70},
+    {"name": "fold-2", "train_end": 0.65, "inner_end": 0.75, "outer_end": 0.85},
+    {"name": "fold-3", "train_end": 0.80, "inner_end": 0.90, "outer_end": 1.00}
+  ],
+  "search_fold": "fold-1",
+  "inner_calibration_fraction": 0.50,
+  "outer_access": "all_after_final_decision_freeze",
+  "earlier_outer_labels": "later_final_fit_only_after_decision_freeze",
+  "test_status": "historically_observed_not_blind",
+  "maximum_final_test_batches": 1,
+  "metrics": {
+    "minimum_xgboost_roc_auc": 0.80,
+    "exploratory_xgboost_roc_auc": 0.90,
+    "minimum_fusion_ap_delta": 0.005,
+    "minimum_relative_recall_top1_delta": 0.05,
+    "minimum_positive_folds": 2,
+    "aggregation": "seed_mean_then_equal_fold_mean",
+    "ranking": "ceil_1_percent_score_desc_transaction_id_asc",
+    "uncertainty": "paired_day_block_bootstrap_1000_seed_20261009",
+    "zero_baseline_recall": "ineligible_relative_gain",
+    "subgroup_promotion": "disabled_until_preregistered_before_outer_access"
+  },
+  "budgets": {
+    "gnn": {"max_fits": 30, "max_total_seconds": 43200, "max_fit_seconds": 3600,
+      "lanes": {"scale": 3, "search": 6, "conditional": 9, "confirmation": 9, "failure": 3}},
+    "xgboost": {"max_fits": 12, "max_fit_seconds": 3600,
+      "lanes": {"search": 3, "confirmation": 3, "control": 3, "failure": 3}},
+    "mlp": {"max_fits": 3, "max_fit_seconds": 3600, "lanes": {"control": 3}},
+    "new_generation_calls_route0": 0,
+    "new_paid_calls": 0,
+    "old_generation_cap": 144,
+    "concurrency": 1
+  },
+  "gnn_scale_targets": [50000, 150000, "full_allowed_train"],
+  "gnn_candidates": [
+    {"id": "g1", "learning_rate": 0.001, "hidden_channels": 64, "dropout": 0.20, "positive_weight": "train_ratio"},
+    {"id": "g2", "learning_rate": 0.0005, "hidden_channels": 64, "dropout": 0.20, "positive_weight": "train_ratio"},
+    {"id": "g3", "learning_rate": 0.001, "hidden_channels": 64, "dropout": 0.40, "positive_weight": "train_ratio"},
+    {"id": "g4", "learning_rate": 0.0005, "hidden_channels": 64, "dropout": 0.40, "positive_weight": "train_ratio"},
+    {"id": "g5", "learning_rate": 0.001, "hidden_channels": 128, "dropout": 0.20, "positive_weight": "train_ratio"},
+    {"id": "g6", "learning_rate": 0.001, "hidden_channels": 64, "dropout": 0.20, "positive_weight": "sqrt_train_ratio"}
+  ],
+  "xgboost_candidates": [
+    {"id": "x1", "max_depth": 6, "learning_rate": 0.05, "min_child_weight": 1.0},
+    {"id": "x2", "max_depth": 8, "learning_rate": 0.05, "min_child_weight": 5.0},
+    {"id": "x3", "max_depth": 6, "learning_rate": 0.025, "min_child_weight": 5.0}
+  ],
+  "training_rules": {
+    "gnn_input_dimensions_initial": 28, "gnn_layers_initial": 2,
+    "gnn_aggregation_initial": "mean", "max_epochs": 50, "patience": 10,
+    "xgboost_max_estimators": 2000, "xgboost_patience": 50,
+    "preprocessing": "train_only", "history": "strictly_earlier_equal_times_simultaneous",
+    "candidate_selection": "inner_early_stop_ap_then_lower_cost_then_registered_order",
+    "fusion_alphas_xgboost_weight": [0.0, 0.25, 0.5, 0.75, 1.0],
+    "fusion_fit": "inner_calibration_only_after_early_stop",
+    "conditional_registration": "new_frozen_appendix_before_fit_no_outer_or_test_metrics"
+  },
+  "resources": {
+    "minimum_available_ram_gib": 3.0,
+    "minimum_free_gpu_mib": 4096,
+    "maximum_idle_gpu_utilization_percent": 10,
+    "minimum_disk_free_gib": {"C": 5.0, "D": 5.0, "E": 10.0}
+  }
+}

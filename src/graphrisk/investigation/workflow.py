@@ -6,7 +6,7 @@ from collections.abc import Callable
 from datetime import UTC, datetime
 from typing import Literal, Mapping
 
-from pydantic import Field, model_validator
+from pydantic import Field, model_validator, model_serializer
 
 from graphrisk.graph.service import GraphRiskService
 from graphrisk.investigation.contracts import (
@@ -72,6 +72,8 @@ class CapabilityGap(StrictModel):
 
 class InvestigationReport(StrictModel):
     schema_version: Literal["1.0"] = "1.0"
+    model_decision_sha256: str | None = None
+    score_mode: Literal["legacy", "xgboost_only"] = "legacy"
     status: ReportStatus
     transaction_id: TransactionId | None = None
     dataset_source: DatasetSource | None = None
@@ -84,6 +86,14 @@ class InvestigationReport(StrictModel):
     issues: list[InvestigationIssue] = Field(default_factory=list)
     unavailable_capabilities: list[CapabilityGap] = Field(default_factory=list)
     limitations: list[str] = Field(default_factory=list)
+
+    @model_serializer(mode="wrap")
+    def serialize_decision(self, handler):
+        value = handler(self)
+        if self.score_mode == "legacy" and self.model_decision_sha256 is None:
+            value.pop("score_mode", None)
+            value.pop("model_decision_sha256", None)
+        return value
 
     @model_validator(mode="after")
     def status_matches_sections(self) -> "InvestigationReport":
@@ -148,10 +158,12 @@ class InvestigationWorkflow:
         risk_tool: RiskModelTool,
         *,
         graph_service: GraphRiskService | None = None,
+        model_decision_sha256: str | None = None,
         clock: Callable[[], datetime] | None = None,
         monotonic_ns: Callable[[], int] | None = None,
         investigation_id_factory: Callable[[], str] | None = None,
     ) -> None:
+        self.model_decision_sha256 = model_decision_sha256
         self.risk_tool = risk_tool
         self.graph_service = graph_service
         self.repository = risk_tool.repository
@@ -310,7 +322,9 @@ class InvestigationWorkflow:
             evidence_bindings=bindings,
             issues=issues,
             unavailable_capabilities=unavailable,
-            limitations=self._limitations(transaction.dataset_source, graph.status),
+            model_decision_sha256=self.model_decision_sha256,
+            score_mode="xgboost_only" if self.model_decision_sha256 else "legacy",
+            limitations=self._limitations(transaction.dataset_source, graph.status, bool(self.model_decision_sha256)),
         )
         return InvestigationRun(
             report=report,
@@ -391,19 +405,24 @@ class InvestigationWorkflow:
         )
 
     @staticmethod
-    def _limitations(dataset_source: DatasetSource, graph_status: ToolStatus) -> list[str]:
+    def _limitations(dataset_source: DatasetSource, graph_status: ToolStatus, experimental: bool = False) -> list[str]:
         limitations = [
             "The tabular risk score is not a calibrated fraud probability.",
             "Shared modeled entities do not establish a verified person or fraud conclusion.",
             "This workflow is read-only and does not execute enforcement actions.",
         ]
-        if graph_status == "ok":
+        if experimental:
+            limitations.extend([
+                "The primary risk score is the pinned Stage02 XGBoost score; no fusion is used.",
+                "GraphSAGE scores are experimental, uncalibrated signals and are not the primary risk score.",
+            ])
+        if graph_status == "ok" and not experimental:
             limitations.extend([
                 "GraphSAGE neighbor scores and same-ID fusion scores are not calibrated fraud probabilities.",
                 "The controlled XGBoost score used in fusion differs from the Stage 02 service score.",
                 "High-scoring neighbors are model signals, not confirmed fraud cases.",
             ])
-        else:
+        elif graph_status != "ok":
             limitations.append(
                 "Graph risk evidence is unavailable for this request; other evidence remains independent."
             )

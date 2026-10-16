@@ -1,0 +1,19 @@
+version: 1
+cases:
+  - {id: normal, scenario: normal, expected_status: verified, policy_attempts: 1, generation_attempts: 1}
+  - {id: no_policy, scenario: no_policy, expected_status: insufficient_evidence, policy_attempts: 1, generation_attempts: 0}
+  - {id: pre_effective_policy_date, scenario: old_policy_date, expected_status: insufficient_evidence, policy_attempts: 1, generation_attempts: 0}
+  - {id: stale_version_injected, scenario: stale_version, expected_status: generation_error, policy_attempts: 1, generation_attempts: 1}
+  - {id: injected_action, scenario: injected_action, expected_status: generation_error, policy_attempts: 1, generation_attempts: 1}
+  - {id: model_unavailable, scenario: model_unavailable, expected_status: generation_error, policy_attempts: 1, generation_attempts: 2}
+  - {id: model_retry_success, scenario: model_retry_success, expected_status: verified, policy_attempts: 1, generation_attempts: 2}
+  - {id: retrieval_retry_success, scenario: retrieval_retry_success, expected_status: verified, policy_attempts: 2, generation_attempts: 1}
+  - {id: retrieval_permanent, scenario: retrieval_permanent, expected_status: retrieval_error, policy_attempts: 1, generation_attempts: 0}
+  - {id: partial_graph, scenario: partial_graph, expected_status: partial_evidence, policy_attempts: 1, generation_attempts: 1}
+  - {id: wrong_source, scenario: wrong_source, expected_status: invalid_input, policy_attempts: 0, generation_attempts: 0}
+  - {id: invalid_tool_plan, scenario: invalid_tool_plan, expected_status: invalid_plan, policy_attempts: 0, generation_attempts: 0}
+  - {id: missing_transaction, scenario: missing_transaction, expected_status: not_found, policy_attempts: 0, generation_attempts: 0}
+  - {id: total_timeout, scenario: total_timeout, expected_status: deadline_exceeded, policy_attempts: 1, generation_attempts: 0}
+  - {id: budget_stop, scenario: budget_stop, expected_status: budget_exhausted, policy_attempts: 1, generation_attempts: 0}
+  - {id: approval_approve, scenario: approval_approve, expected_status: verified, expected_approval: approved, policy_attempts: 1, generation_attempts: 1}
+  - {id: approval_reject, scenario: approval_reject, expected_status: verified, expected_approval: rejected, policy_attempts: 1, generation_attempts: 1}

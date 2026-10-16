@@ -1,0 +1,469 @@
+version: 2
+split: frozen
+policy_corpus_sha256: 5944138255497bb595d46513a7100045363d1f35d99fd2607954567e64145513
+cases:
+- id: pending_restart_recovers
+  mechanism: restart_pending_checkpoint
+  basis: observed_stage06_gap
+  trigger: Create pending, stop API, start a new process, GET the same run.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: restart_after_pending
+  expected_tool: GET /api/v1/investigations/{run_id}
+  expected_parameters:
+    run_id: $created_run_id
+  expected_evidence: &id001
+    transaction: ok
+    risk_model: ok
+    graph: ok
+    policy: ok
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_response:
+    http_status: 200
+    branch: verified
+    approval: pending
+    error_code: null
+  invariants:
+  - same_run_id
+  - stable_report_hash
+  - no_external_action
+- id: decision_retry_after_lost_response
+  mechanism: approval_retry_after_commit
+  basis: risk_hypothesis
+  trigger: Reject is committed but the first HTTP response is lost; retry on a new process.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: drop_decision_response_then_restart
+  expected_tool: POST /api/v1/investigations/{run_id}/approval
+  expected_parameters:
+    run_id: $created_run_id
+    decision: reject
+    report_sha256: $report_sha256_before
+  expected_evidence: *id001
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_response:
+    http_status: 200
+    branch: rejected
+    approval: rejected
+    error_code: null
+  invariants:
+  - same_run_id
+  - stable_report_hash
+  - bound_decision
+  - one_decision_event
+  - no_external_action
+- id: conflicting_decisions_race
+  mechanism: opposite_decisions_concurrent
+  basis: risk_hypothesis
+  trigger: Reject wins a two-worker race; a concurrent approve must receive a conflict.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: concurrent_reject_then_approve
+  expected_tool: POST /api/v1/investigations/{run_id}/approval
+  expected_parameters:
+    run_id: $created_run_id
+    decision: approve
+    report_sha256: $report_sha256_before
+  expected_evidence: *id001
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_response:
+    http_status: 409
+    branch: approval_conflict
+    approval: rejected
+    error_code: approval_conflict
+  invariants:
+  - same_run_id
+  - stable_report_hash
+  - one_decision_event
+  - no_external_action
+- id: approval_expiry_survives_restart
+  mechanism: approval_ttl_after_restart
+  basis: risk_hypothesis
+  trigger: Restart after the 30-minute approval window and try to reject.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: restart_and_advance_clock
+      minutes: 31
+  expected_tool: POST /api/v1/investigations/{run_id}/approval
+  expected_parameters:
+    run_id: $created_run_id
+    decision: reject
+    report_sha256: $report_sha256_before
+  expected_evidence: *id001
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_response:
+    http_status: 410
+    branch: approval_expired
+    approval: expired
+    error_code: approval_expired
+  invariants:
+  - same_run_id
+  - stable_report_hash
+  - no_decision_event
+  - no_external_action
+- id: database_read_outage_fails_closed
+  mechanism: db_disconnect_during_read
+  basis: risk_hypothesis
+  trigger: Disconnect PostgreSQL during GET of a previously pending run.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: disconnect_db_on_read
+  expected_tool: GET /api/v1/investigations/{run_id}
+  expected_parameters:
+    run_id: $created_run_id
+  expected_evidence: *id001
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_response:
+    http_status: 503
+    branch: persistence_unavailable
+    approval: pending
+    error_code: persistence_unavailable
+  invariants:
+  - same_run_id
+  - stable_report_hash
+  - no_decision_event
+  - no_external_action
+- id: database_write_interrupt_no_orphan_pending
+  mechanism: db_write_between_checkpoint_and_publish
+  basis: risk_hypothesis
+  trigger: Interrupt database write after report generation but before pending is public.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: interrupt_db_write_before_publish
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_evidence: *id001
+  expected_policy_chunks: []
+  expected_response:
+    http_status: 503
+    branch: persistence_unavailable
+    approval: none
+    error_code: persistence_unavailable
+  invariants:
+  - no_orphan_pending
+  - no_external_action
+- id: creation_retry_cost_once
+  mechanism: creation_retry_cost_idempotency
+  basis: risk_hypothesis
+  trigger: Retry investigation creation after a committed run loses its response.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: drop_create_response_then_retry
+      idempotency_key: stage07-cost-v2
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+    idempotency_key: stage07-cost-v2
+  expected_evidence: *id001
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_response:
+    http_status: 200
+    branch: verified
+    approval: pending
+    error_code: null
+  invariants:
+  - same_run_id
+  - stable_report_hash
+  - cost_once
+  - no_external_action
+- id: policy_superseded_version_excluded
+  mechanism: policy_effective_version_filter
+  basis: controlled_fault
+  trigger: On the V1/V2 boundary, retrieve shared-device handling policy as of 2026-07-01.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: retrieve_shared_device_policy
+      query: 共享设备 处理边界
+  expected_tool: retrieve_policy
+  expected_parameters:
+    query: 共享设备 处理边界
+    policy_as_of: '2026-07-01'
+    top_k: 3
+  expected_evidence:
+    transaction: ok
+    risk_model: ok
+    graph: ok
+    policy: v2_active
+  expected_policy_chunks:
+  - policy-568d34751e7152dedfa624bd
+  expected_response:
+    http_status: 201
+    branch: verified
+    approval: pending
+    error_code: null
+  invariants:
+  - no_stale_policy
+  - no_external_action
+- id: policy_chunk_hash_tamper_rejected
+  mechanism: policy_source_hash_mismatch
+  basis: risk_hypothesis
+  trigger: Alter stored policy text or hash without changing the frozen corpus identity.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: tamper_policy_content_sha256
+  expected_tool: retrieve_policy
+  expected_parameters:
+    policy_as_of: '2026-07-01'
+    top_k: 3
+  expected_evidence:
+    transaction: ok
+    risk_model: ok
+    graph: ok
+    policy: invalid
+  expected_policy_chunks: []
+  expected_response:
+    http_status: 503
+    branch: policy_retrieval_unavailable
+    approval: none
+    error_code: policy_retrieval_unavailable
+  invariants:
+  - no_unverified_citation
+  - no_external_action
+  expected_tool_error_code: policy_source_mismatch
+- id: embedding_dimension_mismatch_rejected
+  mechanism: query_vector_dimension_mismatch
+  basis: risk_hypothesis
+  trigger: Query a 1024-dimensional index with a 1023-dimensional vector.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: wrong_query_embedding_dimensions
+      dimensions: 1023
+  expected_tool: retrieve_policy
+  expected_parameters:
+    policy_as_of: '2026-07-01'
+    top_k: 3
+    embedding_dimensions: 1023
+  expected_evidence:
+    transaction: ok
+    risk_model: ok
+    graph: ok
+    policy: invalid
+  expected_policy_chunks: []
+  expected_response:
+    http_status: 503
+    branch: policy_retrieval_unavailable
+    approval: none
+    error_code: policy_retrieval_unavailable
+  invariants:
+  - no_unverified_citation
+  - no_external_action
+  expected_tool_error_code: embedding_dimension_mismatch
+- id: empty_graph_neighbors_not_fraud_ring
+  mechanism: graph_valid_empty_neighbors
+  basis: observed_stage06_gap
+  trigger: Fixed held-out transaction has a graph score but zero eligible historical neighbors.
+  input:
+    request:
+      transaction_id: '3488959'
+      dataset_source: ieee_cis
+      policy_as_of: '2025-12-31'
+      relation_limit: 3
+    fault:
+      kind: fixed_heldout_zero_neighbors
+  expected_tool: find_risky_neighbors
+  expected_parameters:
+    transaction_id: '3488959'
+    dataset_source: ieee_cis
+    limit: 3
+  expected_evidence:
+    transaction: ok
+    risk_model: ok
+    graph: ok_empty
+    policy: no_active
+  expected_policy_chunks: []
+  expected_response:
+    http_status: 201
+    branch: insufficient_evidence
+    approval: none
+    error_code: null
+  invariants:
+  - zero_neighbors
+  - no_invented_relation
+  - no_external_action
+- id: graph_service_failure_is_partial
+  mechanism: graph_unavailable_not_empty
+  basis: controlled_fault
+  trigger: Graph service fails after transaction and risk model succeed.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: graph_service_unavailable
+  expected_tool: find_risky_neighbors
+  expected_parameters:
+    transaction_id: T3
+    dataset_source: synthetic
+    limit: 3
+  expected_evidence:
+    transaction: ok
+    risk_model: ok
+    graph: unavailable
+    policy: ok
+  expected_policy_chunks:
+  - policy-de085f3a3a86c56432a259a5
+  expected_response:
+    http_status: 201
+    branch: partial_evidence
+    approval: none
+    error_code: null
+  invariants:
+  - no_graph_score
+  - no_external_action
+- id: trace_links_create_read_approval
+  mechanism: request_trace_continuity
+  basis: risk_hypothesis
+  trigger: Create, GET and reject through three HTTP requests; link them by one run ID.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: three_request_trace
+  expected_tool: POST /api/v1/investigations/{run_id}/approval
+  expected_parameters:
+    run_id: $created_run_id
+    decision: reject
+    report_sha256: $report_sha256_before
+  expected_evidence: *id001
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_response:
+    http_status: 200
+    branch: rejected
+    approval: rejected
+    error_code: null
+  invariants:
+  - same_run_id
+  - bound_decision
+  - trace_linked
+  - no_external_action
+- id: model_connect_failure_bounded
+  mechanism: model_connection_unavailable
+  basis: controlled_fault
+  trigger: All local model connection attempts fail within the configured budget.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: model_connect_error
+  expected_tool: generate_report
+  expected_parameters:
+    model_id: qwen2.5:0.5b
+    max_attempts: 2
+  expected_evidence:
+    transaction: ok
+    risk_model: ok
+    graph: ok
+    policy: ok
+    model_generation: unavailable
+  expected_policy_chunks: []
+  expected_response:
+    http_status: 503
+    branch: generation_unavailable
+    approval: none
+    error_code: generation_unavailable
+  invariants:
+  - bounded_model_attempts
+  - no_external_action
+- id: model_deadline_bounded
+  mechanism: model_response_timeout
+  basis: risk_hypothesis
+  trigger: The model does not answer before the total run deadline.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: model_response_after_deadline
+  expected_tool: generate_report
+  expected_parameters:
+    model_id: qwen2.5:0.5b
+    max_total_seconds: 60
+  expected_evidence:
+    transaction: ok
+    risk_model: ok
+    graph: ok
+    policy: ok
+    model_generation: timeout
+  expected_policy_chunks: []
+  expected_response:
+    http_status: 504
+    branch: deadline_exceeded
+    approval: none
+    error_code: deadline_exceeded
+  invariants:
+  - bounded_model_attempts
+  - no_external_action

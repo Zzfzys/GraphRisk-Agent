@@ -29,7 +29,7 @@ def test_stage05_config_binds_existing_ieee_sources_and_ignored_outputs() -> Non
     assert config.generation.provider == "local_http"
     assert config.generation.model_id == "qwen2.5:0.5b"
     assert config.generation.model_revision.startswith("a8b0c5157701")
-    assert config.graph_comparison_run == "same-id-v4"
+    assert config.graph_comparison_run == "stage05-route8"
     assert config.resolve_path(config.paths.policy_source_dir) == (
         Path.cwd() / "data/policies/stage05"
     ).resolve()
@@ -160,3 +160,28 @@ def test_policy_date_is_explicit_and_not_ieee_transaction_time() -> None:
         Stage05Request.model_validate(
             {"transaction_id": "", "dataset_source": "ieee_cis", "policy_as_of": "2026-09-24"}
         )
+
+def test_compose_host_ollama_is_exactly_scoped_and_keeps_model_digest(raw_config) -> None:
+    original = load_stage05_config("configs/stage05.yaml")
+    compose = load_stage05_config("configs/stage06_compose.yaml")
+    assert compose.generation.provider == "host_ollama"
+    assert compose.generation.endpoint == "http://host.docker.internal:11434/api/generate"
+    assert (compose.generation.model_id, compose.generation.model_revision) == (
+        original.generation.model_id, original.generation.model_revision)
+    for endpoint in (
+        "http://example.com:11434/api/generate",
+        "http://127.0.0.1:11434/api/generate",
+        "https://host.docker.internal:11434/api/generate",
+        "http://host.docker.internal:1234/api/generate",
+        "http://host.docker.internal:11434/other",
+        "http://user:secret@host.docker.internal:11434/api/generate",
+        "http://host.docker.internal:11434/api/generate?x=1",
+    ):
+        candidate = deepcopy(raw_config)
+        candidate["generation"].update(provider="host_ollama", endpoint=endpoint)
+        with pytest.raises(ValidationError):
+            Stage05Config.model_validate(candidate)
+    candidate = deepcopy(raw_config)
+    candidate["generation"]["endpoint"] = compose.generation.endpoint
+    with pytest.raises(ValidationError, match="loopback HTTP"):
+        Stage05Config.model_validate(candidate)

@@ -1,0 +1,812 @@
+version: 1
+base_request:
+  transaction_id: T3
+  dataset_source: synthetic
+  policy_as_of: '2026-07-01'
+  relation_limit: 3
+cases:
+- id: input_missing_id
+  group: input_time_source
+  scenario: invalid_input
+  override:
+    transaction_id: null
+  expected:
+    http_status: 422
+    branch: invalid_request
+    approval: none
+    runner_calls: 0
+  input:
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: invalid_request
+- id: input_empty_id
+  group: input_time_source
+  scenario: invalid_input
+  override:
+    transaction_id: ''
+  expected:
+    http_status: 422
+    branch: invalid_request
+    approval: none
+    runner_calls: 0
+  input:
+    transaction_id: ''
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      transaction_id: ''
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: invalid_request
+- id: input_whitespace_id
+  group: input_time_source
+  scenario: invalid_input
+  override:
+    transaction_id: '   '
+  expected:
+    http_status: 422
+    branch: invalid_request
+    approval: none
+    runner_calls: 0
+  input:
+    transaction_id: '   '
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      transaction_id: '   '
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: invalid_request
+- id: input_timestamp_date
+  group: input_time_source
+  scenario: invalid_input
+  override:
+    policy_as_of: '2026-07-01T00:00:00'
+  expected:
+    http_status: 422
+    branch: invalid_request
+    approval: none
+    runner_calls: 0
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01T00:00:00'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01T00:00:00'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: invalid_request
+- id: input_impossible_date
+  group: input_time_source
+  scenario: invalid_input
+  override:
+    policy_as_of: '2026-02-30'
+  expected:
+    http_status: 422
+    branch: invalid_request
+    approval: none
+    runner_calls: 0
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-02-30'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-02-30'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: invalid_request
+- id: input_source_mismatch
+  group: input_time_source
+  scenario: invalid_input
+  override:
+    dataset_source: ieee_cis
+  expected:
+    http_status: 422
+    branch: dataset_source_mismatch
+    approval: none
+    runner_calls: 0
+  input:
+    transaction_id: T3
+    dataset_source: ieee_cis
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: ieee_cis
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: dataset_source_mismatch
+- id: input_bool_relation
+  group: input_time_source
+  scenario: invalid_input
+  override:
+    relation_limit: true
+  expected:
+    http_status: 422
+    branch: invalid_request
+    approval: none
+    runner_calls: 0
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: true
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: true
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: invalid_request
+- id: input_relation_over_cap
+  group: input_time_source
+  scenario: invalid_input
+  override:
+    relation_limit: 51
+  expected:
+    http_status: 422
+    branch: invalid_request
+    approval: none
+    runner_calls: 0
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 51
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 51
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: invalid_request
+- id: api_all_dependencies_ready
+  group: api_ui
+  scenario: ready_all
+  expected:
+    http_status: 200
+    branch: ready
+    approval: none
+    runner_calls: 0
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: GET /api/v1/ready
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: null
+- id: api_ollama_unavailable
+  group: model_failure
+  scenario: ready_ollama_down
+  expected:
+    http_status: 503
+    branch: not_ready
+    approval: none
+    runner_calls: 0
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: GET /api/v1/ready
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: not_ready
+- id: api_refresh_no_rerun
+  group: api_ui
+  scenario: reread
+  expected:
+    http_status: 200
+    branch: verified
+    approval: pending
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: GET /api/v1/investigations/{run_id}
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: null
+- id: api_foreign_instance
+  group: api_ui
+  scenario: foreign_run
+  expected:
+    http_status: 410
+    branch: run_instance_mismatch
+    approval: none
+    runner_calls: 0
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: GET /api/v1/investigations/{run_id}
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: run_instance_mismatch
+- id: evidence_current_citation
+  group: retrieval_citation
+  scenario: current_citation
+  expected:
+    http_status: 201
+    branch: verified
+    approval: pending
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: null
+- id: evidence_no_raw_fields
+  group: retrieval_citation
+  scenario: safe_projection
+  expected:
+    http_status: 201
+    branch: verified
+    approval: pending
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: null
+- id: evidence_uncalibrated_scores
+  group: model_failure
+  scenario: score_disclaimer
+  expected:
+    http_status: 201
+    branch: verified
+    approval: pending
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: null
+- id: evidence_graph_partial
+  group: graph_partial
+  scenario: partial_graph
+  expected:
+    http_status: 201
+    branch: partial_evidence
+    approval: pending
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks:
+  - policy-de085f3a3a86c56432a259a5
+  expected_failure: null
+- id: evidence_no_policy_approval
+  group: retrieval_citation
+  scenario: no_policy
+  expected:
+    http_status: 201
+    branch: insufficient_evidence
+    approval: none
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: null
+- id: evidence_old_date_no_citation
+  group: retrieval_citation
+  scenario: old_policy_date
+  override:
+    policy_as_of: '2025-12-31'
+  expected:
+    http_status: 201
+    branch: insufficient_evidence
+    approval: none
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2025-12-31'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2025-12-31'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: null
+- id: evidence_no_policy_skips_model
+  group: model_failure
+  scenario: no_policy_skips_model
+  expected:
+    http_status: 201
+    branch: insufficient_evidence
+    approval: none
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: null
+- id: approval_accept_no_action
+  group: approval
+  scenario: approve
+  expected:
+    http_status: 200
+    branch: approved
+    approval: approved
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations/{run_id}/approval
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: current
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: null
+- id: approval_reject_no_action
+  group: approval
+  scenario: reject
+  expected:
+    http_status: 200
+    branch: rejected
+    approval: rejected
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations/{run_id}/approval
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: current
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: null
+- id: approval_exact_replay
+  group: approval
+  scenario: exact_replay
+  expected:
+    http_status: 200
+    branch: rejected
+    approval: rejected
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations/{run_id}/approval
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: current
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: null
+- id: approval_opposite_conflict
+  group: approval
+  scenario: opposite_conflict
+  expected:
+    http_status: 409
+    branch: approval_conflict
+    approval: rejected
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations/{run_id}/approval
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: current
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: approval_conflict
+- id: approval_wrong_session
+  group: approval
+  scenario: wrong_session
+  expected:
+    http_status: 409
+    branch: approval_binding_mismatch
+    approval: pending
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations/{run_id}/approval
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: current
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: approval_binding_mismatch
+- id: approval_wrong_transaction
+  group: approval
+  scenario: wrong_transaction
+  expected:
+    http_status: 409
+    branch: approval_binding_mismatch
+    approval: pending
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations/{run_id}/approval
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: current
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: approval_binding_mismatch
+- id: approval_wrong_hash
+  group: approval
+  scenario: wrong_hash
+  expected:
+    http_status: 409
+    branch: approval_binding_mismatch
+    approval: pending
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations/{run_id}/approval
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: current
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: approval_binding_mismatch
+- id: approval_wrong_url_run
+  group: approval
+  scenario: wrong_url_run
+  expected:
+    http_status: 409
+    branch: approval_run_mismatch
+    approval: pending
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations/{run_id}/approval
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: current
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: approval_run_mismatch
+- id: approval_without_report
+  group: approval
+  scenario: no_report_approval
+  expected:
+    http_status: 409
+    branch: approval_not_available
+    approval: none
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: GET /api/v1/investigations/{run_id}/approval
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: current
+  expected_policy_chunks: []
+  expected_failure: approval_not_available
+- id: approval_window_expired
+  group: approval
+  scenario: approval_expired
+  expected:
+    http_status: 410
+    branch: approval_expired
+    approval: expired
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: POST /api/v1/investigations/{run_id}/approval
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: current
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: approval_expired
+- id: ui_verified_evidence
+  group: api_ui
+  scenario: ui_verified
+  expected:
+    http_status: 201
+    branch: verified
+    approval: pending
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: UI create → API create/get
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: null
+- id: ui_no_policy_warning
+  group: api_ui
+  scenario: ui_no_policy
+  expected:
+    http_status: 201
+    branch: insufficient_evidence
+    approval: none
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: UI create → API create/get
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks: []
+  expected_failure: null
+- id: ui_partial_graph_warning
+  group: graph_partial
+  scenario: ui_partial_graph
+  expected:
+    http_status: 201
+    branch: partial_evidence
+    approval: pending
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: UI create → API create/get
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks:
+  - policy-de085f3a3a86c56432a259a5
+  expected_failure: null
+- id: ui_rerun_does_not_create
+  group: api_ui
+  scenario: ui_rerun
+  expected:
+    http_status: 201
+    branch: verified
+    approval: pending
+    runner_calls: 1
+  input:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_tool: UI create → API create/get
+  expected_parameters:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    run_binding: none
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_failure: null
+real_samples:
+- id: real_current_policy
+  transaction_id: '3488959'
+  policy_as_of: '2026-07-01'
+  relation_limit: 3
+- id: real_pre_policy
+  transaction_id: '3488959'
+  policy_as_of: '2025-12-31'
+  relation_limit: 3
+- id: real_relation_limit_one
+  transaction_id: '3488959'
+  policy_as_of: '2026-07-01'
+  relation_limit: 1

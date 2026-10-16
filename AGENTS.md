@@ -9,6 +9,7 @@ Build a portfolio-grade fraud investigation Agent for LLM/Agent application engi
 - Python 3.11 only;
 - Use uv and the checked-in `uv.lock`;
 - Keep uv cache, managed Python, and the virtual environment inside the repository;
+- Before running project commands in a Windows PowerShell process, dot-source scripts/enter_project_env.ps1 to keep TEMP/TMP and pip/uv caches inside the repository. Repeat for each new shell process; do not change system-wide temporary directories or delete application runtimes;
 - Run tests with `uv run --offline pytest` after dependencies are synchronized;
 - Do not introduce a new framework when an existing dependency covers the requirement.
 

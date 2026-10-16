@@ -416,7 +416,7 @@ def compare_same_ids(
     metadata = {
         "dataset_source": config.dataset_source,
         "graph_manifest_sha256": store.manifest["content_sha256"],
-        "graph_model_path": str(model_path),
+        "graph_model_path": model_path.relative_to(artifact_root).as_posix(),
         "graph_model_sha256": _sha256(model_path),
         "graph_training_seconds": graph_metadata["training_seconds"],
         "graph_model_size_bytes": model_path.stat().st_size,

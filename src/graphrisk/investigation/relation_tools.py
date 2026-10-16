@@ -193,18 +193,21 @@ def find_risky_neighbors(
                     EntityRef(entity_type=entity_type, entity_id=entity_id)
                     for entity_type, entity_id in match.shared_entities
                 ],
+                evidence_role=getattr(match,"evidence_role","scored"),
+                score_unavailable_reason=getattr(match,"score_unavailable_reason",None),
             )
             for match in matches
         ]
         data = RiskyNeighborsData(
             transaction_id=request.transaction_id,
             neighbors=neighbors,
-            graph_model_version=graph_service.model_version,
+            graph_model_version=target_prediction.graph_model_version,
             target_graph_risk_score=target_prediction.graph_risk_score,
             controlled_xgboost_score=target_prediction.controlled_xgboost_score,
             controlled_xgboost_model_version=target_prediction.controlled_xgboost_model_version,
             fusion_score=target_prediction.fusion_score,
             fusion_alpha=target_prediction.fusion_alpha,
+            score_role=target_prediction.score_role,
         )
     except ArtifactUnavailableError:
         return failed("transaction_artifact_unavailable")
@@ -222,14 +225,14 @@ def find_risky_neighbors(
         evidence=[
             EvidenceRef(
                 source_kind="model_artifact",
-                record_id=graph_service.model_version,
+                record_id=target_prediction.graph_model_version,
                 dataset_source=request.dataset_source,
             ),
-            EvidenceRef(
+            *([EvidenceRef(
                 source_kind="model_artifact",
                 record_id=target_prediction.controlled_xgboost_model_version,
                 dataset_source=request.dataset_source,
-            ),
+            )] if target_prediction.controlled_xgboost_model_version is not None else []),
             *[
                 EvidenceRef(
                     source_kind="entity_link",

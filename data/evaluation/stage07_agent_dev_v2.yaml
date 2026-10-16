@@ -1,0 +1,95 @@
+version: 2
+split: development
+policy_corpus_sha256: 5944138255497bb595d46513a7100045363d1f35d99fd2607954567e64145513
+cases:
+- id: dev_db_reconnect_replay
+  mechanism: db_reconnect_idempotency_development
+  basis: risk_hypothesis
+  trigger: Bring PostgreSQL back after a failed read and retry the same run.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: disconnect_then_reconnect_db
+  expected_tool: GET /api/v1/investigations/{run_id}
+  expected_parameters:
+    run_id: $created_run_id
+  expected_evidence: &id001
+    transaction: ok
+    risk_model: ok
+    graph: ok
+    policy: ok
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_response:
+    http_status: 200
+    branch: verified
+    approval: pending
+    error_code: null
+  invariants:
+  - same_run_id
+  - stable_report_hash
+  - no_external_action
+- id: dev_policy_cross_index_version
+  mechanism: policy_index_version_development
+  basis: risk_hypothesis
+  trigger: Attempt to cite a chunk from a different index version.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: cross_index_citation
+  expected_tool: retrieve_policy
+  expected_parameters:
+    policy_as_of: '2026-07-01'
+    top_k: 3
+  expected_evidence:
+    transaction: ok
+    risk_model: ok
+    graph: ok
+    policy: invalid
+  expected_policy_chunks: []
+  expected_response:
+    http_status: 503
+    branch: policy_retrieval_unavailable
+    approval: none
+    error_code: policy_retrieval_unavailable
+  invariants:
+  - no_unverified_citation
+  - no_external_action
+  expected_tool_error_code: policy_index_mismatch
+- id: dev_trace_missing_tool_event
+  mechanism: trace_tool_gap_development
+  basis: risk_hypothesis
+  trigger: Drop one tool event from an otherwise successful investigation trace.
+  input:
+    request:
+      transaction_id: T3
+      dataset_source: synthetic
+      policy_as_of: '2026-07-01'
+      relation_limit: 3
+    fault:
+      kind: drop_one_tool_event
+  expected_tool: POST /api/v1/investigations
+  expected_parameters:
+    transaction_id: T3
+    dataset_source: synthetic
+    policy_as_of: '2026-07-01'
+    relation_limit: 3
+  expected_evidence: *id001
+  expected_policy_chunks:
+  - policy-97f6eb79d2a992d3cc2fd187
+  expected_response:
+    http_status: 500
+    branch: trace_incomplete
+    approval: none
+    error_code: trace_incomplete
+  invariants:
+  - trace_gap_detected
+  - no_external_action

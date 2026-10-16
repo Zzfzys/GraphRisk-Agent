@@ -23,10 +23,10 @@ sampling:
 training:
   model_version: graphsage-v1
   random_seed: 20260921
-  batch_size: 128
+  batch_size: 256
   hidden_channels: 64
   dropout: 0.20
   learning_rate: 0.001
-  max_epochs: 20
-  early_stopping_patience: 4
+  max_epochs: 50
+  early_stopping_patience: 20
   device: auto

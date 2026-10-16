@@ -1,0 +1,13 @@
+measurement:
+  endpoint: http://127.0.0.1:11434
+  context_length: 4096
+  output_tokens: 512
+  timeout_seconds: 60.0
+  warm_repeats: 5
+models:
+- model: qwen2.5:0.5b
+  digest: a8b0c51577010a279d933d14c2a8ab4b268079d44c5c8830c0a93900f1827c67
+- model: qwen3:4b
+  digest: 359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7
+suite: data/evaluation/stage08/local_feasibility_smoke.json
+suite_sha256: 6ffe2f355e4f46f5021746d4ec66983408e4bf92c35b74cd2085843f961ae398

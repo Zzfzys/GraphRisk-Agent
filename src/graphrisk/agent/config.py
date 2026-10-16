@@ -30,7 +30,7 @@ class Stage05Paths(StrictConfig):
 
 
 class Stage05Generation(StrictConfig):
-    provider: Literal["unconfigured", "fake", "local_http", "api"]
+    provider: Literal["unconfigured", "fake", "local_http", "host_ollama", "api"]
     model_id: str | None = None
     model_revision: str | None = None
     endpoint: str | None = None
@@ -59,25 +59,44 @@ class Stage05Generation(StrictConfig):
         if self.provider == "local_http":
             if parsed.scheme != "http" or parsed.hostname not in {"localhost", "127.0.0.1", "::1"}:
                 raise ValueError("local_http endpoint must use loopback HTTP")
+        elif self.provider == "host_ollama":
+            if (parsed.scheme != "http" or parsed.hostname != "host.docker.internal"
+                    or parsed.port != 11434 or parsed.path != "/api/generate"):
+                raise ValueError("host_ollama endpoint must be http://host.docker.internal:11434/api/generate")
         elif parsed.scheme != "https" or not parsed.hostname:
             raise ValueError("api endpoint must use HTTPS")
         return self
 
 
 class Stage05Retrieval(StrictConfig):
-    backend: Literal["tfidf", "local_embedding"]
+    backend: Literal["tfidf", "local_embedding", "pgvector"]
     embedding_model_id: str | None = None
+    embedding_model_revision: str | None = None
+    embedding_endpoint: str | None = None
     top_k: int = Field(strict=True, ge=1, le=20)
 
     @model_validator(mode="after")
     def embedding_model_matches_backend(self) -> "Stage05Retrieval":
-        if self.backend == "local_embedding" and (
-            self.embedding_model_id is None or not self.embedding_model_id.strip()
-        ):
-            raise ValueError("local_embedding retrieval requires embedding_model_id")
-        if self.backend == "tfidf" and self.embedding_model_id is not None:
-            raise ValueError("tfidf retrieval cannot declare embedding_model_id")
+        if self.backend in {"local_embedding", "pgvector"}:
+            if not self.embedding_model_id or not self.embedding_model_id.strip():
+                raise ValueError("local_embedding retrieval requires embedding_model_id")
+            if not self.embedding_model_revision or not re.fullmatch(r"[a-f0-9]{64}", self.embedding_model_revision):
+                raise ValueError("local_embedding retrieval requires a 64-character model digest")
+            if not self.embedding_endpoint:
+                raise ValueError("local_embedding retrieval requires embedding_endpoint")
+            parsed = urlsplit(self.embedding_endpoint)
+            local = parsed.hostname in {"localhost", "127.0.0.1", "::1"}
+            docker_host = parsed.hostname == "host.docker.internal" and parsed.port == 11434
+            if (parsed.scheme != "http" or not (local or docker_host) or parsed.username
+                    or parsed.password or parsed.query or parsed.fragment or parsed.path not in ("", "/")):
+                raise ValueError("embedding_endpoint must use loopback HTTP or http://host.docker.internal:11434")
+        elif any(value is not None for value in (self.embedding_model_id, self.embedding_model_revision, self.embedding_endpoint)):
+            raise ValueError("tfidf retrieval cannot declare embedding model or endpoint")
         return self
+
+    @property
+    def index_backend(self) -> Literal["tfidf", "local_embedding"]:
+        return "local_embedding" if self.backend == "pgvector" else self.backend
 
 
 class Stage05Limits(StrictConfig):
@@ -102,6 +121,9 @@ class Stage05Config(StrictConfig):
     project_name: str
     dataset_source: DatasetSource
     graph_comparison_run: str
+    report_mode: Literal["legacy", "quality_v1"] = "legacy"
+    model_policy: Path | None = None
+    model_policy_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
     paths: Stage05Paths
     generation: Stage05Generation
     retrieval: Stage05Retrieval
@@ -124,6 +146,10 @@ class Stage05Config(StrictConfig):
         return (path if path.is_absolute() else self._project_root / path).resolve()
 
     def validate_paths(self) -> None:
+        if (self.model_policy is None) != (self.model_policy_sha256 is None):
+            raise ValueError("model_policy and its SHA256 must be declared together")
+        if self.model_policy is not None and not self.resolve_path(self.model_policy).is_relative_to(self._project_root / "artifacts"):
+            raise ValueError("model_policy must reside under artifacts")
         source_root = (self._project_root / "data" / "policies").resolve()
         if not self.resolve_path(self.paths.policy_source_dir).is_relative_to(source_root):
             raise ValueError("Stage 05 policy_source_dir must reside under data/policies")
