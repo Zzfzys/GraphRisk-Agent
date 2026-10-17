@@ -71,3 +71,10 @@ workflow为 `.github/workflows/stage09-regression.yml`：PR、main/master/codex�
 本人交付依赖表、一条失败/修复记录和自己的解释；材料就绪不代表L6学习完成。
 
 当前实际验收见[原路线6报告](../../reports/stage-09-route-6-ci.md)：Windows/Linux各815 passed/1平台skip，真库24/0，15机制探针、核心91/UI3通过。Git自动换行保护冻结文件；宽表失败场景同时覆盖LF与CRLF，业务数据管线/模型权重未改。远程Actions与L6本人学习仍Pending。
+
+
+## 2026-10-17：云端相对解释器路径
+
+首轮真实 Actions 的 CPU、隔离数据库、wheel 和镜像通过，两个独立 GraphRAG 任务在启动解释器前失败。`--python projects/.../.venv/bin/python` 必须先相对调用者当前目录转成绝对路径，再让子进程切换到报告目录。使用 abspath，不能 resolve 掉 Linux virtualenv 的 Python 符号链接，否则会脱离所选虚拟环境。新增实际创建无 pip 虚拟环境、从另一个目录启动并核对 sys.prefix 的回归；无需网络或真实模型。
+
+首轮失败证据保留：[Actions 39014968083](https://github.com/Zzfzys/GraphRisk-Agent/actions/runs/39014968083)。修复后的完整远程结果以路线6验收最新记录为准，不将首次失败改写成通过。

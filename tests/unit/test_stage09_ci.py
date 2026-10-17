@@ -91,3 +91,24 @@ def test_test_owned_ephemeral_listener_is_allowed_but_existing_services_are_bloc
         listener.bind(("127.0.0.1", 0))
         guard.guard_address(listener.getsockname())
         with pytest.raises(ConnectionRefusedError): guard.guard_address(("127.0.0.1", 11434))
+
+
+def test_relative_python_keeps_virtualenv_when_child_changes_directory(tmp_path, monkeypatch):
+    import venv
+
+    runtime = tmp_path / "selected-runtime"
+    venv.EnvBuilder(with_pip=False, symlinks=os.name != "nt").create(runtime)
+    executable = runtime / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+    monkeypatch.chdir(tmp_path)
+    selected = ci.absolute_interpreter(executable.relative_to(tmp_path))
+    elsewhere = tmp_path / "report-output"
+    elsewhere.mkdir()
+    code = (
+        "import pathlib,sys; "
+        "assert pathlib.Path(sys.prefix) == pathlib.Path(" + repr(str(runtime)) + "); "
+        "assert pathlib.Path.cwd() == pathlib.Path(" + repr(str(elsewhere)) + ")"
+    )
+    # Resolving bin/python's symlink would lose sys.prefix on Linux; leaving it
+    # relative would fail to start after cwd changes, as in the first remote run.
+    ci.run([selected, "-c", code], cwd=elsewhere, env=os.environ.copy(),
+           log=tmp_path / "interpreter-probe.txt")

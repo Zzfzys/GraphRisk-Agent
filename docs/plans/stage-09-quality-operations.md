@@ -193,3 +193,10 @@
 从集成提交独立干净检出后，278 Python AST、47 冻结文件字节往返、Windows CPU 815 passed/1 符号链接权限 skip、真库 24 零 skip 及 15 受限账号机制探针、GraphRAG 91+3、两个 wheel 通过。复用锁定的 E 盘环境，源码导入来自检出；不宣称冷缓存安装或本轮新镜像验证。Git 行尾规范化后的检出指纹 b1009e… 与原始字节 a80fccc… 分开记录；最终文档提交不改变已测运行代码树。
 
 无 Git 远端、无推送、无远程 run URL；下一步是核对远端和公开边界并补路线 6 远程证据。原路线 7/8 及后续 GNN 检索仍未启动。两个账本不变，原路线 6 的 435 份清单核对通过；新增真实训练/LLM/费用均 0，GNN 不晋级和本人学习 Pending 不变，Stage 09 整体仍 In Progress。
+
+
+## 2026-10-17：远程 CI 执行中，首次失败保留
+
+用户指定公开仓库 Zzfzys/GraphRisk-Agent，本机 Git 设备登录和 origin 配置完成；将 0960719 分支原样推送。推送前检查31个提交/773个blob，29个已知本地秘密值无匹配，未发现受限数据/权重载荷。
+
+[首轮远程运行](https://github.com/Zzfzys/GraphRisk-Agent/actions/runs/39014968083)的CPU、数据库、package、image成功，独立GraphRAG core/demo因相对解释器路径在切换cwd后失效而报FileNotFoundError。修复为调用者目录下的绝对路径且保留virtualenv符号链接，并补真实子进程/sys.prefix回归。正在验证并重跑，尚不能标记远程整体成功；真实数据训练/LLM/付费0，原路线7/8未启动，本人学习Pending不变。私有证据E:/GraphRisk-Agent/reports/generated/stage09/route6/20261017-github-ci-v1/。

@@ -61,6 +61,11 @@ def child_env(source, output):
     return env
 
 
+def absolute_interpreter(path):
+    """Anchor a CLI path before changing cwd, preserving the virtualenv symlink."""
+    return Path(os.path.abspath(path))
+
+
 def junit_counts(path):
     root = ET.parse(path).getroot()
     cases = list(root.iter("testcase"))
@@ -249,6 +254,8 @@ def main():
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--python", type=Path, help="independent GraphRAG core or demo interpreter")
     args = parser.parse_args()
+    if args.python:
+        args.python = absolute_interpreter(args.python)
     source = args.source.resolve()
     output = args.output_root.resolve()/args.layer
     output.mkdir(parents=True, exist_ok=False)

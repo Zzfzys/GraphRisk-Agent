@@ -55,3 +55,10 @@ Windows唯一skip是符号链接权限测试；Linux唯一skip是E盘专用生�
 [实现路线](../docs/plans/stage-09-implementation-roadmap.md)、[学习路线](../docs/plans/stage-09-learning-roadmap.md)、[阶段总纲](../docs/plans/stage-09-quality-operations.md)、[总计划](../PROJECT_PLAN.md)及[跨聊天交接](../docs/plans/stage-09-cross-chat-handoff.md)已同步。L6学习仍需本人完成，代理不代签。
 
 远程最后一项需要确认GitHub仓库、整理完整当前源码提交并实际运行，保存commit和run URL。现有大量未提交/未跟踪变更未被重置、自动提交或推送。后续路线7的可观测/漂移/新库备份恢复仍Planned；本轮临时真库测试不等于完成备份恢复。路线8和GNN关系模式检索专项未启动。
+
+
+## 2026-10-17：远程 CI 执行中，首次失败保留
+
+用户指定公开仓库 Zzfzys/GraphRisk-Agent，本机 Git 设备登录和 origin 配置完成；将 0960719 分支原样推送。推送前检查31个提交/773个blob，29个已知本地秘密值无匹配，未发现受限数据/权重载荷。
+
+[首轮远程运行](https://github.com/Zzfzys/GraphRisk-Agent/actions/runs/39014968083)的CPU、数据库、package、image成功，独立GraphRAG core/demo因相对解释器路径在切换cwd后失效而报FileNotFoundError。修复为调用者目录下的绝对路径且保留virtualenv符号链接，并补真实子进程/sys.prefix回归。正在验证并重跑，尚不能标记远程整体成功；真实数据训练/LLM/付费0，原路线7/8未启动，本人学习Pending不变。私有证据E:/GraphRisk-Agent/reports/generated/stage09/route6/20261017-github-ci-v1/。
