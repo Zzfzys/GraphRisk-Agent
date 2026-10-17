@@ -351,3 +351,8 @@ Stage09仍In Progress；L7本人Pending，原路线8及后续关系模式检索�
 最终本地851 CPU/1旧平台skip、26真库零skip、50/15模拟机制、290AST/47冻结往返/两个wheel通过；Streamlit入口和根conftest纳入源码指纹。路线7后端哈希不变、备份/12表88行/15恢复探针重新核对后复用；旧5B530闭包与两账本不变，新增真实训练/LLM/付费0。最终Git提交、推送及本提交自己的远程run单独保存 E:/GraphRisk-Agent/reports/generated/stage09/route8/20261017-final-v1/acceptance.json，不以旧CI替代。
 
 工程Done；Stage09整体In Progress，L0～L8/LB及人工实用性待本人完成。5A的30回归/10新增受限判断复核通过，但当前5B增强配置没有新真实Agent质量成绩；GNN增量0、不晋级。原路线6～8工程已收口，GNN关系模式检索等用户另行启动，Stage10仍Planned；不增加生产承诺或抹去历史失败。
+
+
+## 2026-10-17：Stage 01～09 跨阶段复测
+
+[复测证据和分层结果](../../reports/stage-01-09-recheck-20261017.md)已归档：主项目全量877/1平台skip、真库26零skip、独立91+3；数据/原API/增强真权重与177162覆盖/当前HTTP及AppTest/历史质量和账单/模型账本与恢复适用性通过。该检查不另增路线，也不重置预算；原路线6～8工程结论成立，GNN增量失败及当前增强配置没有新增真实Agent质量成绩仍保留，个人学习与人工复核Pending。
