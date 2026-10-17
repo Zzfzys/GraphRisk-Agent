@@ -78,3 +78,16 @@ workflow为 `.github/workflows/stage09-regression.yml`：PR、main/master/codex�
 首轮真实 Actions 的 CPU、隔离数据库、wheel 和镜像通过，两个独立 GraphRAG 任务在启动解释器前失败。`--python projects/.../.venv/bin/python` 必须先相对调用者当前目录转成绝对路径，再让子进程切换到报告目录。使用 abspath，不能 resolve 掉 Linux virtualenv 的 Python 符号链接，否则会脱离所选虚拟环境。新增实际创建无 pip 虚拟环境、从另一个目录启动并核对 sys.prefix 的回归；无需网络或真实模型。
 
 首轮失败证据保留：[Actions 39014968083](https://github.com/Zzfzys/GraphRisk-Agent/actions/runs/39014968083)。修复后的完整远程结果以路线6验收最新记录为准，不将首次失败改写成通过。
+
+
+## 2026-10-17：原路线 6 真实 GitHub CI 工程验收通过
+
+公开仓库为 [Zzfzys/GraphRisk-Agent](https://github.com/Zzfzys/GraphRisk-Agent)，分支 `codex/stage09-version-closeout`。[成功运行 39015632664](https://github.com/Zzfzys/GraphRisk-Agent/actions/runs/39015632664) 对应提交 `72c5078ac09849b1ca73b3ae3101389f6d99bea9`，六个任务全部 success：静态 278/冻结字节 47、CPU **816 passed / 1 平台 skip**、隔离真库 **24 passed / 0 skip** 与 **15/15** 受限账号机制探针、独立 GraphRAG **91+3**、两个 wheel 和实际无私有输入镜像构建/无网络 smoke。CPU 的 Linux skip 是 E 盘专用目录保护，不是缺 DSN；不同层分开计数，不冒充一次全量 pytest。
+
+[首轮 39014968083](https://github.com/Zzfzys/GraphRisk-Agent/actions/runs/39014968083) 的两个 GraphRAG 启动失败保留。原因是相对解释器路径在子进程换目录后失效；已修复为相对调用者定位的绝对路径，并保留 virtualenv 符号链接。15 项 CI 契约及 91+3 独立本地回归通过，云端再次全绿。网站域名连接重置/超时后，通过 GitHub Git Data API 上传相同 Git 对象，逐 blob/tree/commit 核对 SHA，非强制更新分支；没有改写历史或系统网络。
+
+收尾进一步显式配置 setup-uv 的 `cache-local-path`，避免 action 用 runner-temp 默认值覆盖仓库内缓存要求，并在现有 workflow 契约中断言。收尾提交也触发完整 CI；其最终 HEAD、run URL、任务日志和摘要哈希另存 `E:/GraphRisk-Agent/reports/generated/stage09/route6/20261017-github-ci-v1/acceptance.json`，不能把上面的 72c5078 运行误记到另一提交。
+
+原路线6工程 Done，L6本人学习及人工复核独立 Pending；Stage09整体仍 In Progress，下一步等用户启动原路线7可观测/漂移/新库备份恢复，原路线8与后续GNN检索未启动。新真实数据fit/真实LLM/付费调用均0，两个旧账本和GNN不晋级决定保留；CI不是新增真实Agent质量成绩，也不代表生产部署验收。
+
+setup-uv显式输入cache-local-path=${{ github.workspace }}/.uv-cache；enable-cache=false继续关闭GitHub缓存恢复/保存。只设全局UV_CACHE_DIR不足以覆盖action默认缓存目录。本地仍逐PowerShell加载E盘enter_project_env.ps1，环境/缓存/私有产物留E盘，不把云端临时工作区与用户C盘混为一谈。

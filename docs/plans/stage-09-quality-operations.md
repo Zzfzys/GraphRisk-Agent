@@ -1,6 +1,6 @@
 # Stage 09：真实 Agent 基线、GraphSAGE 诊断与持续质量
 
-> 状态：In Progress；路线0～5及5A已有工程证据，路线5B-0～7工程完成；2026-10-15专项端到端验收通过；增强基线三折质量Pass、GNN增量Fail/不晋级，人工复核/本人学习独立待完成；原路线6本地工程验收通过、远程CI Pending，整体尚未关闭；原路线7～8未执行。
+> 状态：In Progress；路线0～5及5A已有工程证据，路线5B-0～7工程完成；2026-10-15专项端到端验收通过；增强基线三折质量Pass、GNN增量Fail/不晋级，人工复核/本人学习独立待完成；原路线6本地及真实GitHub CI工程验收通过，L6本人学习独立Pending；原路线7～8未执行。
 > 2026-10-16 接手入口：[跨聊天交接与后续 GNN 检索方向](stage-09-cross-chat-handoff.md)。原路线6～8先完成；检索专项方向已确认、尚未启动，不加入本阶段当前验收条件。
 > 时间：Week13起按剩余工作顺延；原52h加路线5B 60h，共112h主动投入；每周20～24h，专项追加约2.5～3周
 > 前置：Stage 01～08 工程验收完成；执行前重新检查当前依赖
@@ -56,13 +56,13 @@
 - [x] 路线 5：模型决策、30+3真实同集重放、标签/审批边界和30笔零生成回滚工程通过；L5本人练习待完成。
 - [x] 路线 5A：45不同交易、开发与冻结集真实本地实测、来源/语义独立核验、API/UI与旧版回归工程通过；L5A及人工实用性复核待本人完成。
 - [x] 路线 5B（工程）：路线0～7已通过[专项总验收](../../reports/stage-09-route-5b-7-acceptance.md)，包含三折确认、条件增强、图增量决策、完整覆盖与小规模prospective；增强基线Pass，GNN增量Fail/不晋级。LB0～LB7本人学习独立Pending，不随本勾选完成。
-- [ ] 路线 6：本地分层验收通过；Windows/Linux各815/1，真库24/0与15探针、独立核心91/UI3、包/镜像通过；远程CI未运行，整体未关闭；L6本人Pending。
+- [x] 路线 6（工程）：本地及真实GitHub六任务通过；当期云端CPU816/1平台skip、真库24/0与15探针、独立核心91/UI3、包/镜像通过；L6本人学习独立Pending。
 - [ ] 路线 7：事件追踪、漂移、故障与新库备份恢复；完成 L7。
 - [ ] 路线 8：逐项验收、准确复现与 Stage10 交接；提供 L8，本人自测不代签。
 
 ## 交付物
 
-逐路线维护以下报告；路线0～5、5A及5B-0～7已有工程证据，原路线6～8仍为计划路径。5B具体交付见[专项实施路线](stage-09-route-5b-model-enhancement.md)及[总验收](../../reports/stage-09-route-5b-7-acceptance.md)，不改旧报告：
+逐路线维护以下报告；路线0～5、5A及5B-0～7已有工程证据，原路线6已有工程验收，原路线7～8仍为计划路径。5B具体交付见[专项实施路线](stage-09-route-5b-model-enhancement.md)及[总验收](../../reports/stage-09-route-5b-7-acceptance.md)，不改旧报告：
 
 1. `reports/stage-09-route-0-preflight.md`
 2. `reports/stage-09-route-1-real-agent-baseline.md`
@@ -86,7 +86,7 @@
 - [x] 候选只按训练/验证选型；封存后一次历史测试复核，不冒充全新盲测。
 - [x] 同集 Agent 重放可配对，模型变化与 Prompt/LLM 变化分开归因。
 - [x] 路线5B有独立版本/预算/时间正确实验和服务覆盖验收；基础ROC目标≥0.80通过，GNN增量与工程分别记录，图增量失败/不晋级，负结果不冒充达标；见[专项总验收](../../reports/stage-09-route-5b-7-acceptance.md)。
-- [ ] CI 有实际运行记录；缺 DSN 的 skipped 不算真库通过，未执行远程 CI 不算远程通过。
+- [x] CI 有实际GitHub run/commit/六任务成功记录；真库24项零skip及15探针，平台skip单列，失败与修复保留。
 - [ ] 单次调查可关联 API/工具/LLM 与模型版本；日志脱敏，关键错误可定位；漂移与隔离恢复有证据。
 - [ ] Stage10 收到真实结果、未完成质量项、资源限制和生产能力缺口。
 
@@ -200,3 +200,14 @@
 用户指定公开仓库 Zzfzys/GraphRisk-Agent，本机 Git 设备登录和 origin 配置完成；将 0960719 分支原样推送。推送前检查31个提交/773个blob，29个已知本地秘密值无匹配，未发现受限数据/权重载荷。
 
 [首轮远程运行](https://github.com/Zzfzys/GraphRisk-Agent/actions/runs/39014968083)的CPU、数据库、package、image成功，独立GraphRAG core/demo因相对解释器路径在切换cwd后失效而报FileNotFoundError。修复为调用者目录下的绝对路径且保留virtualenv符号链接，并补真实子进程/sys.prefix回归。正在验证并重跑，尚不能标记远程整体成功；真实数据训练/LLM/付费0，原路线7/8未启动，本人学习Pending不变。私有证据E:/GraphRisk-Agent/reports/generated/stage09/route6/20261017-github-ci-v1/。
+
+
+## 2026-10-17：原路线 6 真实 GitHub CI 工程验收通过
+
+公开仓库为 [Zzfzys/GraphRisk-Agent](https://github.com/Zzfzys/GraphRisk-Agent)，分支 `codex/stage09-version-closeout`。[成功运行 39015632664](https://github.com/Zzfzys/GraphRisk-Agent/actions/runs/39015632664) 对应提交 `72c5078ac09849b1ca73b3ae3101389f6d99bea9`，六个任务全部 success：静态 278/冻结字节 47、CPU **816 passed / 1 平台 skip**、隔离真库 **24 passed / 0 skip** 与 **15/15** 受限账号机制探针、独立 GraphRAG **91+3**、两个 wheel 和实际无私有输入镜像构建/无网络 smoke。CPU 的 Linux skip 是 E 盘专用目录保护，不是缺 DSN；不同层分开计数，不冒充一次全量 pytest。
+
+[首轮 39014968083](https://github.com/Zzfzys/GraphRisk-Agent/actions/runs/39014968083) 的两个 GraphRAG 启动失败保留。原因是相对解释器路径在子进程换目录后失效；已修复为相对调用者定位的绝对路径，并保留 virtualenv 符号链接。15 项 CI 契约及 91+3 独立本地回归通过，云端再次全绿。网站域名连接重置/超时后，通过 GitHub Git Data API 上传相同 Git 对象，逐 blob/tree/commit 核对 SHA，非强制更新分支；没有改写历史或系统网络。
+
+收尾进一步显式配置 setup-uv 的 `cache-local-path`，避免 action 用 runner-temp 默认值覆盖仓库内缓存要求，并在现有 workflow 契约中断言。收尾提交也触发完整 CI；其最终 HEAD、run URL、任务日志和摘要哈希另存 `E:/GraphRisk-Agent/reports/generated/stage09/route6/20261017-github-ci-v1/acceptance.json`，不能把上面的 72c5078 运行误记到另一提交。
+
+原路线6工程 Done，L6本人学习及人工复核独立 Pending；Stage09整体仍 In Progress，下一步等用户启动原路线7可观测/漂移/新库备份恢复，原路线8与后续GNN检索未启动。新真实数据fit/真实LLM/付费调用均0，两个旧账本和GNN不晋级决定保留；CI不是新增真实Agent质量成绩，也不代表生产部署验收。

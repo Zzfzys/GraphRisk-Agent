@@ -61,6 +61,9 @@ def test_workflow_uses_locked_layers_and_safe_artifact_allowlist():
         assert job["timeout-minutes"] > 0
         assert not job.get("continue-on-error")
         for step in job["steps"]:
+            if str(step.get("uses", "")).startswith("astral-sh/setup-uv"):
+                assert step["with"]["enable-cache"] is False
+                assert step["with"]["cache-local-path"] == "${{ github.workspace }}/.uv-cache"
             if str(step.get("uses", "")).startswith("actions/upload-artifact"):
                 assert step["with"]["path"].endswith("/public-summary.json")
     text = (ROOT/".github/workflows/stage09-regression.yml").read_text()

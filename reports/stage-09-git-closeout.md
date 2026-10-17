@@ -1,5 +1,7 @@
 # Stage 09 本地 Git 版本收口
 
+> 2026-10-17后续状态：origin已配置为Zzfzys/GraphRisk-Agent，分支已推送并通过真实GitHub CI。下面2026-10-16记录是本地收口的历史快照；旧bundle不覆盖，后续提交与运行见[路线6验收](stage-09-route-6-ci.md)。
+
 2026-10-16：本地工程收口完成。当前开发分支为 `codex/stage09-version-closeout`；Stage 05～09 积累源码已形成 Git 集成基线，并通过独立干净检出验证。远端尚未配置，未推送，GitHub Actions 未执行；原路线 6 整体仍待远程证据，Stage 09 仍为 In Progress。
 
 ## 版本与位置

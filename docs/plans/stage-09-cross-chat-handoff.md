@@ -1,6 +1,6 @@
 # Stage 09 跨聊天交接与后续 GNN 检索方向
 
-> 更新：2026-10-16。此文件保存跨聊天约定，不是新的验收报告。后续执行者应先核对当时的工作区和最新证据，再更新这里的当前状态。
+> 更新：2026-10-17。此文件保存跨聊天约定，不是新的验收报告。后续执行者应先核对当时的工作区和最新证据，再更新这里的当前状态。
 
 ## 1. 工作区与交接方式
 
@@ -10,14 +10,14 @@
 - 顺序接力时，新聊天应使用同一个当前源码工作区，并读取本文件和对应路线。不同聊天不应同时修改同一批文件。
 - 若新聊天使用另一个 worktree/分支，不要假设当前未提交、未跟踪的代码和文档已经存在；必须先核对并明确交接这些变更。不要重置、清理或覆盖现有大量本地变更。
 - 每次交接记录：已完成事项、实际验证与证据路径、未完成项、下一步、遗留进程/容器与停止方式。完成后同步阶段总纲、实现/学习路线；跨阶段变化同步 PROJECT_PLAN。
-- 本文件的当前状态是 2026-10-16 的快照，不能覆盖另一个聊天此后产生的新证据。发生冲突时核对日期、实际文件与验收记录，不依赖单独一句旧状态。
+- 本文件的当前状态是 2026-10-17 的快照，不能覆盖另一个聊天此后产生的新证据。发生冲突时核对日期、实际文件与验收记录，不依赖单独一句旧状态。
 
 ## 2. 当前状态与下一步
 
 | 项目 | 当前结论 | 证据/执行入口 |
 |---|---|---|
 | 5B 路线 0～7 | 工程完成；增强 XGBoost 基线通过；GNN 增量失败、不晋级 | [5B 总验收](../../reports/stage-09-route-5b-7-acceptance.md) |
-| 原 Stage 09 路线 6 | 本地工程验收通过；远程CI Pending，整体未关闭 | [路线6验收](../../reports/stage-09-route-6-ci.md) |
+| 原 Stage 09 路线 6 | 本地及真实GitHub CI工程验收通过；L6本人独立Pending | [路线6验收](../../reports/stage-09-route-6-ci.md) |
 | 原 Stage 09 路线 7 | Planned，可观测性、漂移与安全恢复 | [实现路线](stage-09-implementation-roadmap.md) |
 | 原 Stage 09 路线 8 | Planned，端到端验收、个人复现与复盘 | [实现路线](stage-09-implementation-roadmap.md) |
 | 本人学习/人工复核 | 独立 Pending，不能由代理代签 | [学习路线](stage-09-learning-roadmap.md)、[5B 学习路线](stage-09-route-5b-learning.md) |
@@ -84,18 +84,18 @@ docs/plans/stage-09-implementation-roadmap.md、
 docs/plans/stage-09-learning-roadmap.md，
 以及 reports/stage-09-route-5b-7-acceptance.md。
 
-先核对当前源码目录、git 状态与最新证据，再核对原 Stage 09 路线 6 的本地证据与远程Pending。
+先核对当前源码目录、git状态、已推送分支与最新证据，再核对原路线6真实GitHub运行。
 当前源码在 C:\Users\12138\.codex\worktrees\71df\GraphRisk-Agent，
 运行环境/数据/缓存/大工件在 E:\GraphRisk-Agent；不要误用 E 盘旧源码。
 5B 路线 0～7工程完成不等于原路线 6～8完成；若另一个聊天已推进，以核验后的新证据更新状态。
-原路线6本地已验收、远程Pending；先补齐可用的远程证据，再在我要求开始时顺序推进原路线7、8，每步同步报告与计划。
+原路线6本地及真实GitHub CI工程验收已通过，L6本人独立Pending；在我要求开始时顺序推进原路线7、8，每步同步报告与计划。
 后续“GNN 关系模式检索”方向已确认，但要等原路线 6～8完成后另行启动。
 保留 5B 图增量失败、不晋级结论和全部旧工件/账本；不要自动重训或新增真实/付费模型调用。
 不要与另一个聊天同时修改同一工作区。每次结束记录实际验证、未完成项与下一步。
 ```
 
 
-## 6. 2026-10-16 原路线6最新接手状态
+## 6. 2026-10-16 原路线6历史接手状态
 
 本地工程通过，远程Actions not_run（当前git remote为空，已询问目标仓库链接）；路线6整体未关闭。最终证据E:/GraphRisk-Agent/reports/generated/stage09/route6/20261016-ci-final/；Windows/Linux各815/1平台skip，24真库零skip、15受限账号机制探针、独立GraphRAG91+3、两wheel/新镜像通过。149份镜像应用文件与当前源码匹配，47冻结文件Git往返通过；旧530闭包和两账本保持原值。新真实fit/LLM/付费0，L6本人Pending，原路线7/8与检索专项未启动。
 
@@ -113,3 +113,14 @@ docs/plans/stage-09-learning-roadmap.md，
 从集成提交独立干净检出后，278 Python AST、47 冻结文件字节往返、Windows CPU 815 passed/1 符号链接权限 skip、真库 24 零 skip 及 15 受限账号机制探针、GraphRAG 91+3、两个 wheel 通过。复用锁定的 E 盘环境，源码导入来自检出；不宣称冷缓存安装或本轮新镜像验证。Git 行尾规范化后的检出指纹 b1009e… 与原始字节 a80fccc… 分开记录；最终文档提交不改变已测运行代码树。
 
 无 Git 远端、无推送、无远程 run URL；下一步是核对远端和公开边界并补路线 6 远程证据。原路线 7/8 及后续 GNN 检索仍未启动。两个账本不变，原路线 6 的 435 份清单核对通过；新增真实训练/LLM/费用均 0，GNN 不晋级和本人学习 Pending 不变，Stage 09 整体仍 In Progress。
+
+
+## 2026-10-17：原路线 6 真实 GitHub CI 工程验收通过
+
+公开仓库为 [Zzfzys/GraphRisk-Agent](https://github.com/Zzfzys/GraphRisk-Agent)，分支 `codex/stage09-version-closeout`。[成功运行 39015632664](https://github.com/Zzfzys/GraphRisk-Agent/actions/runs/39015632664) 对应提交 `72c5078ac09849b1ca73b3ae3101389f6d99bea9`，六个任务全部 success：静态 278/冻结字节 47、CPU **816 passed / 1 平台 skip**、隔离真库 **24 passed / 0 skip** 与 **15/15** 受限账号机制探针、独立 GraphRAG **91+3**、两个 wheel 和实际无私有输入镜像构建/无网络 smoke。CPU 的 Linux skip 是 E 盘专用目录保护，不是缺 DSN；不同层分开计数，不冒充一次全量 pytest。
+
+[首轮 39014968083](https://github.com/Zzfzys/GraphRisk-Agent/actions/runs/39014968083) 的两个 GraphRAG 启动失败保留。原因是相对解释器路径在子进程换目录后失效；已修复为相对调用者定位的绝对路径，并保留 virtualenv 符号链接。15 项 CI 契约及 91+3 独立本地回归通过，云端再次全绿。网站域名连接重置/超时后，通过 GitHub Git Data API 上传相同 Git 对象，逐 blob/tree/commit 核对 SHA，非强制更新分支；没有改写历史或系统网络。
+
+收尾进一步显式配置 setup-uv 的 `cache-local-path`，避免 action 用 runner-temp 默认值覆盖仓库内缓存要求，并在现有 workflow 契约中断言。收尾提交也触发完整 CI；其最终 HEAD、run URL、任务日志和摘要哈希另存 `E:/GraphRisk-Agent/reports/generated/stage09/route6/20261017-github-ci-v1/acceptance.json`，不能把上面的 72c5078 运行误记到另一提交。
+
+原路线6工程 Done，L6本人学习及人工复核独立 Pending；Stage09整体仍 In Progress，下一步等用户启动原路线7可观测/漂移/新库备份恢复，原路线8与后续GNN检索未启动。新真实数据fit/真实LLM/付费调用均0，两个旧账本和GNN不晋级决定保留；CI不是新增真实Agent质量成绩，也不代表生产部署验收。
