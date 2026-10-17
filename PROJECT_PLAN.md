@@ -1,6 +1,6 @@
 # GraphRisk-Agent 总体项目计划
 
-> 文档状态：执行中。Stage00～08工程完成，Stage09原路线及5B工程完成；增强基线质量Pass、GNN增量Fail/不晋级；Stage09本人学习/人工实用性Pending，整体In Progress。Stage10于2026-10-17启动，路线0工程通过、1～8 Planned。
+> 文档状态：执行中。Stage00～08工程完成，Stage09原路线及5B工程完成；增强基线质量Pass、GNN增量Fail/不晋级；Stage09本人学习/人工实用性Pending，整体In Progress。Stage10于2026-10-17启动，路线0～1工程通过、2～8 Planned。
 > 当前版本：v1.1
 > 建立日期：2026-09-21  
 > 计划周期：原Week0+16周；Stage09路线5B追加约2.5～3周，后续交付顺延
@@ -455,3 +455,7 @@ Stage09仍In Progress；L7本人Pending，原路线8及后续关系模式检索�
 [总纲](docs/plans/stage-10-delivery-career.md)、[实现](docs/plans/stage-10-implementation-roadmap.md)、[学习](docs/plans/stage-10-learning-roadmap.md)、[合同](docs/data/stage-10-delivery-contract.md)、[七项台账](docs/data/stage-10-evidence-register.md)和[路线0验收](reports/stage-10-route-0-preflight.md)建立。计划44小时，其中学习13.25小时；路线0核对e443ed5与31证据绑定、复用971/1平台skip及其六项CI，未重跑大回归。旧文档字节归档，E盘本轮318行状态冻结；初轮用历史317行导致的外围门禁失败保留，未回滚用户文件。
 
 路线1冻结当前增强配置10首次/2重复、14实际请求总上限与统计/预算运行器，路线2才实测；旧130/144账本不改，新增绑定追加台账，不自动重置或新增付费。后续3最终评估/卡片、4英中文说明/架构、5真实Demo、6干净复现、7求职/本人复核、8总验收。Stage10 In Progress，1～8 Planned，个人L0～L8 Pending；Stage09个人/人工实用性仍Pending，GNN不晋级不变。后续GNN检索专项不自动启动。
+
+## 2026-10-17：Stage10路线1工程完成，真实实测尚未启动
+
+[验收](reports/stage-10-route-1-measurement-contract.md)、[操作/学习](docs/data/stage-10-measurement.md)：冻结5验证+5测试、2重复，排除49匹配旧ID，参数/统计/质量分母先定；唯一追加台账绑定旧130/144，14上限含失败/重试，原生HTTP前持久预约，未知关闭后续发送。12模拟请求独立fixture，真实0；最终CPU898/1平台skip含47新增，计时资源/版本附录单独封存且真实执行入口待路线2登记。实现/学习/总纲/合同/证据台账同步；Stage10 0～1工程Done、2～8Planned，个人L1及前序学习/实用性Pending，GNN不晋级，后续检索未启动。

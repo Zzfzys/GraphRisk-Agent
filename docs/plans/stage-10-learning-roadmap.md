@@ -81,3 +81,7 @@
 拿总计划七项成功标准逐项问“证据在哪、是哪次版本、谁做的、还有什么没证明”。核对本提交自己的 CI、模拟/真实/历史分母、调用与账单、公开边界、Demo 文件和环境恢复条件。
 
 写最终“完成/失败/未完成/下一步”清单。尝试在不翻对话的情况下解释安装、停服务、恢复和限制。前序个人 Pending 不因项目文档齐全自动消失；缺视频或人工复核就保留。产出本人最终复盘与交接记录。
+
+## 2026-10-17 L1实际材料就绪，本人Pending
+
+使用[命令/75分钟练习](../data/stage-10-measurement.md)和[路线1验收](../../reports/stage-10-route-1-measurement-contract.md)，阅读select_cases、AppendLedger、GuardedTransport、percentile/summarize/quality_summary及Context/Envelope；能复核10+2、49排除、14含失败额度与12模拟/0真实。最终CPU898中已含47新增，不重复相加。原生守卫和计时附录各自版本已封存；本人预测、执行、解释后再登记L1完成，代理不代签。

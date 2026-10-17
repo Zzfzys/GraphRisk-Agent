@@ -163,3 +163,7 @@ Stage09仍In Progress；L7本人Pending，原路线8及后续关系模式检索�
 [Stage10总纲](stage-10-delivery-career.md)、[实现](stage-10-implementation-roadmap.md)、[学习](stage-10-learning-roadmap.md)和[路线0验收](../../reports/stage-10-route-0-preflight.md)是当前下一阶段入口。源码仍C盘71df、环境/证据E盘；e443ed5和其31项绑定核对通过，原文档字节另存E:/GraphRisk-Agent/reports/generated/stage10/route0/20261017-preflight-v2/baseline-source/。E盘本轮318行状态冻结，不把历史317当回滚目标；v1外围失败保留，未改旧工作区。
 
 Stage10路线0工程Done、1～8 Planned，下一路线1先冻结样本/统计和预算运行器，再路线2实测。原Stage09工程已收口，个人学习/至少10案实用性仍Pending，整体In Progress；新增强配置没有新增真实质量结果，GNN不晋级不变。旧评估130/144和旧文件hash保持，后续用新追加台账最多14次实际请求，不重置、不自动付费。Stage10本轮新训练/真实LLM/付费0，未启动/停止服务。本人L0～L8 Pending，GNN关系模式检索专项仍等另行启动。
+
+## 2026-10-17：Stage10路线1工程完成，下一路线2
+
+[验收](../../reports/stage-10-route-1-measurement-contract.md)与[操作](../data/stage-10-measurement.md)：新代码在C盘71df，环境/冻结数据E盘。正式manifest在reports/generated/stage10/route1/20261017-frozen-v1/，10首次/2重复，排除49覆盖旧ID；真实全阶段唯一追加ledger为reports/generated/stage10/generation-ledger.jsonl，本轮0预约，旧130/144不动，余额14含所有真实POST尝试。12模拟另账。最终CPU898/1平台skip（含47新增），原391源码与2个计时附录在contract-v1/verification-v2中封存；下一路线2须在首次真实请求前登记实际执行入口/附录、资源与源版本，不能改题/门槛或重置预算。source snapshot和首次失败保留，最终Git/该提交CI见contract-v1/acceptance.json。个人L1/前序实用性Pending、GNN不晋级、后续检索未启动。

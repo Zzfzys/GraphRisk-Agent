@@ -1,0 +1,33 @@
+{
+  "version": "stage10-measurement-v1",
+  "baseline_used": 130,
+  "global_limit": 144,
+  "additional_limit": 14,
+  "first_cases": 10,
+  "per_split": 5,
+  "repeats": 2,
+  "minimum_joint_pass": 9,
+  "maximum_unsafe_publications": 0,
+  "parent_ledger_sha256": "d896ff62344c3241d6fbad9f4001fed2487043c4c70cdf772507b123df21ba91",
+  "model_id": "qwen3:4b",
+  "model_revision": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+  "endpoint": "http://127.0.0.1:11434/api/generate",
+  "output_tokens": 512,
+  "keep_alive": 0,
+  "think": false,
+  "temperature": 0,
+  "percentile_method": "linear_hyndman_fan_7",
+  "p99_minimum_n": 100,
+  "workers": 1,
+  "concurrency": [
+    1,
+    2
+  ],
+  "fast_samples_per_group": 100,
+  "llm_minimum_available_gib": 3,
+  "cpu_minimum_available_gib": 1.5,
+  "cpu_maximum_rss_mib": 1280,
+  "paid_calls": 0,
+  "new_real_fits": 0,
+  "route2_execution_registration_required": true
+}
