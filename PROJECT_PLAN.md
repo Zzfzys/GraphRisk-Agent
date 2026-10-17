@@ -1,6 +1,6 @@
 # GraphRisk-Agent 总体项目计划
 
-> 文档状态：执行中。Stage00～08工程完成，Stage09原路线及5B工程完成；增强基线质量Pass、GNN增量Fail/不晋级；Stage09本人学习/人工实用性Pending，整体In Progress。Stage10于2026-10-17启动，路线0～1工程通过、2～8 Planned。
+> 文档状态：执行中。Stage00～08工程完成，Stage09原路线及5B工程完成；增强基线质量Pass、GNN增量Fail/不晋级；Stage09本人学习/人工实用性Pending，整体In Progress。Stage10于2026-10-17启动，路线0～2实测工程完成；新真实质量Fail（6/10）；3～8 Planned。
 > 当前版本：v1.1
 > 建立日期：2026-09-21  
 > 计划周期：原Week0+16周；Stage09路线5B追加约2.5～3周，后续交付顺延
@@ -459,3 +459,7 @@ Stage09仍In Progress；L7本人Pending，原路线8及后续关系模式检索�
 ## 2026-10-17：Stage10路线1工程完成，真实实测尚未启动
 
 [验收](reports/stage-10-route-1-measurement-contract.md)、[操作/学习](docs/data/stage-10-measurement.md)：冻结5验证+5测试、2重复，排除49匹配旧ID，参数/统计/质量分母先定；唯一追加台账绑定旧130/144，14上限含失败/重试，原生HTTP前持久预约，未知关闭后续发送。12模拟请求独立fixture，真实0；最终CPU898/1平台skip含47新增，计时资源/版本附录单独封存且真实执行入口待路线2登记。实现/学习/总纲/合同/证据台账同步；Stage10 0～1工程Done、2～8Planned，个人L1及前序学习/实用性Pending，GNN不晋级，后续检索未启动。
+
+## 2026-10-17 路线2实测交接
+
+[正式报告](reports/stage-10-route-2-real-measurement.md)：10笔首次真实受限判断6/10，门槛9/10未达，质量Fail；2次重复通过不补分。四笔错误输出均被拦截，unsafe0。实测工程已完成，Stage10整体仍In Progress，路线3～8和本人学习/人工实用性待完成。唯一台账142/144、剩2，无新训练/付费。当前新质量不能用历史5A40/40代替。

@@ -85,3 +85,9 @@
 ## 2026-10-17 L1实际材料就绪，本人Pending
 
 使用[命令/75分钟练习](../data/stage-10-measurement.md)和[路线1验收](../../reports/stage-10-route-1-measurement-contract.md)，阅读select_cases、AppendLedger、GuardedTransport、percentile/summarize/quality_summary及Context/Envelope；能复核10+2、49排除、14含失败额度与12模拟/0真实。最终CPU898中已含47新增，不重复相加。原生守卫和计时附录各自版本已封存；本人预测、执行、解释后再登记L1完成，代理不代签。
+
+## 2026-10-17 路线2实测交接
+
+[正式报告](../../reports/stage-10-route-2-real-measurement.md)：10笔首次真实受限判断6/10，门槛9/10未达，质量Fail；2次重复通过不补分。四笔错误输出均被拦截，unsafe0。实测工程已完成，Stage10整体仍In Progress，路线3～8和本人学习/人工实用性待完成。唯一台账142/144、剩2，无新训练/付费。当前新质量不能用历史5A40/40代替。
+
+L2材料已落地：[两小时操作单](../data/stage-10-real-measurement.md)、stage10_execution.py、stage10_results.py。先用只读check/report核对6/10和4个拒绝，再视资源运行benchmark；不重发真实问题。解释24条嵌套计时为何只有12次运行、为何错误HTTP不能进成功子集，以及监控如何干扰被测系统。本人L2仍Pending。

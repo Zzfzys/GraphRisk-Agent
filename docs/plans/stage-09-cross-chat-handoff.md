@@ -167,3 +167,9 @@ Stage10路线0工程Done、1～8 Planned，下一路线1先冻结样本/统计�
 ## 2026-10-17：Stage10路线1工程完成，下一路线2
 
 [验收](../../reports/stage-10-route-1-measurement-contract.md)与[操作](../data/stage-10-measurement.md)：新代码在C盘71df，环境/冻结数据E盘。正式manifest在reports/generated/stage10/route1/20261017-frozen-v1/，10首次/2重复，排除49覆盖旧ID；真实全阶段唯一追加ledger为reports/generated/stage10/generation-ledger.jsonl，本轮0预约，旧130/144不动，余额14含所有真实POST尝试。12模拟另账。最终CPU898/1平台skip（含47新增），原391源码与2个计时附录在contract-v1/verification-v2中封存；下一路线2须在首次真实请求前登记实际执行入口/附录、资源与源版本，不能改题/门槛或重置预算。source snapshot和首次失败保留，最终Git/该提交CI见contract-v1/acceptance.json。个人L1/前序实用性Pending、GNN不晋级、后续检索未启动。
+
+## 2026-10-17 路线2实测交接
+
+[正式报告](../../reports/stage-10-route-2-real-measurement.md)：10笔首次真实受限判断6/10，门槛9/10未达，质量Fail；2次重复通过不补分。四笔错误输出均被拦截，unsafe0。实测工程已完成，Stage10整体仍In Progress，路线3～8和本人学习/人工实用性待完成。唯一台账142/144、剩2，无新训练/付费。当前新质量不能用历史5A40/40代替。
+
+继续使用C盘71df源码、E盘环境/证据。正式实测real-v2的396文件源快照不可改；后处理另加3文件，只读读取器逐项校验原测量源码和12条结果。旧run末尾汇总报错发生在所有结果保存之后，不得因此重跑12次。日常使用scripts/read_stage10_results.py check/report。下一步Stage10路线3；质量修复需新开发/验证和预算合同，不自动消耗剩余2次；后续GNN检索专项仍待另行启动。
