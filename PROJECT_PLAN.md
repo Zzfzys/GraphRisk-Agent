@@ -1,12 +1,12 @@
 # GraphRisk-Agent 总体项目计划
 
-> 文档状态：执行中，Stage00～08工程门禁完成；Stage09路线0～5及5A有工程证据；路线5B-0～7工程完成，2026-10-15专项端到端验收通过；增强基线三折质量Pass、GNN增量Fail/不晋级；人工复核/本人学习待完成，原路线6本地及真实GitHub CI工程验收通过，L6本人学习独立Pending；原路线7～8未执行。
-> 当前版本：v1.0  
+> 文档状态：执行中。Stage00～08工程完成，Stage09原路线及5B工程完成；增强基线质量Pass、GNN增量Fail/不晋级；Stage09本人学习/人工实用性Pending，整体In Progress。Stage10于2026-10-17启动，路线0工程通过、1～8 Planned。
+> 当前版本：v1.1
 > 建立日期：2026-09-21  
 > 计划周期：原Week0+16周；Stage09路线5B追加约2.5～3周，后续交付顺延
 > 每周投入：20～24 小时
 
-> 2026-10-16 跨聊天交接：[当前状态、工作区与后续 GNN 检索约定](docs/plans/stage-09-cross-chat-handoff.md)。先完成原 Stage09 路线6～8；用户已确认随后用最多一周验证关系模式检索，尚未启动，不改变 5B 不晋级结论，也不增加当前 Stage09 验收条件。
+> 2026-10-16 跨聊天交接：[当前状态、工作区与后续 GNN 检索约定](docs/plans/stage-09-cross-chat-handoff.md)。原 Stage09 路线6～8工程已完成；2026-10-17用户启动Stage10交付。已确认的最多一周关系模式检索专项仍未启动，须另行指令，不改变5B不晋级结论，也不增加当前Stage09验收条件。
 
 ## 1. 项目使命
 
@@ -168,9 +168,9 @@ Windows 测试运行使用仓库根目录的 `conftest.py`，按实际操作系�
 | Stage 07 | Week 9～10 | 评估 v2、PostgreSQL 持久恢复与 pgvector 政策检索 | [总纲](docs/plans/stage-07-hardening-platform.md) · [实现路线](docs/plans/stage-07-implementation-roadmap.md) · [学习路线](docs/plans/stage-07-learning-roadmap.md) |
 | Stage 08 | Week 11～12 | 本地模型与小额 API 同集对照；独立模拟企业 GraphRAG | [总纲](docs/plans/stage-08-local-model-graphrag.md) · [实现路线](docs/plans/stage-08-implementation-roadmap.md) · [学习路线](docs/plans/stage-08-learning-roadmap.md) |
 | Stage 09 | Week13起；5B追加约2.5～3周 | 真实Agent、强表格基线、GraphSAGE增量/覆盖与持续质量 | [总纲](docs/plans/stage-09-quality-operations.md) · [实现路线](docs/plans/stage-09-implementation-roadmap.md) · [学习路线](docs/plans/stage-09-learning-roadmap.md) · [5B实施](docs/plans/stage-09-route-5b-model-enhancement.md) · [5B学习](docs/plans/stage-09-route-5b-learning.md) |
-| Stage 10 | 原Week15～16随Stage09顺延 | 性能、演示和求职材料 | [Stage 10](docs/plans/stage-10-delivery-career.md) |
+| Stage 10 | 2026-10-17启动；约44小时主动投入 | 性能/当前真实小样本、演示、复现和求职材料 | [总纲](docs/plans/stage-10-delivery-career.md) · [实现](docs/plans/stage-10-implementation-roadmap.md) · [学习](docs/plans/stage-10-learning-roadmap.md) |
 
-任何阶段未通过验收门禁时，不进入依赖它的后续阶段。
+后续工作须满足其实际依赖的工程门禁；本人学习/人工复核独立Pending不代签。用户于2026-10-17在Stage09工程通过后启动Stage10交付整理，前序个人待完成项继续跟踪，并约束最终项目结项。
 
 ## 9. 每周时间预算
 
@@ -449,3 +449,9 @@ Stage09仍In Progress；L7本人Pending，原路线8及后续关系模式检索�
 ## 2026-10-17：Stage 01～09 跨阶段复测
 
 [逐阶段复测报告](reports/stage-01-09-recheck-20261017.md)：当前4f9167e源码，主项目同一新隔离库全量877 passed/1 Windows符号链接权限skip/10 warnings（含26真库零skip），独立GraphRAG91+3；合计971测试通过，0失败/0错误，模拟50/15不混入总数。290AST/47冻结往返/两wheel、590540真实数据及18历史窗口独立重算、原模型API、177162覆盖/5案真权重/3重复、当前HTTP/工作台新库回放通过；旧交易2987100旧图覆盖外明确partial。90条GraphRAG旧结果及40次DeepSeek小时账单只读复核通过；530模型闭包/648历史绑定和旧恢复适用性通过。无新真实训练/LLM/费用，旧账本不改。Stage01～08工程仍Done，Stage09原路线工程Done但整体In Progress；GNN无增益不晋级、当前增强配置真实Agent质量未新增、本人与人工实用性Pending不变。后续专项/Stage10不自动启动，远程本提交状态另见私有证据。
+
+## 2026-10-17：Stage 10 启动与路线 0 工程门禁通过
+
+[总纲](docs/plans/stage-10-delivery-career.md)、[实现](docs/plans/stage-10-implementation-roadmap.md)、[学习](docs/plans/stage-10-learning-roadmap.md)、[合同](docs/data/stage-10-delivery-contract.md)、[七项台账](docs/data/stage-10-evidence-register.md)和[路线0验收](reports/stage-10-route-0-preflight.md)建立。计划44小时，其中学习13.25小时；路线0核对e443ed5与31证据绑定、复用971/1平台skip及其六项CI，未重跑大回归。旧文档字节归档，E盘本轮318行状态冻结；初轮用历史317行导致的外围门禁失败保留，未回滚用户文件。
+
+路线1冻结当前增强配置10首次/2重复、14实际请求总上限与统计/预算运行器，路线2才实测；旧130/144账本不改，新增绑定追加台账，不自动重置或新增付费。后续3最终评估/卡片、4英中文说明/架构、5真实Demo、6干净复现、7求职/本人复核、8总验收。Stage10 In Progress，1～8 Planned，个人L0～L8 Pending；Stage09个人/人工实用性仍Pending，GNN不晋级不变。后续GNN检索专项不自动启动。

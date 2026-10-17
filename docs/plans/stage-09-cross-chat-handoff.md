@@ -157,3 +157,9 @@ Stage09仍In Progress；L7本人Pending，原路线8及后续关系模式检索�
 ## 2026-10-17：Stage 01～09 跨阶段复测（当前最新审计）
 
 [报告](../../reports/stage-01-09-recheck-20261017.md)：实测4f9167e、执行源码指纹205ba5cd…；完整877/1平台skip/10 warnings，含26真库零skip，独立91+3，共971通过、0失败/0错误。50/15模拟机制另计；290AST/47往返/2wheel、真实数据/原API/177162覆盖/5案真权重/3重复、当前API及AppTest新库回放、90旧答案和账单通过；530模型闭包/648旧绑定及旧恢复哈希门禁通过。本轮无新训练/真实LLM/付费。证据E:/GraphRisk-Agent/reports/generated/stage01-09-recheck/20261017-v1；审计的R8子结果分别audit-evidence-v1、audit-demo-v1、audit-check-v1，旧验收未覆盖。只新增文档，最终Git/本提交CI见该目录acceptance。Stage01～08工程Done；Stage09工程Done但本人/人工Pending，整体In Progress；GNN不晋级和增强配置无新增真实Agent质量证据不变。旧2987100图覆盖外partial不是全图覆盖承诺；未来专项另启动。
+
+## 2026-10-17：用户启动 Stage 10，路线 0 工程完成
+
+[Stage10总纲](stage-10-delivery-career.md)、[实现](stage-10-implementation-roadmap.md)、[学习](stage-10-learning-roadmap.md)和[路线0验收](../../reports/stage-10-route-0-preflight.md)是当前下一阶段入口。源码仍C盘71df、环境/证据E盘；e443ed5和其31项绑定核对通过，原文档字节另存E:/GraphRisk-Agent/reports/generated/stage10/route0/20261017-preflight-v2/baseline-source/。E盘本轮318行状态冻结，不把历史317当回滚目标；v1外围失败保留，未改旧工作区。
+
+Stage10路线0工程Done、1～8 Planned，下一路线1先冻结样本/统计和预算运行器，再路线2实测。原Stage09工程已收口，个人学习/至少10案实用性仍Pending，整体In Progress；新增强配置没有新增真实质量结果，GNN不晋级不变。旧评估130/144和旧文件hash保持，后续用新追加台账最多14次实际请求，不重置、不自动付费。Stage10本轮新训练/真实LLM/付费0，未启动/停止服务。本人L0～L8 Pending，GNN关系模式检索专项仍等另行启动。

@@ -2,7 +2,7 @@
 
 本目录保存 GraphRisk-Agent 的阶段执行计划。总体目标、范围和跨阶段约束以仓库根目录的 [PROJECT_PLAN.md](../../PROJECT_PLAN.md) 为准。
 
-跨聊天继续 Stage 09 前，先读 [当前交接与后续 GNN 检索约定](stage-09-cross-chat-handoff.md)；核对实际源码工作区、最新证据及原路线 6～8 的状态，避免把 5B 子路线完成误读为整个 Stage 09 完成。
+跨聊天继续 Stage 09 或 Stage 10 前，先读 [当前交接与后续 GNN 检索约定](stage-09-cross-chat-handoff.md)；核对实际源码工作区、最新证据及原路线 6～8 的状态，避免把 5B 子路线完成误读为整个 Stage 09 完成。
 
 ## 阶段索引
 
@@ -17,8 +17,8 @@
 | Stage 06：八周 MVP | Done（工程路线 0～7；个人学习自测独立） | Week 8 | [总纲](stage-06-mvp.md) · [实现路线](stage-06-implementation-roadmap.md) · [学习路线](stage-06-learning-roadmap.md) · [50 案评估](../../reports/stage-06-route-6-agent-evaluation.md) · [总验收](../../reports/stage-06-route-7-acceptance.md) · [中文演示指南](../data/stage-06-demo-guide.md) |
 | Stage 07：Agent 强化与持久化平台 | Done（工程路线 0～8；个人学习自测独立） | Week 9～10 | [总纲](stage-07-hardening-platform.md) · [实现路线](stage-07-implementation-roadmap.md) · [学习路线](stage-07-learning-roadmap.md) · [Agent v2](../../reports/stage-07-route-6-agent-evaluation.md) · [Compose/故障](../../reports/stage-07-route-7-compose-faults.md) · [总验收](../../reports/stage-07-route-8-acceptance.md) · [中文演示](../data/stage-07-demo-guide.md) |
 | Stage 08：本地模型与 GraphRAG | Done（工程；2026-10-07 Docker 恢复复测通过，个人自测独立） | Week 11～12 | [总纲](stage-08-local-model-graphrag.md) · [实现路线](stage-08-implementation-roadmap.md) · [学习路线](stage-08-learning-roadmap.md) · [路线 0 门禁](../../reports/stage-08-route-0-preflight.md) · [路线 1 合同](../../reports/stage-08-route-1-provider-contract.md) · [路线 2 实测](../../reports/stage-08-route-2-local-model.md) · [路线 3 对照](../../reports/stage-08-route-3-model-comparison.md) · [路线 4 语料](../../reports/stage-08-route-4-corpus-schema.md) · [路线 5 检索](../../reports/stage-08-route-5-retrieval.md) · [路线 6 问答](../../reports/stage-08-route-6-grounded-answer.md) · [路线 7 评估](../../reports/stage-08-route-7-graphrag-evaluation.md) · [路线 8 总验收](../../reports/stage-08-route-8-acceptance.md) · [L8 个人练习](../data/stage-08-demo-and-interview.md) |
-| Stage 09：真实 Agent 基线、GraphSAGE 诊断与持续质量 | In Progress（0～5及5A工程有证据；5B-0～7工程完成；基线质量Pass/图增量Fail不晋级/本人学习待完成；6～8未开始） | Week13起；5B追加约2.5～3周 | [总纲](stage-09-quality-operations.md) · [实现路线](stage-09-implementation-roadmap.md) · [学习路线](stage-09-learning-roadmap.md) · [5B实施](stage-09-route-5b-model-enhancement.md) · [5B学习](stage-09-route-5b-learning.md) · [5B强基线](../../reports/stage-09-route-5b-2-baselines.md) · [5B扩量调参](../../reports/stage-09-route-5b-3-graph-expansion.md) · [5B消融/增强](../../reports/stage-09-route-5b-4-conditional-graph.md) · [5B三折确认](../../reports/stage-09-route-5b-5-confirmation.md) · [5B覆盖验收](../../reports/stage-09-route-5b-6-coverage.md) · [5B总验收](../../reports/stage-09-route-5b-7-acceptance.md) · [5A报告](../../reports/stage-09-route-5a-agent-quality.md) |
-| Stage 10：最终交付与求职 | Planned | 原Week15～16随Stage09顺延 | [stage-10-delivery-career.md](stage-10-delivery-career.md) |
+| Stage 09：真实 Agent 基线、GraphSAGE 诊断与持续质量 | In Progress（原路线0～8及5A/5B工程完成；基线质量Pass/图增量Fail不晋级；本人学习/人工实用性Pending） | Week13起；5B追加约2.5～3周 | [总纲](stage-09-quality-operations.md) · [实现路线](stage-09-implementation-roadmap.md) · [学习路线](stage-09-learning-roadmap.md) · [5B实施](stage-09-route-5b-model-enhancement.md) · [5B学习](stage-09-route-5b-learning.md) · [5B强基线](../../reports/stage-09-route-5b-2-baselines.md) · [5B扩量调参](../../reports/stage-09-route-5b-3-graph-expansion.md) · [5B消融/增强](../../reports/stage-09-route-5b-4-conditional-graph.md) · [5B三折确认](../../reports/stage-09-route-5b-5-confirmation.md) · [5B覆盖验收](../../reports/stage-09-route-5b-6-coverage.md) · [5B总验收](../../reports/stage-09-route-5b-7-acceptance.md) · [5A报告](../../reports/stage-09-route-5a-agent-quality.md) |
+| Stage 10：性能、最终交付与求职 | In Progress（路线0工程Done，1～8 Planned；本人学习Pending） | 2026-10-17启动，约44小时 | [总纲](stage-10-delivery-career.md) · [实现](stage-10-implementation-roadmap.md) · [学习](stage-10-learning-roadmap.md) · [路线0](../../reports/stage-10-route-0-preflight.md) |
 
 ## 状态定义
 
