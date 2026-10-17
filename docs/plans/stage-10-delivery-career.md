@@ -77,3 +77,12 @@ Stage09 已规划[真实基线与 GraphSAGE 专项诊断](stage-09-implementatio
 - [ ] 接收 Stage09 总验收及真实质量/GraphSAGE 决策，不复制历史成功值。
 - [ ] 审查鉴权、多 worker、生产备份等缺口；实现者附新证据，未实现者列入 limitations。
 - [ ] 区分工程验收、真实 Agent 质量、GraphSAGE 增益与个人学习，准确发布最终指标。
+
+
+## 2026-10-17：原路线8本地工程总验收通过，个人与质量限制保留
+
+[原路线8总验收](../../reports/stage-09-route-8-acceptance.md)和[个人复现/150分钟学习](../data/stage-09-final-reproduction.md)、[本人模板](../data/stage-09-personal-review.md)交付。648历史绑定与原始评分/HTTP/选择/130调用重核通过，当前API真实HTTP+Streamlit AppTest回放两份不同真实历史报告，完整案拒绝/刷新/重复200/冲突409、图不足案无SQL审批及分数不补零、新API实例恢复无生成通过。新库只操作本轮lease，演练容器/匿名卷/密码文件清理，路线7备份仍私有保留。
+
+最终本地851 CPU/1旧平台skip、26真库零skip、50/15模拟机制、290AST/47冻结往返/两个wheel通过；Streamlit入口和根conftest纳入源码指纹。路线7后端哈希不变、备份/12表88行/15恢复探针重新核对后复用；旧5B530闭包与两账本不变，新增真实训练/LLM/付费0。最终Git提交、推送及本提交自己的远程run单独保存 E:/GraphRisk-Agent/reports/generated/stage09/route8/20261017-final-v1/acceptance.json，不以旧CI替代。
+
+工程Done；Stage09整体In Progress，L0～L8/LB及人工实用性待本人完成。5A的30回归/10新增受限判断复核通过，但当前5B增强配置没有新真实Agent质量成绩；GNN增量0、不晋级。原路线6～8工程已收口，GNN关系模式检索等用户另行启动，Stage10仍Planned；不增加生产承诺或抹去历史失败。

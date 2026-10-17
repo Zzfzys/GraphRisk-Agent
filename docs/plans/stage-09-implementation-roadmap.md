@@ -1,6 +1,6 @@
 # Stage 09 实现路线：先真实基线，再 GraphSAGE 专项诊断
 
-> 状态：In Progress；路线0～5及5A已有工程证据，路线5B-0～7工程完成；2026-10-15专项端到端验收通过；增强基线三折质量Pass、GNN增量Fail/不晋级，人工复核/本人学习独立待完成；原路线6本地及真实GitHub CI工程验收通过，L6本人学习独立Pending；原路线7本地工程验收通过、L7本人Pending；原路线8未执行。
+> 状态：In Progress；路线0～5及5A已有工程证据，路线5B-0～7工程完成；2026-10-15专项端到端验收通过；增强基线三折质量Pass、GNN增量Fail/不晋级，人工复核/本人学习独立待完成；原路线6本地及真实GitHub CI工程验收通过，L6本人学习独立Pending；原路线7本地工程验收通过、L7本人Pending；原路线8本地工程验收通过、L8/人工复核Pending，阶段整体仍In Progress。
 > 配套：[阶段总纲](stage-09-quality-operations.md) · [学习路线](stage-09-learning-roadmap.md)
 > 跨聊天接手：[当前状态、工作区与后续 GNN 检索约定](stage-09-cross-chat-handoff.md)。原路线6～8按本文件执行；后续检索专项须等它们完成后另行启动。
 > 原52h主动工作/学习15.5h；路线5B追加60h/学习18h，修订总预算112h/学习33.5h；推理/训练等待另记
@@ -208,6 +208,8 @@
 
 ## 路线 8：端到端验收、个人复现与复盘（7h）
 
+2026-10-17本地工程门禁通过；[总验收](../../reports/stage-09-route-8-acceptance.md)、[准确复现与150分钟学习](../data/stage-09-final-reproduction.md)、[本人模板](../data/stage-09-personal-review.md)就绪。851CPU/26真库、50/15机制、历史648绑定重核和两份真实历史报告的当前API/UI/新实例恢复通过；L8本人Pending。
+
 **目标。** 逐项核证，形成 Stage10 能使用的真实结论。
 
 **步骤。**
@@ -335,3 +337,17 @@
 最终本地839 CPU/1旧平台skip、26真库零skip与既有15受限探针、287AST/47冻结字节/两个wheel通过；旧530闭包、confirmation/177162覆盖行及两总账哈希不变，新真实fit/LLM/付费0。历史评分29/30→28/30仅复述、不宣称改善；历史三列PSI低于预设门槛，合成25%缺失等扰动另列，不推断准确率变化；冷/热未知。失败轮次保留，完整新代码/远程run以本轮私有acceptance绑定为准。
 
 Stage09仍In Progress；L7本人Pending，原路线8及后续关系模式检索未启动。单worker、未认证reviewer_id、无实际封禁；生产鉴权、多worker、加密异地/全实例DR和生产RTO/RPO不在已验收范围。当前C盘71df源码、E盘环境/证据边界继续有效，不恢复使用E盘旧源码。
+
+
+## 2026-10-17：原路线8已启动，验收进行中
+
+已冻结stage09_final.json，开始核验历史真实质量/模型结论、当前API和工作台、适用的分层回归与个人复现交付。真实训练/生成/付费0，旧账本与负结果保留；本人学习/人工复核Pending，后续GNN检索及Stage10未启动。
+
+
+## 2026-10-17：原路线8本地工程总验收通过，个人与质量限制保留
+
+[原路线8总验收](../../reports/stage-09-route-8-acceptance.md)和[个人复现/150分钟学习](../data/stage-09-final-reproduction.md)、[本人模板](../data/stage-09-personal-review.md)交付。648历史绑定与原始评分/HTTP/选择/130调用重核通过，当前API真实HTTP+Streamlit AppTest回放两份不同真实历史报告，完整案拒绝/刷新/重复200/冲突409、图不足案无SQL审批及分数不补零、新API实例恢复无生成通过。新库只操作本轮lease，演练容器/匿名卷/密码文件清理，路线7备份仍私有保留。
+
+最终本地851 CPU/1旧平台skip、26真库零skip、50/15模拟机制、290AST/47冻结往返/两个wheel通过；Streamlit入口和根conftest纳入源码指纹。路线7后端哈希不变、备份/12表88行/15恢复探针重新核对后复用；旧5B530闭包与两账本不变，新增真实训练/LLM/付费0。最终Git提交、推送及本提交自己的远程run单独保存 E:/GraphRisk-Agent/reports/generated/stage09/route8/20261017-final-v1/acceptance.json，不以旧CI替代。
+
+工程Done；Stage09整体In Progress，L0～L8/LB及人工实用性待本人完成。5A的30回归/10新增受限判断复核通过，但当前5B增强配置没有新真实Agent质量成绩；GNN增量0、不晋级。原路线6～8工程已收口，GNN关系模式检索等用户另行启动，Stage10仍Planned；不增加生产承诺或抹去历史失败。

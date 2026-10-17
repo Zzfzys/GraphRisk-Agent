@@ -40,7 +40,7 @@ def source_inventory(source):
             if (path.is_file() and path.suffix in {".py", ".toml", ".lock", ".yaml", ".yml", ".json", ".md"}
                     and not any(p in {".venv", ".uv-cache", "__pycache__", "generated"} for p in path.parts)):
                 files[path.relative_to(source).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
-    for name in ("pyproject.toml", "uv.lock", "Dockerfile", ".dockerignore", ".gitattributes"):
+    for name in ("pyproject.toml", "uv.lock", "Dockerfile", ".dockerignore", ".gitattributes", "streamlit_app.py", "conftest.py"):
         files[name] = hashlib.sha256((source/name).read_bytes()).hexdigest()
     return dict(sorted(files.items()))
 

@@ -212,6 +212,8 @@ def _show_approval(client: Stage06ApiClient, record: dict[str, Any]) -> None:
 st.set_page_config(page_title="GraphRisk-Agent 调查工作台", page_icon=":material/account_tree:", layout="wide")
 st.title("GraphRisk-Agent", icon=":material/account_tree:")
 st.caption("欺诈调查工作台 · IEEE-CIS 本地演示 · 模拟政策 · 分数未校准 · 无自动处置 · 复核员身份未认证")
+if os.getenv("GRAPHRISK_HISTORY_REPLAY") == "1":
+    st.info("历史真实报告回放：本次不运行风险模型或大模型；审批仅操作新的隔离演示记录。")
 client = Stage06ApiClient(os.getenv("GRAPHRISK_STAGE06_API_URL", "http://127.0.0.1:8000"))
 st.session_state.setdefault("run_id", None)
 url_run_id = st.query_params.get("run_id")

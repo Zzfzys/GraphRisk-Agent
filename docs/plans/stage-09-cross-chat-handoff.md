@@ -19,11 +19,11 @@
 | 5B 路线 0～7 | 工程完成；增强 XGBoost 基线通过；GNN 增量失败、不晋级 | [5B 总验收](../../reports/stage-09-route-5b-7-acceptance.md) |
 | 原 Stage 09 路线 6 | 本地及真实GitHub CI工程验收通过；L6本人独立Pending | [路线6验收](../../reports/stage-09-route-6-ci.md) |
 | 原 Stage 09 路线 7 | 本地工程验收通过；L7本人Pending | [路线7验收](../../reports/stage-09-route-7-observability-safety.md)、[操作说明](../data/stage-09-operations.md) |
-| 原 Stage 09 路线 8 | Planned，端到端验收、个人复现与复盘 | [实现路线](stage-09-implementation-roadmap.md) |
+| 原 Stage 09 路线 8 | 本地工程验收通过；L8/人工复核独立Pending | [总验收](../../reports/stage-09-route-8-acceptance.md)、[复现说明](../data/stage-09-final-reproduction.md) |
 | 本人学习/人工复核 | 独立 Pending，不能由代理代签 | [学习路线](stage-09-learning-roadmap.md)、[5B 学习路线](stage-09-route-5b-learning.md) |
 | 后续关系模式检索专项 | 用户已确认方向，尚未开始，不加入 Stage 09 当前验收条件 | 本文件第 4 节 |
 
-路线编号必须写清楚：**5B 与原路线使用独立编号；原路线6、7的完成分别依据各自报告，原路线8仍未执行。** Stage 09 整体仍为 In Progress。
+路线编号必须写清楚：**5B 与原路线使用独立编号；原路线6、7的完成分别依据各自报告，原路线8已有独立工程证据，本人学习/人工复核Pending。** Stage 09 整体仍为 In Progress。
 
 5B 最近一次主项目完整回归为 806 passed / 1 skipped / 10 warnings；其中 24 项真实数据库测试无跳过。随后新增总验收器的 11 项测试单独通过，不能合并宣称某次全量测试有 817 项通过。独立 GraphRAG 包/UI 本轮没有重跑。这些都是历史证据，后续代码变化应做适当的新验证。
 
@@ -88,7 +88,7 @@ docs/plans/stage-09-learning-roadmap.md，
 当前源码在 C:\Users\12138\.codex\worktrees\71df\GraphRisk-Agent，
 运行环境/数据/缓存/大工件在 E:\GraphRisk-Agent；不要误用 E 盘旧源码。
 5B 路线 0～7工程完成不等于原路线 6～8完成；若另一个聊天已推进，以核验后的新证据更新状态。
-原路线6本地及真实GitHub CI工程验收已通过，L6本人独立Pending；原路线7已通过本地工程验收，L7本人Pending；在我要求开始时推进原路线8，每步同步报告与计划。
+原路线6本地及真实GitHub CI工程验收已通过，L6本人独立Pending；原路线6～8工程已完成，本人学习/人工复核Pending；先核对原路线8总验收及私有最终提交/run，再按用户的新指令开展后续工作。
 后续“GNN 关系模式检索”方向已确认，但要等原路线 6～8完成后另行启动。
 保留 5B 图增量失败、不晋级结论和全部旧工件/账本；不要自动重训或新增真实/付费模型调用。
 不要与另一个聊天同时修改同一工作区。每次结束记录实际验证、未完成项与下一步。
@@ -138,3 +138,17 @@ docs/plans/stage-09-learning-roadmap.md，
 最终本地839 CPU/1旧平台skip、26真库零skip与既有15受限探针、287AST/47冻结字节/两个wheel通过；旧530闭包、confirmation/177162覆盖行及两总账哈希不变，新真实fit/LLM/付费0。历史评分29/30→28/30仅复述、不宣称改善；历史三列PSI低于预设门槛，合成25%缺失等扰动另列，不推断准确率变化；冷/热未知。失败轮次保留，完整新代码/远程run以本轮私有acceptance绑定为准。
 
 Stage09仍In Progress；L7本人Pending，原路线8及后续关系模式检索未启动。单worker、未认证reviewer_id、无实际封禁；生产鉴权、多worker、加密异地/全实例DR和生产RTO/RPO不在已验收范围。当前C盘71df源码、E盘环境/证据边界继续有效，不恢复使用E盘旧源码。
+
+
+## 2026-10-17：原路线8已启动，验收进行中
+
+已冻结stage09_final.json，开始核验历史真实质量/模型结论、当前API和工作台、适用的分层回归与个人复现交付。真实训练/生成/付费0，旧账本与负结果保留；本人学习/人工复核Pending，后续GNN检索及Stage10未启动。
+
+
+## 2026-10-17：原路线8本地工程总验收通过，个人与质量限制保留
+
+[原路线8总验收](../../reports/stage-09-route-8-acceptance.md)和[个人复现/150分钟学习](../data/stage-09-final-reproduction.md)、[本人模板](../data/stage-09-personal-review.md)交付。648历史绑定与原始评分/HTTP/选择/130调用重核通过，当前API真实HTTP+Streamlit AppTest回放两份不同真实历史报告，完整案拒绝/刷新/重复200/冲突409、图不足案无SQL审批及分数不补零、新API实例恢复无生成通过。新库只操作本轮lease，演练容器/匿名卷/密码文件清理，路线7备份仍私有保留。
+
+最终本地851 CPU/1旧平台skip、26真库零skip、50/15模拟机制、290AST/47冻结往返/两个wheel通过；Streamlit入口和根conftest纳入源码指纹。路线7后端哈希不变、备份/12表88行/15恢复探针重新核对后复用；旧5B530闭包与两账本不变，新增真实训练/LLM/付费0。最终Git提交、推送及本提交自己的远程run单独保存 E:/GraphRisk-Agent/reports/generated/stage09/route8/20261017-final-v1/acceptance.json，不以旧CI替代。
+
+工程Done；Stage09整体In Progress，L0～L8/LB及人工实用性待本人完成。5A的30回归/10新增受限判断复核通过，但当前5B增强配置没有新真实Agent质量成绩；GNN增量0、不晋级。原路线6～8工程已收口，GNN关系模式检索等用户另行启动，Stage10仍Planned；不增加生产承诺或抹去历史失败。
