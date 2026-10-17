@@ -9,6 +9,7 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 from graphrisk.serving.investigation_service import InvestigationRecord
+from graphrisk.monitoring.operations import emit_boundary, emit_run
 
 LOGGER = logging.getLogger("uvicorn.error")
 _TOKEN = re.compile(r"[A-Za-z0-9_.:-]{1,128}\Z")
@@ -46,10 +47,16 @@ def trace_event(*, request_id: str, phase: str, status: str, run_id: str | None 
         "http_status": http_status if isinstance(http_status, int) and 100 <= http_status <= 599 else None,
     }
     LOGGER.info("graphrisk_trace %s", json.dumps(entry, ensure_ascii=False, sort_keys=True))
+    emit_boundary(request_id=request_id, phase=phase, status=status, run_id=run_id,
+                  error_code=error_code, elapsed_ms=duration, model_version=model_version,
+                  index_version=index_version, http_status=entry["http_status"])
 
 
 def trace_run(record: InvestigationRecord, request_id: str) -> None:
     """Emit the existing tool, agent-node and bounded dependency-attempt evidence."""
+    if record.idempotent_replay:
+        emit_run(record, request_id)
+        return
     versions = record.versions
     base = {"request_id": request_id, "run_id": record.run_id,
             "model_version": versions.generation_model_revision or versions.generation_model_id,
@@ -66,3 +73,5 @@ def trace_run(record: InvestigationRecord, request_id: str) -> None:
         trace_event(**base, phase="dependency_attempt", tool=attempt.kind,
                     status=attempt.status, error_code=attempt.error_code,
                     elapsed_ms=attempt.elapsed_ms)
+
+    emit_run(record, request_id)

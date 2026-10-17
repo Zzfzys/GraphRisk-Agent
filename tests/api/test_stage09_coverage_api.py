@@ -52,9 +52,22 @@ def test_out_of_coverage_investigation_stops_before_runner_or_generation(client)
 @pytest.mark.parametrize('error,status,code',[(MemoryError,503,'inference_resource_stop'),
     (BlockingIOError,429,'inference_busy'),(TimeoutError,504,'inference_timeout'),
     (CoverageArtifactError,503,'inference_unavailable'),(ValueError,422,'invalid_new_event')])
-def test_predict_failure_categories_are_safe(client,error,status,code):
+def test_predict_failure_categories_are_safe(client,error,status,code,caplog):
+    import logging
+    import json
     http,graph=client;graph.failure=error
-    response=http.post('/api/v1/predictions/prospective',json=event())
+    logger=logging.getLogger("uvicorn.error")
+    caplog.set_level(logging.INFO, logger="uvicorn.error")
+    logger.addHandler(caplog.handler)
+    try:
+        response=http.post('/api/v1/predictions/prospective',json=event())
+    finally:
+        logger.removeHandler(caplog.handler)
+    events=[json.loads(row.message.removeprefix('graphrisk_operation ')) for row in caplog.records
+            if row.message.startswith('graphrisk_operation ')]
+    expected={MemoryError:'resource',BlockingIOError:'resource',TimeoutError:'deadline',
+              CoverageArtifactError:'dependency',ValueError:'request'}[error]
+    assert any(row['kind']=='http' and row['http_status']==status and row['error_family']==expected for row in events)
     assert response.status_code==status and response.json()['error_code']==code
     assert 'private' not in response.text
 

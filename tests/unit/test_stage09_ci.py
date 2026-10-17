@@ -35,7 +35,7 @@ def test_junit_reports_missing_execution_separately(tmp_path):
     assert result["passed"] == 1 and result["skipped"] == 1 and result["skip_reasons"] == ["DSN missing"]
 
 
-@pytest.mark.parametrize("private", [".env", "data/raw/train_transaction.csv", "graphrisk/model.pt", "reports/generated/result.json", "../escape.py"])
+@pytest.mark.parametrize("private", [".env", "data/raw/train_transaction.csv", "graphrisk/model.pt", "graphrisk/backup.dump", "reports/generated/result.json", "../escape.py"])
 def test_wheel_rejects_private_or_unexpected_payload(tmp_path, private):
     wheel = tmp_path/"graphrisk_agent-0.1.0-py3-none-any.whl"
     with zipfile.ZipFile(wheel, "w") as archive:

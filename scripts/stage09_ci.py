@@ -27,6 +27,7 @@ DATABASE_FILES = (
     "tests/integration/test_stage07_postgres.py",
     "tests/integration/test_stage07_pgvector.py",
     "tests/integration/test_stage09_quality_postgres.py",
+    "tests/integration/test_stage09_recovery_manifest.py",
 )
 DB_IMAGE = "pgvector/pgvector:0.8.6-pg17-bookworm"
 
@@ -170,7 +171,7 @@ def database_layer(source, output, env):
         # Legacy tests deliberately call migrate() in their fixture, so they use
         # the isolated migration account. The 15 probes below use the limited role.
         counts = pytest_layer(source, output, db_env | {"GRAPHRISK_STAGE07_DSN": admin}, DATABASE_FILES, port=port)
-        require_tests(counts, minimum=24)
+        require_tests(counts, minimum=26)
         run([sys.executable, source/"scripts/stage09_ci_probes.py", "--source", source,
              "--output", output/"probes"], cwd=source, env=db_env, log=output/"probes.txt", timeout=180)
         probes = json.loads((output/"probes/summary.json").read_text(encoding="utf-8"))

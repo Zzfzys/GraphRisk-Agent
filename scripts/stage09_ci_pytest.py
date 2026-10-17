@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 DATABASE_FILES = frozenset({
-    "test_stage07_postgres.py", "test_stage07_pgvector.py", "test_stage09_quality_postgres.py",
+    "test_stage07_postgres.py", "test_stage07_pgvector.py", "test_stage09_quality_postgres.py", "test_stage09_recovery_manifest.py",
 })
 _original_connect = socket.socket.connect
 _original_connect_ex = socket.socket.connect_ex

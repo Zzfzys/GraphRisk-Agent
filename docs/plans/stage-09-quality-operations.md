@@ -1,6 +1,6 @@
 # Stage 09：真实 Agent 基线、GraphSAGE 诊断与持续质量
 
-> 状态：In Progress；路线0～5及5A已有工程证据，路线5B-0～7工程完成；2026-10-15专项端到端验收通过；增强基线三折质量Pass、GNN增量Fail/不晋级，人工复核/本人学习独立待完成；原路线6本地及真实GitHub CI工程验收通过，L6本人学习独立Pending；原路线7～8未执行。
+> 状态：In Progress；路线0～5及5A已有工程证据，路线5B-0～7工程完成；2026-10-15专项端到端验收通过；增强基线三折质量Pass、GNN增量Fail/不晋级，人工复核/本人学习独立待完成；原路线6本地及真实GitHub CI工程验收通过，L6本人学习独立Pending；原路线7本地工程验收通过、L7本人Pending；原路线8未执行。
 > 2026-10-16 接手入口：[跨聊天交接与后续 GNN 检索方向](stage-09-cross-chat-handoff.md)。原路线6～8先完成；检索专项方向已确认、尚未启动，不加入本阶段当前验收条件。
 > 时间：Week13起按剩余工作顺延；原52h加路线5B 60h，共112h主动投入；每周20～24h，专项追加约2.5～3周
 > 前置：Stage 01～08 工程验收完成；执行前重新检查当前依赖
@@ -62,7 +62,7 @@
 
 ## 交付物
 
-逐路线维护以下报告；路线0～5、5A及5B-0～7已有工程证据，原路线6已有工程验收，原路线7～8仍为计划路径。5B具体交付见[专项实施路线](stage-09-route-5b-model-enhancement.md)及[总验收](../../reports/stage-09-route-5b-7-acceptance.md)，不改旧报告：
+逐路线维护以下报告；路线0～5、5A及5B-0～7已有工程证据，原路线6已有工程验收，原路线7已有本地工程验收，原路线8仍为计划路径。5B具体交付见[专项实施路线](stage-09-route-5b-model-enhancement.md)及[总验收](../../reports/stage-09-route-5b-7-acceptance.md)，不改旧报告：
 
 1. `reports/stage-09-route-0-preflight.md`
 2. `reports/stage-09-route-1-real-agent-baseline.md`
@@ -211,3 +211,17 @@
 收尾进一步显式配置 setup-uv 的 `cache-local-path`，避免 action 用 runner-temp 默认值覆盖仓库内缓存要求，并在现有 workflow 契约中断言。收尾提交也触发完整 CI；其最终 HEAD、run URL、任务日志和摘要哈希另存 `E:/GraphRisk-Agent/reports/generated/stage09/route6/20261017-github-ci-v1/acceptance.json`，不能把上面的 72c5078 运行误记到另一提交。
 
 原路线6工程 Done，L6本人学习及人工复核独立 Pending；Stage09整体仍 In Progress，下一步等用户启动原路线7可观测/漂移/新库备份恢复，原路线8与后续GNN检索未启动。新真实数据fit/真实LLM/付费调用均0，两个旧账本和GNN不晋级决定保留；CI不是新增真实Agent质量成绩，也不代表生产部署验收。
+
+
+## 2026-10-17：原路线7已启动，尚未验收
+
+用户授权进入可观测性、漂移与安全恢复；[本路线报告](../../reports/stage-09-route-7-observability-safety.md)和configs/stage09_operations.json先登记合同。复用既有追踪、只读历史统计与冻结同模型漂移参考；故障/备份恢复限新隔离容器和另一个新库。训练、真实LLM、付费调用0，旧预算/负实验/报告不覆盖；L7本人Pending，原路线8及后续GNN检索未启动。
+
+
+## 2026-10-17：原路线7本地工程验收通过，学习独立Pending
+
+[路线7验收](../../reports/stage-09-route-7-observability-safety.md)与[操作/90分钟学习说明](../data/stage-09-operations.md)已就绪。白名单request/run/attempt和版本哈希日志、幂等计数、资源/超时分类、历史同集30笔分层统计、冻结历史漂移已实现；真实DB停机503/恢复200，pg_dump→另一个新空库pg_restore核对12表88行，待审续接/终态/幂等/预算/检查点/pgvector与受限角色通过，15/15故障恢复探针、6 canary零命中。本轮随机容器/匿名卷及密码文件已清理，私有备份保留至路线8人工复核后由用户决定。
+
+最终本地839 CPU/1旧平台skip、26真库零skip与既有15受限探针、287AST/47冻结字节/两个wheel通过；旧530闭包、confirmation/177162覆盖行及两总账哈希不变，新真实fit/LLM/付费0。历史评分29/30→28/30仅复述、不宣称改善；历史三列PSI低于预设门槛，合成25%缺失等扰动另列，不推断准确率变化；冷/热未知。失败轮次保留，完整新代码/远程run以本轮私有acceptance绑定为准。
+
+Stage09仍In Progress；L7本人Pending，原路线8及后续关系模式检索未启动。单worker、未认证reviewer_id、无实际封禁；生产鉴权、多worker、加密异地/全实例DR和生产RTO/RPO不在已验收范围。当前C盘71df源码、E盘环境/证据边界继续有效，不恢复使用E盘旧源码。

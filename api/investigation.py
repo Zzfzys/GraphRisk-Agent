@@ -74,7 +74,9 @@ def _service(request: Request) -> Stage06Service:
 
 
 def _error(http_status: int, code: str, message: str, *, run_id: str | None = None,
-           status: str | None = None) -> JSONResponse:
+           status: str | None = None, request: Request | None = None) -> JSONResponse:
+    if request is not None:
+        request.state.error_code = code
     body = ApiError(error_code=code, message=message, run_id=run_id, status=status)
     return JSONResponse(status_code=http_status, content=body.model_dump(mode="json"))
 
@@ -140,9 +142,9 @@ def historical_coverage(transaction_id: str, http_request: Request, service: Sta
     try:
         key=TransactionToolRequest(transaction_id=transaction_id,dataset_source='ieee_cis').transaction_id
     except ValidationError:
-        return _error(422,'invalid_request','Provide a valid transaction ID.')
+        return _error(422,'invalid_request','Provide a valid transaction ID.',request=http_request)
     graph=_coverage_service(service)
-    if graph is None:return _error(503,'coverage_profile_unconfigured','Select the explicit historical coverage profile.')
+    if graph is None:return _error(503,'coverage_profile_unconfigured','Select the explicit historical coverage profile.',request=http_request)
     result=graph.coverage(key)
     return JSONResponse(status_code=503 if result['status']=='artifact_unavailable' else 200,content=result)
 
@@ -150,19 +152,20 @@ def historical_coverage(transaction_id: str, http_request: Request, service: Sta
 @router.post('/predictions/prospective', summary='Read-only frozen CPU inference for one new event; no Agent or approval')
 def prospective_prediction(event: NewTransaction, http_request: Request, service: Stage06Service=Depends(_service)):
     graph=_coverage_service(service)
-    if graph is None:return _error(503,'coverage_profile_unconfigured','Select the explicit historical coverage profile.')
+    if graph is None:return _error(503,'coverage_profile_unconfigured','Select the explicit historical coverage profile.',request=http_request)
     try:
         return graph.prospective(event.model_dump())
     except BlockingIOError:
-        return _error(429,'inference_busy','One new-event prediction is already running.')
+        return _error(429,'inference_busy','One new-event prediction is already running.',request=http_request)
     except MemoryError:
-        return _error(503,'inference_resource_stop','The inference resource floor was reached; retry after releasing memory.')
+        return _error(503,'inference_resource_stop','The inference resource floor was reached; retry after releasing memory.',request=http_request)
     except TimeoutError:
-        return _error(504,'inference_timeout','The new-event prediction exceeded its deadline.')
+        return _error(504,'inference_timeout','The new-event prediction exceeded its deadline.',request=http_request)
     except ValueError:
-        return _error(422,'invalid_new_event','The event fields, time, or frozen feature contract are invalid.')
+        return _error(422,'invalid_new_event','The event fields, time, or frozen feature contract are invalid.',request=http_request)
     except Exception:
-        return _error(503,'inference_unavailable','Frozen model inference is unavailable; no prediction was issued.')
+        return _error(503,'inference_unavailable','Frozen model inference is unavailable; no prediction was issued.',request=http_request)
+
 
 
 @router.post("/investigations", response_model=InvestigationView, status_code=201,
@@ -178,15 +181,14 @@ def create_investigation(request: InvestigationCreateRequest, http_request: Requ
         if graph is not None:
             coverage=graph.coverage(request.transaction_id)
             if coverage['status']=='out_of_coverage':
-                return _error(409,'prediction_out_of_coverage','This transaction has no registered independent score; inspect its coverage first.')
+                return _error(409,'prediction_out_of_coverage','This transaction has no registered independent score; inspect its coverage first.',request=http_request)
             if coverage['status']=='artifact_unavailable':
-                return _error(503,'coverage_artifact_unavailable','Frozen coverage artifacts are unavailable.')
+                return _error(503,'coverage_artifact_unavailable','Frozen coverage artifacts are unavailable.',request=http_request)
         if idempotency_key is not None and getattr(service, "storage_mode", "memory") != "postgres":
             raise ServiceError("invalid_request")
         kwargs = {"idempotency_key": idempotency_key} if idempotency_key is not None else {}
         record = service.run(request, request_id=http_request.state.request_id, **kwargs)
-        if not record.idempotent_replay:
-            trace_run(record, http_request.state.request_id)
+        trace_run(record, http_request.state.request_id)
     except ServiceError as error:
         return _service_error(error, http_request)
     except Exception:
