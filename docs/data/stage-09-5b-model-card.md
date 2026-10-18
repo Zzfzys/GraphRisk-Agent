@@ -52,3 +52,9 @@ AP采用average_precision_score，不是准确率或梯形积分AUPRC。正式�
 - 演示复核员身份未认证、单worker语义、持续追加索引/正式负载/生产备份仍是交付边界。
 
 只读复现和实际工程状态以[5B路线7验收](../../reports/stage-09-route-5b-7-acceptance.md)为准；个人LB0～LB7由本人完成，不由代理代签。
+
+## 2026-10-18 Stage10路线3评估更新
+
+原模型/训练/晋级决定不变。[最终评估](../../reports/stage-10-final-evaluation.md)E01～E03从保存分数重算，三折GraphSAGE先种子后折的AP/ROC指标均值为0.165317/0.764804；XGB为0.544367/0.905089。历史test固定图ensemble为0.168238/0.776202，与三折平均指标口径不同。完整逐折与Top-K见最终评估，未重训、未重选参数，未新增盲测。
+
+本模型卡不为LLM质量背书：当前增强Agent首次6/10未达9/10；4笔被拒绝保留。Agent职责与模型版本见[Agent卡](stage-10-agent-card.md)，公开主张见[证据索引](stage-10-final-claims.md)，当前缺口见[限制清单](stage-10-known-limitations.md)。

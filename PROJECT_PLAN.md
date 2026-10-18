@@ -1,6 +1,6 @@
 # GraphRisk-Agent 总体项目计划
 
-> 文档状态：执行中。Stage00～08工程完成，Stage09原路线及5B工程完成；增强基线质量Pass、GNN增量Fail/不晋级；Stage09本人学习/人工实用性Pending，整体In Progress。Stage10于2026-10-17启动，路线0～2实测工程完成；新真实质量Fail（6/10）；3～8 Planned。
+> 文档状态：执行中。Stage00～08工程完成，Stage09原路线及5B工程完成；增强基线质量Pass、GNN增量Fail/不晋级；Stage09本人学习/人工实用性Pending，整体In Progress。Stage10于2026-10-17启动，路线0～3工程完成；新真实质量Fail（6/10）；4～8 Planned。
 > 当前版本：v1.1
 > 建立日期：2026-09-21  
 > 计划周期：原Week0+16周；Stage09路线5B追加约2.5～3周，后续交付顺延
@@ -473,3 +473,9 @@ Stage09仍In Progress；L7本人Pending，原路线8及后续关系模式检索�
 后续专项优先评审确定性事实由程序计算、LLM解释/判断单独评价的职责划分；规则填对不能算成LLM理解能力提升。实施前另行确定开发集、未见验证集和调用预算，原冻结失败题不重测救分。当前台账142/144、剩2次，不自动消耗、扩额、训练或付费；GNN关系检索专项仍待另行启动。
 
 完成时提醒已登记在当前聊天及Stage10交接中，标识stage10-agent；本条仅记录后续顺序，不新增当前实验调用或改变旧验收结论。
+
+## 2026-10-18 Stage10路线3工程验收完成
+
+[最终成绩单](reports/stage-10-final-evaluation.md)、[路线3验收](reports/stage-10-route-3-final-evaluation.md)与[105分钟学习](docs/data/stage-10-evaluation-learning.md)交付；12项公开主张绑定版本/分母/证据，更新模型/数据卡并新增Agent卡和限制。16份已封存分数数组的17组指标重算、90条GraphRAG与12条Agent原始结果复判、40请求小时账单复核；没有新训练/模型调用/付费。原始账本与失败保留，当前质量仍6/10 Fail、GNN不晋级，个人L3/至少10案实用性Pending。
+
+当前下一步路线4：英中文README、架构与启动说明。Stage10整体In Progress；Agent质量专项仍等路线0～8工程交付及总审计完成后提醒另行启动，提醒stage10-agent保持，不自动花剩2次预算。既有0e326b0的CI仅作运行代码历史证据，本轮文档核验不冒称新提交CI。
