@@ -26,7 +26,7 @@ Human decisions are recorded against a report hash and approval session. The app
 
 Definitions, versions, denominators and private-source bindings are in [claims E01–E12](docs/data/stage-10-final-claims.md). [CI at 0e326b0](https://github.com/Zzfzys/GraphRisk-Agent/actions/runs/39042905865) passed six jobs: 1,035 tests across separate layers, one platform skip; 15 additional mechanism probes are separate. CI success does not establish model quality. Later documentation commits have their own version status.
 
-Stages 01–09 have engineering evidence; personal learning/review remains pending. Stage10 routes0–4 engineering delivery is complete; routes5–8, recording and clean-environment delivery remain pending. Current Agent quality is still below its frozen gate. [Known limitations](docs/data/stage-10-known-limitations.md) and [stage status](docs/plans/README.md) stay explicit.
+Stages 01–09 have engineering evidence; personal learning/review remains pending. Stage10 routes0–5 engineering delivery is complete; routes6–8 and clean-environment delivery remain pending. The user selected actual page pictures instead of video; the [picture walkthrough](docs/data/stage-10-picture-demo.md) replays saved enhanced-profile reports with zero new inference. Current Agent quality is still below its frozen gate. [Known limitations](docs/data/stage-10-known-limitations.md) and [stage status](docs/plans/README.md) stay explicit.
 
 ## Start with the public mechanism demo
 

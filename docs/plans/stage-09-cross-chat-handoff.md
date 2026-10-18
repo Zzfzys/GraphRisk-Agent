@@ -195,3 +195,11 @@ Stage10路线0工程Done、1～8 Planned，下一路线1先冻结样本/统计�
 [英中文首页](../../README.zh-CN.md)、[架构/时序](../architecture/stage-10-system.md)、[通用启动](../data/stage-10-startup.md)和[本机分离路径](../data/stage-10-author-workspace.md)交付，配套[路线4验收](../../reports/stage-10-route-4-readme-startup.md)与[90分钟学习](../data/stage-10-architecture-learning.md)。已有环境实际运行公开合成5000行流水线与50案fake机制CLI，核对帮助/配置/源码/链接；没有新环境安装、真实API/UI/数据库启动或模型调用。
 
 当前路线0～4工程Done，5～8 Planned，下一路线5彩排与真实录制。本人L4/人工实用性仍Pending、Agent6/10 Fail/GNN不晋级/142余额剩2保持；stage10-agent提醒继续等待工程总审计完成，质量与GNN专项不提前启动。
+
+## 2026-10-18 路线5图片交付验收
+
+用户明确用图片代替录屏，路线5及总交付合同已据此修订；不再将视频缺失列为该路线阻塞。[图文脚本与L5](../data/stage-10-picture-demo.md)、[验收](../../reports/stage-10-route-5-picture-demo.md)和scripts/run_stage10_picture_demo.ps1交付。9张真实浏览器JPEG/本地图册在E:/GraphRisk-Agent/reports/generated/stage10/route5/20261018-pictures-v1/。
+
+来源是路线2当前增强profile的case01成功/case04失败，均为已存首次结果；新memory审批实际拒绝并刷新，报告hash保持、外部动作0、失败仍503。自动HTTP/AppTest彩排9项行为检查通过；本轮无新模型/训练/费用，142/144剩2。代理图片不代签本人L5/人工实用性；Agent质量仍6/10 Fail、GNN不晋级。
+
+当前路线0～5工程Done，6～8 Planned，下一路线6干净检出与双模式复现。stage10-agent提醒仍待工程总审计完成后触发；后续质量/GNN专项未启动。新增PowerShell编排单独hash登记，旧测量源码/结果不改。
