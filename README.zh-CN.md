@@ -16,7 +16,7 @@
 
 见[12项主张与证据](docs/data/stage-10-final-claims.md)。历史工程CI对应0e326b0，分层共1035项通过、1个平台skip，另有15机制探针；工程通过不能给真实Agent质量加分。
 
-截至2026-10-18，Stage10路线0～5工程交付完成，路线6～8、干净环境交付与本人练习待完成；[路线5图片演示](docs/data/stage-10-picture-demo.md)已按用户要求替代录屏，整体仍In Progress。按用户决定，工程总审计后再提醒开展独立Agent质量改进。当前原始失败记录与GNN不晋级结论保留。
+截至2026-10-18，Stage10路线0～6工程交付完成，路线7～8与本人练习待完成；[路线6新检出复现](docs/data/stage-10-clean-reproduction.md)已在下载缓存可用条件下通过，冷缓存安装与原始数据重训未验证；[路线5图片演示](docs/data/stage-10-picture-demo.md)已按用户要求替代录屏，整体仍In Progress。按用户决定，工程总审计后再提醒开展独立Agent质量改进。当前原始失败记录与GNN不晋级结论保留。
 
 ## 第一次从哪里开始
 

@@ -1,6 +1,6 @@
 # GraphRisk-Agent 总体项目计划
 
-> 文档状态：执行中。Stage00～08工程完成，Stage09原路线及5B工程完成；增强基线质量Pass、GNN增量Fail/不晋级；Stage09本人学习/人工实用性Pending，整体In Progress。Stage10于2026-10-17启动，路线0～5工程完成；新真实质量Fail（6/10）；6～8 Planned。
+> 文档状态：执行中。Stage00～08工程完成，Stage09原路线及5B工程完成；增强基线质量Pass、GNN增量Fail/不晋级；Stage09本人学习/人工实用性Pending，整体In Progress。Stage10于2026-10-17启动，路线0～6工程完成；新真实质量Fail（6/10）；7～8 Planned；新检出有缓存复现通过，冷缓存/原始重训未测。
 > 当前版本：v1.1
 > 建立日期：2026-09-21  
 > 计划周期：原Week0+16周；Stage09路线5B追加约2.5～3周，后续交付顺延
@@ -493,3 +493,11 @@ Stage09仍In Progress；L7本人Pending，原路线8及后续关系模式检索�
 来源是路线2当前增强profile的case01成功/case04失败，均为已存首次结果；新memory审批实际拒绝并刷新，报告hash保持、外部动作0、失败仍503。自动HTTP/AppTest彩排9项行为检查通过；本轮无新模型/训练/费用，142/144剩2。代理图片不代签本人L5/人工实用性；Agent质量仍6/10 Fail、GNN不晋级。
 
 当前路线0～5工程Done，6～8 Planned，下一路线6干净检出与双模式复现。stage10-agent提醒仍待工程总审计完成后触发；后续质量/GNN专项未启动。新增PowerShell编排单独hash登记，旧测量源码/结果不改。
+
+## 2026-10-18 路线6新检出复现验收
+
+[指南与L6](docs/data/stage-10-clean-reproduction.md)、[验收报告](reports/stage-10-route-6-reproduction.md)：从a3f1acc创建本地Git clone，610追踪文件核对；主项目及独立GraphRAG分别新建.venv，复用E盘下载缓存/managed Python，不复用旧环境。公开50案机制、合成5000行/特征通过；新环境CPU915通过/1平台symlink skip，独立核心91通过/3可选UI skip。
+
+授权真实工件35输入/177162覆盖闭环、五工具、一笔冻结CPU权重通过，树差0/图差1.09e-8；实际HTTP/AppTest回放拒绝/刷新/幂等与原报告hash保持。新LLM/真实训练/付费0，三旧账本不变、142/144剩2。历史396文件严格字节校验因92文件LF/CRLF不同而改用显式封存快照，实际执行仍为新检出；未改旧结果/hash，辅助脚本失败保留。冷缓存、原始CSV重训、真库/镜像重跑未测，不冒称已完成。
+
+当前路线0～6工程Done，7～8 Planned，下一路线7求职表达与至少10案本人复核。本人L0～L8/实用性Pending；Stage10整体In Progress、Agent6/10 Fail、GNN不晋级保持。stage10-agent提醒等工程总审计后触发；后续Agent质量/GNN检索专项不提前启动。应用代码/锁文件未改，本轮文档本地提交，不冒称新提交远程CI。

@@ -93,3 +93,9 @@ uv run --offline --no-sync streamlit run "$source\streamlit_app.py" --server.add
 打开打印的链接，确认页面有历史回放标识；练习读证据、填演示reviewer_id/备注、拒绝并刷新。标识变量本身不会切换后端，必须使用本轮service.json。回放用API随机端口，8502若占用可同步换空闲UI端口与链接，不结束其他服务。先Ctrl+C停止UI，再停止窗口A；本轮sandbox清理应有记录。该serve有资源与时长门禁，非永久生产部署。更完整说明见[Stage09个人复现](stage-09-final-reproduction.md)。
 
 本轮路线4只检查现有入口/语法/CLI，不启动这些真实调查或回放数据库；路线5彩排和路线6复现将分别记录实际操作。后续Agent质量提醒stage10-agent仍待Stage10工程总审计后触发。
+
+## 路线6隔离复现目录
+
+本轮新检出E:/GraphRisk-Agent/artifacts/stage-10/route6/20261018-reproduction-v1/checkout保留供复核，含新主.venv和独立GraphRAG的.venv；不是新的日常开发主目录。开发源码继续C盘71df，E盘旧源码未覆盖。[复现指南](stage-10-clean-reproduction.md)列实际导入、新环境、缓存、35真实输入和历史字节快照的边界。不要直接复用旧图片/coverage启动脚本做新环境证明：它们会强制UV_PROJECT_ENVIRONMENT回到ExecutionRoot/.venv。此轮真实工具用新环境、显式E盘config，HTTP/UI用既存增强报告回放，未发模型生成。
+
+所有本轮临时服务已关闭，未操作用户已有Docker/Ollama/8000/8501服务。原三个账本不变。新环境/证据保留在E盘，未向C盘写模型、缓存或数据。

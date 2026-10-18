@@ -118,7 +118,7 @@ PostgreSQL创建支持Idempotency-Key：同键同请求已发布运行返回200�
 
 已有[Stage07 Compose指南](stage-07-compose.md)与[Stage09 5B容器验收](../../reports/stage-09-route-5b-7-acceptance.md)提供相应版本证据。默认compose.stage07.yaml挂载旧Stage07模型路径和私有文件，不能直接称为当前增强coverage配置；干净克隆也没有挂载所需数据/秘密。需要按其合同准备镜像、工件和secret再使用，不把旧`up -d --no-build`当成通用首次启动命令。
 
-本路线只整理说明，没有重建/启动Docker。数据库卷保存状态；API重启与删卷是不同操作。新读者公开模式和当前增强工件的干净检出复现留给路线6单独验收。
+路线4只整理说明，没有重建/启动Docker。数据库卷保存状态；API重启与删卷是不同操作。后续[路线6复现](stage-10-clean-reproduction.md)已在新Git检出和新.venv验证公开模式及既有真实工件，明确复用下载缓存；没有本轮Docker/真库重跑、冷缓存安装或原始数据重训。
 
 ## Historical replay
 
@@ -155,3 +155,9 @@ uv run --offline --locked --project projects/enterprise-graphrag python -m enter
 | 内存/磁盘不够 | 保存进度，停止本轮新实验；项目缓存/临时文件留所选项目盘，不改系统或强关用户应用 |
 
 常规测试用`uv run --offline pytest`，UI行为测试在tests/demo/test_streamlit_app.py。本路线检查了文档命令、结构和链接，在既有环境实际执行公开CLI；没有重跑全套pytest、真库、真实LLM或新环境安装，详细范围见[路线4验收](../../reports/stage-10-route-4-readme-startup.md)。
+
+## 路线6后续验证范围
+
+2026-10-18[新检出复现](stage-10-clean-reproduction.md)实际通过CPU915/1平台skip、公开50案/合成5000行、五真实工具/一笔冻结权重、HTTP/AppTest回放；独立标准库环境91通过/3可选UI skip。与路线4当时的既有环境检查分开。真实输入明确复用E盘工件，环境仅复用下载缓存/managed Python，没有旧.venv或隐藏作者源码。历史严格字节校验发现LF/CRLF限制，按显式封存快照处理；旧CLI未被改成自动适配。
+
+独立项目安装前应显式将UV_PROJECT_ENVIRONMENT设为其自己的.venv，避免继承主项目变量。完整命令与90分钟学习见复现指南。
