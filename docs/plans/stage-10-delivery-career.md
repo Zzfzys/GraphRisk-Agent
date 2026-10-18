@@ -1,6 +1,6 @@
 # Stage 10：性能、最终交付与求职材料
 
-> 状态：In Progress；2026-10-17 用户启动。路线 0～6 工程完成；路线2新真实质量Fail（6/10）；路线 7～8 Planned；个人 L0～L8 Pending。
+> 状态：In Progress；2026-10-17 用户启动。路线 0～6 工程完成；路线2新真实质量Fail（6/10）；路线7材料就绪、本人验收Pending；路线8 Planned；个人L0～L8 Pending。
 > 时间：约 44 小时主动工作，含约 13.25 小时学习；按每周 20～24 小时约两周。模型等待另记，不将估算填成已耗时。
 > 配套：[实现路线](stage-10-implementation-roadmap.md) · [学习路线](stage-10-learning-roadmap.md) · [交付合同](../data/stage-10-delivery-contract.md) · [证据台账](../data/stage-10-evidence-register.md) · [路线 0 验收](../../reports/stage-10-route-0-preflight.md)
 
@@ -33,10 +33,10 @@ Stage 01～08 工程验收成立，Stage 09 原路线 6～8 及 5B 工程均有�
 | 4 | 英中文 README、架构与启动说明 | Done（工程）；L4 Pending | 5 / 1.5 |
 | 5 | 端到端Demo脚本、彩排与真实页面图片 | Done（工程）；L5 Pending | 5 / 1.5 |
 | 6 | 干净检出与公开/真实数据双模式复现 | Done（缓存可用条件）；L6 Pending | 5 / 1.5 |
-| 7 | 求职条目、面试演练与人工复核 | Planned | 4 / 1.25 |
+| 7 | 求职条目、面试演练与人工复核 | In Progress（材料/机制就绪；本人验收Pending） | 4 / 1.25 |
 | 8 | 总验收、版本收口与交接 | Planned | 5 / 1.5 |
 
-路线1的冻结入口见[操作说明](../data/stage-10-measurement.md)，路线2的已有结果见[实测说明](../data/stage-10-real-measurement.md)，路线3见[最终评估](../../reports/stage-10-final-evaluation.md)。路线6已完成新检出/新环境公开与真实工件复现，冷缓存/原始数据重训未测；路线7～8及本人面试尚未验收。
+路线1的冻结入口见[操作说明](../data/stage-10-measurement.md)，路线2的已有结果见[实测说明](../data/stage-10-real-measurement.md)，路线3见[最终评估](../../reports/stage-10-final-evaluation.md)。路线6已完成新检出/新环境公开与真实工件复现，冷缓存/原始数据重训未测；路线7表达/20题/十案材料已交付，本人复核和讲述尚未验收；路线8待执行。
 
 ## 学习任务
 
@@ -136,3 +136,11 @@ Stage 01～08 工程验收成立，Stage 09 原路线 6～8 及 5B 工程均有�
 授权真实工件35输入/177162覆盖闭环、五工具、一笔冻结CPU权重通过，树差0/图差1.09e-8；实际HTTP/AppTest回放拒绝/刷新/幂等与原报告hash保持。新LLM/真实训练/付费0，三旧账本不变、142/144剩2。历史396文件严格字节校验因92文件LF/CRLF不同而改用显式封存快照，实际执行仍为新检出；未改旧结果/hash，辅助脚本失败保留。冷缓存、原始CSV重训、真库/镜像重跑未测，不冒称已完成。
 
 当前路线0～6工程Done，7～8 Planned，下一路线7求职表达与至少10案本人复核。本人L0～L8/实用性Pending；Stage10整体In Progress、Agent6/10 Fail、GNN不晋级保持。stage10-agent提醒等工程总审计后触发；后续Agent质量/GNN检索专项不提前启动。应用代码/锁文件未改，本轮文档本地提交，不冒称新提交远程CI。
+
+## 2026-10-18 路线7材料交付，本人验收Pending
+
+[项目条目/讲述稿](../career/stage-10-presentation.md)、[20题与75分钟练习](../career/stage-10-interview-drills.md)、[十案本人指南](../career/stage-10-human-review.md)和[路线7进度报告](../../reports/stage-10-route-7-career-review.md)交付。所有简历指标可追溯，明确AI辅助与个人贡献待本人确认，不编造工作经历、生产收益或熟练程度。
+
+私有目录E:/GraphRisk-Agent/reports/generated/stage10/route7/20261018-career-v1/，包含当前冻结首次10笔不同交易、6原成功/4被拦截、原模型字段/事实/政策原文、HTML/Markdown与空白意见/演练模板；不含两个重复，不新增模型调用。15项私有记录机制测试与实际浏览器模拟填写/草稿/失败/刷新通过，fixture导出不能混入本人记录，正式模板仍0/10 Pending。
+
+用户已选择本轮本人填写、完成后提供路径；尚未收到不代签。路线7整体In Progress（材料/机制完成；十案实用性/自己的两段讲述、计时与追问待核验），路线8仍Planned；Stage09旧profile/缺图与其他个人学习独立Pending。三旧账本不变，142/144剩2，新LLM/真实fit/付费0。Agent6/10 Fail、GNN不晋级、阶段In Progress保持；提醒等既定工程总审计后触发，不提前启动质量/GNN专项。

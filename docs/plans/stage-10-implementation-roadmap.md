@@ -1,6 +1,6 @@
 # Stage 10 实现路线：从可运行到可交付
 
-> 2026-10-17 启动；路线0～6工程Done，7～8 Planned；真实Agent质量Fail6/10。配套：[总纲](stage-10-delivery-career.md) · [学习路线](stage-10-learning-roadmap.md) · [交付合同](../data/stage-10-delivery-contract.md)。
+> 2026-10-17 启动；路线0～6工程Done；路线7材料/机制就绪、本人验收Pending；路线8 Planned；真实Agent质量Fail6/10。配套：[总纲](stage-10-delivery-career.md) · [学习路线](stage-10-learning-roadmap.md) · [交付合同](../data/stage-10-delivery-contract.md)。
 > 约 44 小时主动投入，其中学习 13.25 小时已包含；模型/构建等待另记。以下预期产物尚未创建时仅为计划，不提供虚构 CLI。
 
 ## 执行原则
@@ -93,7 +93,7 @@ CPU 真权重过程沿用已接受的 1.5GiB 系统可用/1280MiB 单进程 RSS 
 
 ## 路线 7：求职条目、面试演练与人工复核
 
-**状态：Planned；4h，含学习 1.25h。**
+**状态：In Progress（材料与机制核验完成；本人十案复核/讲述验收Pending）。原计划4h含学习1.25h，不作实际用时。**
 
 目标：能讲清自己负责的设计、失败和取舍。交付真实项目简历条目（不编造公司经历、用户规模和业务收益）、Agent/GNN 各 90 秒讲述、系统设计和追问清单。主题覆盖时序泄漏、同秒、宽表字段时点限制、Agent 有界流程、引用/政策适用、预算重试、幂等审批、持久化恢复、漂移与质量。
 
@@ -152,3 +152,11 @@ CPU 真权重过程沿用已接受的 1.5GiB 系统可用/1280MiB 单进程 RSS 
 授权真实工件35输入/177162覆盖闭环、五工具、一笔冻结CPU权重通过，树差0/图差1.09e-8；实际HTTP/AppTest回放拒绝/刷新/幂等与原报告hash保持。新LLM/真实训练/付费0，三旧账本不变、142/144剩2。历史396文件严格字节校验因92文件LF/CRLF不同而改用显式封存快照，实际执行仍为新检出；未改旧结果/hash，辅助脚本失败保留。冷缓存、原始CSV重训、真库/镜像重跑未测，不冒称已完成。
 
 当前路线0～6工程Done，7～8 Planned，下一路线7求职表达与至少10案本人复核。本人L0～L8/实用性Pending；Stage10整体In Progress、Agent6/10 Fail、GNN不晋级保持。stage10-agent提醒等工程总审计后触发；后续Agent质量/GNN检索专项不提前启动。应用代码/锁文件未改，本轮文档本地提交，不冒称新提交远程CI。
+
+## 2026-10-18 路线7材料交付，本人验收Pending
+
+[项目条目/讲述稿](../career/stage-10-presentation.md)、[20题与75分钟练习](../career/stage-10-interview-drills.md)、[十案本人指南](../career/stage-10-human-review.md)和[路线7进度报告](../../reports/stage-10-route-7-career-review.md)交付。所有简历指标可追溯，明确AI辅助与个人贡献待本人确认，不编造工作经历、生产收益或熟练程度。
+
+私有目录E:/GraphRisk-Agent/reports/generated/stage10/route7/20261018-career-v1/，包含当前冻结首次10笔不同交易、6原成功/4被拦截、原模型字段/事实/政策原文、HTML/Markdown与空白意见/演练模板；不含两个重复，不新增模型调用。15项私有记录机制测试与实际浏览器模拟填写/草稿/失败/刷新通过，fixture导出不能混入本人记录，正式模板仍0/10 Pending。
+
+用户已选择本轮本人填写、完成后提供路径；尚未收到不代签。路线7整体In Progress（材料/机制完成；十案实用性/自己的两段讲述、计时与追问待核验），路线8仍Planned；Stage09旧profile/缺图与其他个人学习独立Pending。三旧账本不变，142/144剩2，新LLM/真实fit/付费0。Agent6/10 Fail、GNN不晋级、阶段In Progress保持；提醒等既定工程总审计后触发，不提前启动质量/GNN专项。

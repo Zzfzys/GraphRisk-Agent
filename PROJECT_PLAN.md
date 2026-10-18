@@ -1,6 +1,6 @@
 # GraphRisk-Agent 总体项目计划
 
-> 文档状态：执行中。Stage00～08工程完成，Stage09原路线及5B工程完成；增强基线质量Pass、GNN增量Fail/不晋级；Stage09本人学习/人工实用性Pending，整体In Progress。Stage10于2026-10-17启动，路线0～6工程完成；新真实质量Fail（6/10）；7～8 Planned；新检出有缓存复现通过，冷缓存/原始重训未测。
+> 文档状态：执行中。Stage00～08工程完成，Stage09原路线及5B工程完成；增强基线质量Pass、GNN增量Fail/不晋级；Stage09本人学习/人工实用性Pending，整体In Progress。Stage10于2026-10-17启动，路线0～6工程完成；新真实质量Fail（6/10）；路线7材料/机制完成、本人验收Pending；路线8 Planned；新检出有缓存复现通过，冷缓存/原始重训未测。
 > 当前版本：v1.1
 > 建立日期：2026-09-21  
 > 计划周期：原Week0+16周；Stage09路线5B追加约2.5～3周，后续交付顺延
@@ -501,3 +501,11 @@ Stage09仍In Progress；L7本人Pending，原路线8及后续关系模式检索�
 授权真实工件35输入/177162覆盖闭环、五工具、一笔冻结CPU权重通过，树差0/图差1.09e-8；实际HTTP/AppTest回放拒绝/刷新/幂等与原报告hash保持。新LLM/真实训练/付费0，三旧账本不变、142/144剩2。历史396文件严格字节校验因92文件LF/CRLF不同而改用显式封存快照，实际执行仍为新检出；未改旧结果/hash，辅助脚本失败保留。冷缓存、原始CSV重训、真库/镜像重跑未测，不冒称已完成。
 
 当前路线0～6工程Done，7～8 Planned，下一路线7求职表达与至少10案本人复核。本人L0～L8/实用性Pending；Stage10整体In Progress、Agent6/10 Fail、GNN不晋级保持。stage10-agent提醒等工程总审计后触发；后续Agent质量/GNN检索专项不提前启动。应用代码/锁文件未改，本轮文档本地提交，不冒称新提交远程CI。
+
+## 2026-10-18 路线7材料交付，本人验收Pending
+
+[项目条目/讲述稿](docs/career/stage-10-presentation.md)、[20题与75分钟练习](docs/career/stage-10-interview-drills.md)、[十案本人指南](docs/career/stage-10-human-review.md)和[路线7进度报告](reports/stage-10-route-7-career-review.md)交付。所有简历指标可追溯，明确AI辅助与个人贡献待本人确认，不编造工作经历、生产收益或熟练程度。
+
+私有目录E:/GraphRisk-Agent/reports/generated/stage10/route7/20261018-career-v1/，包含当前冻结首次10笔不同交易、6原成功/4被拦截、原模型字段/事实/政策原文、HTML/Markdown与空白意见/演练模板；不含两个重复，不新增模型调用。15项私有记录机制测试与实际浏览器模拟填写/草稿/失败/刷新通过，fixture导出不能混入本人记录，正式模板仍0/10 Pending。
+
+用户已选择本轮本人填写、完成后提供路径；尚未收到不代签。路线7整体In Progress（材料/机制完成；十案实用性/自己的两段讲述、计时与追问待核验），路线8仍Planned；Stage09旧profile/缺图与其他个人学习独立Pending。三旧账本不变，142/144剩2，新LLM/真实fit/付费0。Agent6/10 Fail、GNN不晋级、阶段In Progress保持；提醒等既定工程总审计后触发，不提前启动质量/GNN专项。
