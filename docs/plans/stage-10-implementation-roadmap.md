@@ -1,6 +1,6 @@
 # Stage 10 实现路线：从可运行到可交付
 
-> 2026-10-17 启动；路线0～3工程Done，4～8 Planned；真实Agent质量Fail6/10。配套：[总纲](stage-10-delivery-career.md) · [学习路线](stage-10-learning-roadmap.md) · [交付合同](../data/stage-10-delivery-contract.md)。
+> 2026-10-17 启动；路线0～4工程Done，5～8 Planned；真实Agent质量Fail6/10。配套：[总纲](stage-10-delivery-career.md) · [学习路线](stage-10-learning-roadmap.md) · [交付合同](../data/stage-10-delivery-contract.md)。
 > 约 44 小时主动投入，其中学习 13.25 小时已包含；模型/构建等待另记。以下预期产物尚未创建时仅为计划，不提供虚构 CLI。
 
 ## 执行原则
@@ -63,7 +63,7 @@ CPU 真权重过程沿用已接受的 1.5GiB 系统可用/1280MiB 单进程 RSS 
 
 ## 路线 4：英中文 README、架构与启动说明
 
-**状态：Planned；5h，含学习 1.5h。**
+**状态：Done（工程）；L4本人Pending。原计划5h含学习1.5h，不当实际耗时。**
 
 目标：新读者在五分钟内知道项目解决什么、怎么跑、测到了什么。整理英文主 README 和中文说明，区分公开小型演示、需授权数据/本地权重的真实调查、历史回放，以及 memory/PostgreSQL 两种存储模式；当前本地启动脚本 memory 重启不持久化。
 
@@ -130,3 +130,9 @@ CPU 真权重过程沿用已接受的 1.5GiB 系统可用/1280MiB 单进程 RSS 
 [最终成绩单](../../reports/stage-10-final-evaluation.md)、[路线3验收](../../reports/stage-10-route-3-final-evaluation.md)与[105分钟学习](../data/stage-10-evaluation-learning.md)交付；12项公开主张绑定版本/分母/证据，更新模型/数据卡并新增Agent卡和限制。16份已封存分数数组的17组指标重算、90条GraphRAG与12条Agent原始结果复判、40请求小时账单复核；没有新训练/模型调用/付费。原始账本与失败保留，当前质量仍6/10 Fail、GNN不晋级，个人L3/至少10案实用性Pending。
 
 当前下一步路线4：英中文README、架构与启动说明。Stage10整体In Progress；Agent质量专项仍等路线0～8工程交付及总审计完成后提醒另行启动，提醒stage10-agent保持，不自动花剩2次预算。既有0e326b0的CI仅作运行代码历史证据，本轮文档核验不冒称新提交CI。
+
+## 2026-10-18 Stage10路线4工程完成
+
+[英中文首页](../../README.zh-CN.md)、[架构/时序](../architecture/stage-10-system.md)、[通用启动](../data/stage-10-startup.md)和[本机分离路径](../data/stage-10-author-workspace.md)交付，配套[路线4验收](../../reports/stage-10-route-4-readme-startup.md)与[90分钟学习](../data/stage-10-architecture-learning.md)。已有环境实际运行公开合成5000行流水线与50案fake机制CLI，核对帮助/配置/源码/链接；没有新环境安装、真实API/UI/数据库启动或模型调用。
+
+当前路线0～4工程Done，5～8 Planned，下一路线5彩排与真实录制。本人L4/人工实用性仍Pending、Agent6/10 Fail/GNN不晋级/142余额剩2保持；stage10-agent提醒继续等待工程总审计完成，质量与GNN专项不提前启动。

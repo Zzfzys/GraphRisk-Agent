@@ -189,3 +189,9 @@ Stage10路线0工程Done、1～8 Planned，下一路线1先冻结样本/统计�
 [最终成绩单](../../reports/stage-10-final-evaluation.md)、[路线3验收](../../reports/stage-10-route-3-final-evaluation.md)与[105分钟学习](../data/stage-10-evaluation-learning.md)交付；12项公开主张绑定版本/分母/证据，更新模型/数据卡并新增Agent卡和限制。16份已封存分数数组的17组指标重算、90条GraphRAG与12条Agent原始结果复判、40请求小时账单复核；没有新训练/模型调用/付费。原始账本与失败保留，当前质量仍6/10 Fail、GNN不晋级，个人L3/至少10案实用性Pending。
 
 当前下一步路线4：英中文README、架构与启动说明。Stage10整体In Progress；Agent质量专项仍等路线0～8工程交付及总审计完成后提醒另行启动，提醒stage10-agent保持，不自动花剩2次预算。既有0e326b0的CI仅作运行代码历史证据，本轮文档核验不冒称新提交CI。
+
+## 2026-10-18 Stage10路线4工程完成
+
+[英中文首页](../../README.zh-CN.md)、[架构/时序](../architecture/stage-10-system.md)、[通用启动](../data/stage-10-startup.md)和[本机分离路径](../data/stage-10-author-workspace.md)交付，配套[路线4验收](../../reports/stage-10-route-4-readme-startup.md)与[90分钟学习](../data/stage-10-architecture-learning.md)。已有环境实际运行公开合成5000行流水线与50案fake机制CLI，核对帮助/配置/源码/链接；没有新环境安装、真实API/UI/数据库启动或模型调用。
+
+当前路线0～4工程Done，5～8 Planned，下一路线5彩排与真实录制。本人L4/人工实用性仍Pending、Agent6/10 Fail/GNN不晋级/142余额剩2保持；stage10-agent提醒继续等待工程总审计完成，质量与GNN专项不提前启动。
