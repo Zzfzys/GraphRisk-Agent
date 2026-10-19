@@ -66,3 +66,9 @@
 ## 2026-10-18 路线7本人验收边界
 
 项目条目/20题/示例稿及冻结首次十案材料已交付，默认意见为空。本人自报选择现在填写不等于完成；代理核对来源/填齐不等于认证身份或主观实用性。实际记录与两段讲述/计时/追问尚未收到时，路线7整体In Progress，其他本人项仍Pending；不可因材料齐全启动“全部路线验收完成”提醒。当前10案不自动替代Stage09旧profile/缺图与其他个人练习，自动6/10及预算不变。
+
+## 2026-10-19：Stage10路线8工程交付版与最终CI门禁
+
+[总验收](../../reports/stage-10-route-8-acceptance.md)和[最终交接/L8](stage-10-final-handoff.md)就绪。当前代码本地CPU915/1平台skip、独立核心91/3可选UI skip、302解析/47冻结往返/两wheel、356旧证据绑定及当前HTTP/AppTest回放通过；四个DB文件未在本地执行，本机Docker未连接。最终版本验收须当前提交自己的六项GitHub CI成功，精确HEAD/run/日志/hash/bundle与最终完成状态保存在E:/GraphRisk-Agent/reports/generated/stage10/route8/20261019-final-v1/acceptance.json；未满足时保持版本验收未完成，不以旧CI代替。
+
+路线7材料/机制与本人十案意见已接收；用户将讲述/计时/追问延期，保留个人Pending。工程交付、6/10质量Fail、GNN不晋级、本人实用性尚未证实分别报告；Stage10和项目整体仍In Progress。142/144剩2、三旧账本不变，本轮新生成/真实训练/付费0。工程门禁确认后提醒独立Agent质量专项，[后续待办](../plans/stage-10-post-delivery-backlog.md)仅登记、不启动；GNN检索另等用户指令。

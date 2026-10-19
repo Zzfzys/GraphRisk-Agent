@@ -14,7 +14,7 @@ A portfolio fraud-investigation application for LLM/Agent engineering roles. A b
 
 Human decisions are recorded against a report hash and approval session. The application executes no account freezing or transaction blocking. Tool order is controlled by code; the project does not claim open-ended model planning or production authorization.
 
-## Current evidence — 2026-10-18
+## Current evidence — 2026-10-19
 
 | Evaluation | Result | Scope |
 |---|---|---|
@@ -26,7 +26,7 @@ Human decisions are recorded against a report hash and approval session. The app
 
 Definitions, versions, denominators and private-source bindings are in [claims E01–E12](docs/data/stage-10-final-claims.md). [CI at 0e326b0](https://github.com/Zzfzys/GraphRisk-Agent/actions/runs/39042905865) passed six jobs: 1,035 tests across separate layers, one platform skip; 15 additional mechanism probes are separate. CI success does not establish model quality. Later documentation commits have their own version status.
 
-Stages 01–09 have engineering evidence; personal learning/review remains pending. Stage10 routes0–6 engineering delivery is complete; route7 career/interview/review materials are ready, with personal review and rehearsal pending; route8 remains planned. A new checkout and two new environments passed cached-offline reproduction; cold-cache installation and raw-data retraining were not tested. The user selected actual page pictures instead of video; the [picture walkthrough](docs/data/stage-10-picture-demo.md) replays saved enhanced-profile reports with zero new inference. Current Agent quality is still below its frozen gate. [Known limitations](docs/data/stage-10-known-limitations.md) and [stage status](docs/plans/README.md) stay explicit.
+Stages 01–09 have engineering evidence; personal learning/review remains pending. Stage10 engineering delivery and its final CI gate are recorded in the [final acceptance](reports/stage-10-route-8-acceptance.md) and [handoff](docs/data/stage-10-final-handoff.md). Ten personal case reviews have been received; interview rehearsal was deferred by the user. Quality and personal learning remain incomplete; the project is not marked fully Done. A new checkout and two new environments passed cached-offline reproduction; cold-cache installation and raw-data retraining were not tested. The user selected actual page pictures instead of video; the [picture walkthrough](docs/data/stage-10-picture-demo.md) replays saved enhanced-profile reports with zero new inference. Current Agent quality is still below its frozen gate. [Known limitations](docs/data/stage-10-known-limitations.md) and [stage status](docs/plans/README.md) stay explicit.
 
 ## Start with the public mechanism demo
 
