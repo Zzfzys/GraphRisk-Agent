@@ -1,6 +1,6 @@
 # Stage 10：性能、最终交付与求职材料
 
-> 状态：In Progress；工程交付版的最终版本门禁见路线8与本提交CI；真实Agent仍6/10 Fail，十案意见已接收，个人演练/学习及实用性缺口保留。
+> 状态：In Progress；工程验收通过（6758280自身CI＋本机Docker补验）；文档提交skip-ci不冒称新CI。真实Agent仍6/10 Fail、GNN不晋级，十案意见已接收，个人演练/学习及实用性缺口保留。
 > 时间：约 44 小时主动工作，含约 13.25 小时学习；按每周 20～24 小时约两周。模型等待另记，不将估算填成已耗时。
 > 配套：[实现路线](stage-10-implementation-roadmap.md) · [学习路线](stage-10-learning-roadmap.md) · [交付合同](../data/stage-10-delivery-contract.md) · [证据台账](../data/stage-10-evidence-register.md) · [路线 0 验收](../../reports/stage-10-route-0-preflight.md)
 
