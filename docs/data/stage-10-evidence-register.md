@@ -86,3 +86,5 @@ S5新增真实证据：首次6/10 Fail，模型HTTP12/12正常返回、调查HTT
 [总验收](../../reports/stage-10-route-8-acceptance.md)和[最终交接/L8](stage-10-final-handoff.md)就绪。当前代码本地CPU915/1平台skip、独立核心91/3可选UI skip、302解析/47冻结往返/两wheel、356旧证据绑定及当前HTTP/AppTest回放通过；四个DB文件未在本地执行，本机Docker未连接。最终版本验收须当前提交自己的六项GitHub CI成功，精确HEAD/run/日志/hash/bundle与最终完成状态保存在E:/GraphRisk-Agent/reports/generated/stage10/route8/20261019-final-v1/acceptance.json；未满足时保持版本验收未完成，不以旧CI代替。
 
 路线7材料/机制与本人十案意见已接收；用户将讲述/计时/追问延期，保留个人Pending。工程交付、6/10质量Fail、GNN不晋级、本人实用性尚未证实分别报告；Stage10和项目整体仍In Progress。142/144剩2、三旧账本不变，本轮新生成/真实训练/付费0。工程门禁确认后提醒独立Agent质量专项，[后续待办](../plans/stage-10-post-delivery-backlog.md)仅登记、不启动；GNN检索另等用户指令。
+
+2026-10-19更新：[本机Docker补验](../../reports/stage-10-route-8-local-docker.md)已通过，本机Docker已连接；隔离真库26/26、权限探针15/15、当前只读源码的Compose启动/连通/审批/故障恢复/命名卷重建通过。旧容器/卷未变，本轮临时资源已清理。仅新增本机Docker层；原6758280的其他通过证据复用，文档提交skip-ci不冒称新CI。原6/10 Fail、GNN不晋级与个人Pending保持；测试报告生成器为fixture，真实生成/训练/付费0。

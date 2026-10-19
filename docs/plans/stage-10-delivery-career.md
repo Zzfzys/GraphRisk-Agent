@@ -164,3 +164,9 @@ Stage 01～08 工程验收成立，Stage 09 原路线 6～8 及 5B 工程均有�
 [总验收](../../reports/stage-10-route-8-acceptance.md)和[最终交接/L8](../data/stage-10-final-handoff.md)就绪。当前代码本地CPU915/1平台skip、独立核心91/3可选UI skip、302解析/47冻结往返/两wheel、356旧证据绑定及当前HTTP/AppTest回放通过；四个DB文件未在本地执行，本机Docker未连接。最终版本验收须当前提交自己的六项GitHub CI成功，精确HEAD/run/日志/hash/bundle与最终完成状态保存在E:/GraphRisk-Agent/reports/generated/stage10/route8/20261019-final-v1/acceptance.json；未满足时保持版本验收未完成，不以旧CI代替。
 
 路线7材料/机制与本人十案意见已接收；用户将讲述/计时/追问延期，保留个人Pending。工程交付、6/10质量Fail、GNN不晋级、本人实用性尚未证实分别报告；Stage10和项目整体仍In Progress。142/144剩2、三旧账本不变，本轮新生成/真实训练/付费0。工程门禁确认后提醒独立Agent质量专项，[后续待办](stage-10-post-delivery-backlog.md)仅登记、不启动；GNN检索另等用户指令。
+
+## 2026-10-19：本机Docker补验通过（仅补缺口）
+
+用户在Docker启动后要求仅重做路线8缺失的本机容器验收，已通过且适用的CPU、独立GraphRAG、静态/冻结、包、镜像构建、真实质量和性能均复用原证据，不重复运行。旧6758280的CI成功与旧acceptance保持原样，不将云端验收冒充本机结果。最新见[本机补验](../../reports/stage-10-route-8-local-docker.md)，私有目录E:/GraphRisk-Agent/reports/generated/stage10/route8/20261019-local-docker-v1/。
+
+本机隔离真库26/26、受限账号探针15/15已通过。Compose启动、连通、审批、API/DB故障恢复及命名卷重建持久化通过；本轮测试资源已清理。 缓存运行镜像的uv.lock与当前源码一致，应用从C盘当前源码只读挂载，数据/模型来自E盘。报告生成明确使用测试替身，真实模型/工具用于工程链路，不计为新增真实LLM质量样本；原6/10 Fail、GNN不晋级、个人Pending和142/144剩2保持。仅处理新随机项目和带租约标签的新资源，旧容器/卷不改。

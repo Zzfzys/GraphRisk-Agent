@@ -89,3 +89,5 @@ Stage10路线1已工程验收：[报告](../../reports/stage-10-route-1-measurem
 ## 2026-10-17 路线2实测交接
 
 [正式报告](../../reports/stage-10-route-2-real-measurement.md)：10笔首次真实受限判断6/10，门槛9/10未达，质量Fail；2次重复通过不补分。四笔错误输出均被拦截，unsafe0。实测工程已完成，Stage10整体仍In Progress，路线3～8和本人学习/人工实用性待完成。唯一台账142/144、剩2，无新训练/付费。当前新质量不能用历史5A40/40代替。
+
+2026-10-19更新：[本机Docker补验](../../reports/stage-10-route-8-local-docker.md)已通过，本机Docker已连接；隔离真库26/26、权限探针15/15、当前只读源码的Compose启动/连通/审批/故障恢复/命名卷重建通过。旧容器/卷未变，本轮临时资源已清理。仅新增本机Docker层；原6758280的其他通过证据复用，文档提交skip-ci不冒称新CI。原6/10 Fail、GNN不晋级与个人Pending保持；测试报告生成器为fixture，真实生成/训练/付费0。
