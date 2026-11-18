@@ -1,0 +1,32 @@
+project_name: graphrisk-agent
+dataset_source: ieee_cis
+graph_comparison_run: stage05-route8
+paths:
+  data_config: configs/ieee_cis.yaml
+  training_config: configs/train_baseline_ieee_cis.yaml
+  graph_config: configs/graph_ieee_cis.yaml
+  policy_source_dir: data/policies/stage05
+  policy_artifact_dir: artifacts/stage-05/policy
+  run_dir: reports/generated/stage09/quality-service
+generation:
+  provider: local_http
+  model_id: qwen2.5:0.5b
+  model_revision: a8b0c51577010a279d933d14c2a8ab4b268079d44c5c8830c0a93900f1827c67
+  endpoint: http://127.0.0.1:11434/api/generate
+  max_output_tokens: 512
+  request_timeout_seconds: 180.0
+retrieval:
+  backend: tfidf
+  embedding_model_id: null
+  top_k: 3
+limits:
+  max_steps: 12
+  max_model_calls: 2
+  max_policy_queries: 2
+  max_retries: 1
+  max_total_seconds: 300.0
+  api_budget_cny: 30.0
+  api_stop_cny: 24.0
+model_policy: artifacts/stage-09/route5/20261007-replay-v1/deployment.json
+model_policy_sha256: e70269418497cc56cbbe84c5a26eb2f29f4d1613e8e1a7dad8c68a0f88b3b0fb
+report_mode: quality_v1

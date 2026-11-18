@@ -1,0 +1,261 @@
+{
+  "schema_version": "1.0",
+  "status": "completed",
+  "transaction_id": "T3",
+  "dataset_source": "synthetic",
+  "transaction": {
+    "schema_version": "1.0",
+    "tool": "get_transaction",
+    "status": "ok",
+    "transaction_id": "T3",
+    "dataset_source": "synthetic",
+    "data": {
+      "transaction_id": "T3",
+      "transaction_amount": 3.0,
+      "product_code": "W",
+      "source_transaction_dt_seconds": null,
+      "card_id": "card-shared",
+      "device_id": "device-2",
+      "email_domain": "example.test",
+      "address_id": "address-2"
+    },
+    "error": null,
+    "evidence": [
+      {
+        "source_kind": "canonical_transaction",
+        "record_id": "T3",
+        "dataset_source": "synthetic"
+      }
+    ]
+  },
+  "historical_features": {
+    "schema_version": "1.0",
+    "tool": "get_transaction_features",
+    "status": "ok",
+    "transaction_id": "T3",
+    "dataset_source": "synthetic",
+    "data": {
+      "transaction_id": "T3",
+      "tx_count_last_1h": 2,
+      "tx_count_last_24h": 2,
+      "tx_count_last_7d": 2,
+      "amount_mean_last_24h": 2.0,
+      "amount_std_last_24h": 1.0,
+      "amount_deviation_last_24h": 1.0
+    },
+    "error": null,
+    "evidence": [
+      {
+        "source_kind": "historical_features",
+        "record_id": "T3",
+        "dataset_source": "synthetic"
+      }
+    ]
+  },
+  "risk_score": {
+    "schema_version": "1.0",
+    "tool": "get_risk_score",
+    "status": "ok",
+    "transaction_id": "T3",
+    "dataset_source": "synthetic",
+    "data": {
+      "transaction_id": "T3",
+      "risk_score": 0.5,
+      "risk_level": "medium",
+      "model_name": "dummy",
+      "model_version": "dummy-workflow-v1",
+      "probability_calibrated": false
+    },
+    "error": null,
+    "evidence": [
+      {
+        "source_kind": "model_artifact",
+        "record_id": "dummy-workflow-v1",
+        "dataset_source": "synthetic"
+      }
+    ]
+  },
+  "related_entities": {
+    "schema_version": "1.0",
+    "tool": "get_related_entities",
+    "status": "ok",
+    "transaction_id": "T3",
+    "dataset_source": "synthetic",
+    "data": {
+      "transaction_id": "T3",
+      "matches": [
+        {
+          "transaction_id": "T2",
+          "seconds_before_target": 60,
+          "shared_entities": [
+            {
+              "entity_type": "card",
+              "entity_id": "card-shared"
+            },
+            {
+              "entity_type": "email_domain",
+              "entity_id": "example.test"
+            }
+          ]
+        },
+        {
+          "transaction_id": "T1",
+          "seconds_before_target": 120,
+          "shared_entities": [
+            {
+              "entity_type": "card",
+              "entity_id": "card-shared"
+            },
+            {
+              "entity_type": "email_domain",
+              "entity_id": "example.test"
+            }
+          ]
+        }
+      ],
+      "total_matches": 2,
+      "truncated": false
+    },
+    "error": null,
+    "evidence": [
+      {
+        "source_kind": "entity_link",
+        "record_id": "T2",
+        "dataset_source": "synthetic"
+      },
+      {
+        "source_kind": "entity_link",
+        "record_id": "T1",
+        "dataset_source": "synthetic"
+      }
+    ]
+  },
+  "risky_neighbors": {
+    "schema_version": "1.0",
+    "tool": "find_risky_neighbors",
+    "status": "ok",
+    "transaction_id": "T3",
+    "dataset_source": "synthetic",
+    "data": {
+      "transaction_id": "T3",
+      "neighbors": [
+        {
+          "transaction_id": "T2",
+          "graph_risk_score": 0.8,
+          "seconds_before_target": 60,
+          "shared_entities": [
+            {
+              "entity_type": "card",
+              "entity_id": "card-shared"
+            },
+            {
+              "entity_type": "email_domain",
+              "entity_id": "example.test"
+            }
+          ]
+        },
+        {
+          "transaction_id": "T1",
+          "graph_risk_score": 0.7,
+          "seconds_before_target": 120,
+          "shared_entities": [
+            {
+              "entity_type": "card",
+              "entity_id": "card-shared"
+            },
+            {
+              "entity_type": "email_domain",
+              "entity_id": "example.test"
+            }
+          ]
+        }
+      ],
+      "graph_model_version": "graphsage-workflow-v1",
+      "target_graph_risk_score": 0.4,
+      "controlled_xgboost_score": 0.6,
+      "controlled_xgboost_model_version": "xgboost-controlled-v1",
+      "fusion_score": 0.5,
+      "fusion_alpha": 0.5,
+      "score_scope": "held_out",
+      "probability_calibrated": false
+    },
+    "error": null,
+    "evidence": [
+      {
+        "source_kind": "model_artifact",
+        "record_id": "graphsage-workflow-v1",
+        "dataset_source": "synthetic"
+      },
+      {
+        "source_kind": "model_artifact",
+        "record_id": "xgboost-controlled-v1",
+        "dataset_source": "synthetic"
+      },
+      {
+        "source_kind": "entity_link",
+        "record_id": "T2",
+        "dataset_source": "synthetic"
+      },
+      {
+        "source_kind": "entity_link",
+        "record_id": "T1",
+        "dataset_source": "synthetic"
+      }
+    ]
+  },
+  "evidence_bindings": [
+    {
+      "section": "transaction",
+      "source_tool": "get_transaction",
+      "record_ids": [
+        "T3"
+      ]
+    },
+    {
+      "section": "historical_features",
+      "source_tool": "get_transaction_features",
+      "record_ids": [
+        "T3"
+      ]
+    },
+    {
+      "section": "risk_score",
+      "source_tool": "get_risk_score",
+      "record_ids": [
+        "T3",
+        "dummy-workflow-v1"
+      ]
+    },
+    {
+      "section": "related_entities",
+      "source_tool": "get_related_entities",
+      "record_ids": [
+        "T3",
+        "T2",
+        "T1"
+      ]
+    },
+    {
+      "section": "risky_neighbors",
+      "source_tool": "find_risky_neighbors",
+      "record_ids": [
+        "T3",
+        "graphsage-workflow-v1",
+        "xgboost-controlled-v1",
+        "T2",
+        "T1"
+      ]
+    }
+  ],
+  "issues": [],
+  "unavailable_capabilities": [],
+  "limitations": [
+    "The tabular risk score is not a calibrated fraud probability.",
+    "Shared modeled entities do not establish a verified person or fraud conclusion.",
+    "This workflow is read-only and does not execute enforcement actions.",
+    "GraphSAGE neighbor scores and same-ID fusion scores are not calibrated fraud probabilities.",
+    "The controlled XGBoost score used in fusion differs from the Stage 02 service score.",
+    "High-scoring neighbors are model signals, not confirmed fraud cases.",
+    "Synthetic records are demonstration data."
+  ]
+}

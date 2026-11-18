@@ -1,60 +1,13 @@
 # GraphRisk-Agent repository instructions
 
-## Project objective
+先读[CURRENT.md](CURRENT.md)，再按任务读取相关源码和计划。项目包含`core/`与`workbench/`两个源码来源；根目录用于导航，不是单独的Python工程。子目录中绝对路径记录原本地环境，不能假定新机器具有相同路径。
 
-Build a portfolio-grade fraud investigation Agent for LLM/Agent application engineering roles. The Agent must ground its output in transaction data, ML/GNN model results, graph evidence, and cited policy documents. High-risk actions require human approval.
-
-## Environment
-
-- Python 3.11 only;
-- Use uv and the checked-in `uv.lock`;
-- Keep uv cache, managed Python, and the virtual environment inside the repository;
-- Before running project commands in a Windows PowerShell process, dot-source scripts/enter_project_env.ps1 to keep TEMP/TMP and pip/uv caches inside the repository. Repeat for each new shell process; do not change system-wide temporary directories or delete application runtimes;
-- Run tests with `uv run --offline pytest` after dependencies are synchronized;
-- Do not introduce a new framework when an existing dependency covers the requirement.
-
-## Source layout
-
-- Application code: `src/graphrisk/`;
-- Executable wrappers: `scripts/`;
-- Configuration: `configs/`;
-- Tests: `tests/unit/` and `tests/integration/`;
-- Stage plans and evidence: `docs/plans/`;
-- Data contracts and provenance: `docs/data/` and `data/provenance.example.json`;
-- Generated data, reports, model files, local environments, caches, and secrets are not committed.
-
-## Data correctness
-
-- Split fraud data chronologically; never shuffle before train/validation/test assignment;
-- Historical features may only use events with earlier event time;
-- Treat equal timestamps as simultaneous unless a documented source ordering exists;
-- Do not use labels in feature construction;
-- Training graphs must not contain future validation or test relationships;
-- Keep synthetic and real-dataset metrics separate;
-- `identity_key` is a heuristic, not a verified customer ID.
-
-## Engineering rules
-
-- New behavior requires meaningful tests;
-- Tools and data functions use explicit inputs and structured outputs;
-- Fail validation with actionable errors instead of silently coercing invalid data;
-- Keep secrets out of source, logs, tests, and documentation;
-- Prefer small deterministic fixtures for tests;
-- Update the active stage document whenever scope, behavior, evidence, or a decision changes;
-- Update `PROJECT_PLAN.md` when a change affects multiple stages or the overall scope;
-- Do not mark a stage done until every acceptance criterion has evidence.
-
-## Current commands
-
-```powershell
-uv sync --locked
-uv run --offline pytest
-uv run --offline python scripts\generate_synthetic_data.py --config configs\dev.yaml
-uv run --offline python scripts\build_features.py --config configs\dev.yaml
-uv run --offline python scripts\build_features.py --config configs\ieee_cis.yaml
-uv run --offline python scripts\train_baselines.py --config configs\train_baseline.yaml
-uv run --offline python scripts\train_baselines.py --config configs\train_baseline_ieee_cis.yaml
-uv run --offline python scripts\list_mlflow_runs.py --config configs\train_baseline.yaml
-uv run --offline python scripts\run_investigation.py 2987100 --data-config configs\ieee_cis.yaml --training-config configs\train_baseline_ieee_cis.yaml --relation-limit 3
-uv run --offline uvicorn api.main:app --host 127.0.0.1 --port 8000
-```
+- 使用Python 3.11、uv及对应子项目的uv.lock；命令在相应Python工程目录执行。
+- 后续代码设计遵循用户要求的Ponytail最小实现工作流，优先复用现有依赖。
+- 时间特征只使用较早事件；相同时间按同时发生处理，不使用标签构造特征，不引入未来图关系。
+- `identity_key`是启发式关联，不是已核实的客户身份；高／中／低表示模型调查优先级。
+- 数据事实、模型判断、待核实假设及政策前提必须区分，引用不能超出本案证据。
+- API密钥、交易记录、生成报告、模型权重、授权及运行账本不得提交。真实值只在本地填写，`.env.example`保持空值。
+- 保护冻结材料、未知／失败记录和现有消耗，不重建账本或绕过授权。高风险业务动作需要人工批准。
+- 新行为提供有意义的离线测试；不为健康检查触发真实付费请求，不将夹具通过当真实写作验收。
+- 任务收尾只增量维护当前入口和触及资料；保护已有修改，不自动扩展为全仓清理。

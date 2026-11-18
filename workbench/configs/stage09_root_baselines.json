@@ -1,0 +1,33 @@
+{
+  "schema_version": "stage09-root-controls-v1",
+  "splits": [
+    "train",
+    "validation"
+  ],
+  "test_labels_allowed": false,
+  "seed": 20260921,
+  "per_model_attempt_cap": 1,
+  "max_model_seconds": 3600,
+  "cpu_threads": 4,
+  "mlp": {
+    "hidden_channels": 64,
+    "dropout": 0.2,
+    "learning_rate": 0.001,
+    "batch_size": 256,
+    "max_epochs": 50,
+    "patience": 10
+  },
+  "xgboost": {
+    "n_estimators": 200,
+    "max_depth": 4,
+    "learning_rate": 0.05,
+    "min_child_weight": 2,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_lambda": 1,
+    "objective": "binary:logistic",
+    "eval_metric": "logloss",
+    "tree_method": "hist",
+    "n_jobs": 4
+  }
+}

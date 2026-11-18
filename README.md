@@ -1,79 +1,40 @@
 # GraphRisk-Agent
 
-[中文说明](README.zh-CN.md) · [Startup guide](docs/data/stage-10-startup.md) · [Architecture](docs/architecture/stage-10-system.md) · [Evaluation](reports/stage-10-final-evaluation.md)
+基于交易数据、风险模型、关系证据与参考资料的欺诈调查 Agent。当前版本提供同一笔交易的“风险与证据 → 调查报告 → DeepSeek 问答”工作台。
 
-A portfolio fraud-investigation application for LLM/Agent engineering roles. A bounded LangGraph workflow collects transaction history, XGBoost risk scores, experimental GraphSAGE signals, entity relationships, and cited simulated policies. It validates structured model judgments and produces reports for human review.
+## 当前能力
 
-## What you can inspect
+- 日终 XGBoost 216+49 特征评分，高／中／低代表调查优先级；即时模型和原 x3 方案保留扩展与回退。
+- 程序整理事实与来源，展示已保存的研判报告；明确区分程序内容、DeepSeek回答及待复核结果。
+- 同案自由问答、多轮上下文、引用核验，以及事实、模型判断、待核实假设的区分。
+- 检索参考资料并提供精简附录；工具范围、预算和未知响应由服务端控制。
+- 工作台离线回归采用17项API／合同检查＋1项页面提交冒烟；最近18项通过，2项原UI检查由新检查替代。
 
-- Transaction and strictly earlier history; simultaneous events are excluded from history.
-- XGBoost as the primary risk model; GraphSAGE remains experimental after failing the fusion promotion gate.
-- Evidence, policy versions, citations, unknowns, and approval/rejection in a Streamlit workbench backed by FastAPI.
-- Memory storage or explicit PostgreSQL reports/checkpoints; optional pgvector policy retrieval.
-- A separate [Enterprise GraphRAG](projects/enterprise-graphrag/README.md) project over original simulated IT documents.
+这次更新将原分支中的旧项目内容替换为当前核心与工作台源码。既有GitHub历史保留；本地未公开的实验历史、报告及运行材料不随之发布。当前能力和待验收边界见[CURRENT.md](CURRENT.md)。
 
-Human decisions are recorded against a report hash and approval session. The application executes no account freezing or transaction blocking. Tool order is controlled by code; the project does not claim open-ended model planning or production authorization.
+## 项目结构
 
-## Current evidence — 2026-10-19
+| 目录 | 职责 |
+| --- | --- |
+| [core/](core/README.md) | 核心Python工程：调查、工具、模型特征与评分、API及测试。 |
+| [workbench/](workbench/README.md) | 当前网页、自由问答扩展、服务适配、启动器及相关测试。 |
+| [工作台页面](workbench/extensions/transaction_workbench/web.py) | 上方查看风险和证据，中间阅读报告，下方主动提问。 |
+| [接手说明](workbench/docs/项目结构与Agent接手说明.md) | 实际运行分工和修改入口；其中绝对路径记录原本地环境。 |
+| [SOURCE_MAP.json](SOURCE_MAP.json) | 原始源码提交、922份来源文件及内容哈希。 |
 
-| Evaluation | Result | Scope |
-|---|---|---|
-| Primary XGBoost | Mean AP **0.544367**, ROC-AUC **0.905089** | Three temporal outer folds; historical, observed data |
-| GraphSAGE fusion | **No promotion** | All three calibration folds select XGBoost weight 1; AP gain 0 |
-| Current real local Agent | **6/10 Fail**, threshold 9/10 | Ten first cases; two fixed repeats pass separately; four invalid outputs blocked |
-| Independent GraphRAG | text **16/22**, graph/hybrid **18/22** | Small, previously used simulated corpus/question set; hybrid ties graph |
-| End-to-end HTTP | Median **11.36s**, n=12, four HTTP 503 rejections | Local serial measurement; small-sample P99 unknown |
+两个源码目录对应当前实际使用的两处来源，本次更新不把它们合并成新的运行环境。Python工程命令在相应子目录执行，不能在仓库根目录直接运行uv。启动器中的绝对路径须结合实际环境核验。
 
-Definitions, versions, denominators and private-source bindings are in [claims E01–E12](docs/data/stage-10-final-claims.md). [CI at 0e326b0](https://github.com/Zzfzys/GraphRisk-Agent/actions/runs/39042905865) passed six jobs: 1,035 tests across separate layers, one platform skip; 15 additional mechanism probes are separate. CI success does not establish model quality. Later documentation commits have their own version status.
+## 使用与配置
 
-Stages 01–09 have engineering evidence; personal learning/review remains pending. Stage10 engineering delivery and its final CI gate are recorded in the [final acceptance](reports/stage-10-route-8-acceptance.md) and [handoff](docs/data/stage-10-final-handoff.md). Ten personal case reviews have been received; interview rehearsal was deferred by the user. Quality and personal learning remain incomplete; the project is not marked fully Done. A new checkout and two new environments passed cached-offline reproduction; cold-cache installation and raw-data retraining were not tested. The user selected actual page pictures instead of video; the [picture walkthrough](docs/data/stage-10-picture-demo.md) replays saved enhanced-profile reports with zero new inference. Current Agent quality is still below its frozen gate. [Known limitations](docs/data/stage-10-known-limitations.md) and [stage status](docs/plans/README.md) stay explicit.
+1. 先阅读CURRENT与接手说明，确认使用核心还是工作台入口。
+2. 使用Python 3.11与项目的uv.lock，按原工程说明初始化环境。
+3. 数据、模型权重、封批产物、已生成报告、会话／费用账本和正式授权在本地单独保留，恢复运行需要这些材料。
+4. DeepSeek密钥只在本地环境变量或私有配置文件中填写；仓库仅保留值为空的`.env.example`。不要把密钥写入代码、日志或提交。
 
-## Start with the public mechanism demo
+网页原有次数和费用约束仍由本地服务端合同及账本核验，公开代码不构成新的外发授权或预算重置许可。没有本地运行材料时，可以审查源码和离线夹具，不能将此仓库视为已配置好的在线服务。
 
-Choose a writable project drive, install Git and uv, and open PowerShell in the directory where you want the repository. Python **3.11** is required by the project. The first dependency sync needs the configured package indexes unless everything is cached.
+## 验收范围
 
-```powershell
-git clone https://github.com/Zzfzys/GraphRisk-Agent.git GraphRisk-Agent
-Set-Location GraphRisk-Agent
-git switch codex/stage09-version-closeout
-. .\scripts\enter_project_env.ps1 | Out-Null
-uv sync --locked --group demo
-uv run --offline python scripts/evaluate_stage06_agent.py
-```
+主报告沿用用户认可的呈现方式。真实问答的短答质量、排他表达、否定语义误报与稳定多轮仍有待完善，完整案例评估也尚未全部收尾。模型分档是调查优先级，分数不等同已校准的欺诈概率。
 
-Expected: `fake=50/50 real_samples=0`, with a timestamped JSON under `reports/generated/stage06/`. This is a CLI demonstration of report, citation, failure and approval mechanisms using deterministic fixtures. It requires neither IEEE-CIS nor Ollama, Docker, a paid key, or trained fraud weights. It does not start a website or measure real LLM quality. Keep `--real` out of this public fixture command.
-
-For synthetic data generation, real local investigations, persistent storage, and historical replay, follow the [startup guide](docs/data/stage-10-startup.md). The first install can be substantial because the root project includes PyTorch. The independent GraphRAG [corpus validator](docs/data/stage-10-startup.md#independent-graphrag) offers a smaller standard-library-only entry point.
-
-The author's C-drive source/E-drive runtime arrangement has [separate commands](docs/data/stage-10-author-workspace.md). Those absolute paths are not prerequisites for another machine.
-
-## Choose a running mode
-
-| Mode | Prerequisites | What it demonstrates |
-|---|---|---|
-| Public CLI fixture/synthetic | Checked-in files and locked dependencies | Engineering behavior/data pipeline; zero real model quality claims |
-| Current real investigation | Authorized IEEE-CIS, bound feature/model/graph/policy artifacts, pinned local Ollama | Current enhanced XGBoost/experimental graph profile; creation sends real model requests |
-| PostgreSQL investigation | Real-mode inputs plus migrated database, restricted role and private DSN | Report/checkpoint persistence, idempotency and approval recovery |
-| Historical report replay | Saved private reports, Docker and pinned database image | Old real report content with new local approval practice; zero new inference |
-
-The default local coverage launcher explicitly uses **memory**. Reports and approvals are lost on API restart; old run IDs can return 410. PostgreSQL is opt-in, does not silently fall back to memory, and has a stricter partial-evidence approval boundary. See [mode contracts and sequence diagrams](docs/architecture/stage-10-system.md).
-
-## Repository and evidence
-
-| Path | Role |
-|---|---|
-| `src/graphrisk/`, `api/`, `streamlit_app.py` | Application, HTTP routes and workbench |
-| `configs/`, `scripts/`, `tests/` | Versioned configuration, executable entrypoints and checks |
-| `docs/data/`, `docs/architecture/` | Contracts, cards, operating guides and diagrams |
-| `docs/plans/`, `reports/` | Stage index and public acceptance/evaluation reports |
-| `projects/enterprise-graphrag/` | Independent GraphRAG package, corpus, tests and workbench |
-
-Raw transactions, model weights, prompts, row-level outputs, secrets, caches, local environments and generated evidence are excluded from Git. Obtain dataset permissions and generate/obtain the exact bound artifacts before using real mode. Merely downloading the Kaggle CSV files does not produce a ready investigation service.
-
-Start each Windows project shell with `scripts/enter_project_env.ps1`; it sets only that process's TEMP/TMP, caches and local proxy exclusions. [Testing and troubleshooting](docs/data/stage-10-startup.md#checks-and-troubleshooting) explain optional database tests, liveness/readiness and startup failures. [Route6 reproduction](docs/data/stage-10-clean-reproduction.md) passed in a new checkout/new environment using an existing download cache: CPU915/one platform skip, public50-case fixtures/synthetic pipeline, and existing real-artifact checks. Historical byte-hash checks require the explicit frozen source snapshot when checkout line endings differ. Cold-cache and raw-data retraining remain untested.
-
-The roadmap is in [PROJECT_PLAN.md](PROJECT_PLAN.md). Begin learning with [L4's 90-minute walkthrough](docs/data/stage-10-architecture-learning.md); follow the [stage index](docs/plans/README.md) for historical experiments and acceptance rather than treating older scores as current results.
-
-## Career walkthrough
-
-[Project statements and sample talks](docs/career/stage-10-presentation.md), [20 interview drills](docs/career/stage-10-interview-drills.md), and [human review instructions](docs/career/stage-10-human-review.md) are available. They are preparation materials, not evidence that the author has completed personal rehearsal or ten usefulness reviews. Current first-case Agent quality remains 6/10 Fail.
+本项目不自动执行拒付、封禁或其他业务处置；高风险业务动作需要人工批准。

@@ -1,0 +1,11 @@
+# Build Stage 07 from the already-accepted Stage 06 runtime. The locked sync adds
+# PostgreSQL/checkpoint dependencies without redownloading the ML stack.
+FROM graphrisk-stage06:local
+WORKDIR /app
+COPY pyproject.toml uv.lock README.md ./
+COPY src ./src
+COPY api ./api
+COPY configs ./configs
+COPY data/policies/stage05 ./data/policies/stage05
+COPY streamlit_app.py ./
+RUN uv sync --locked --group demo --no-dev --no-editable

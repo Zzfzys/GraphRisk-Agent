@@ -1,0 +1,20 @@
+{
+  "dataset": "ieee-cis-fraud-detection",
+  "source_url": "https://www.kaggle.com/c/ieee-fraud-detection/data",
+  "license_or_rules_url": "",
+  "rules_accepted_at": "",
+  "downloaded_at": "",
+  "local_root": "data/raw/ieee-cis",
+  "files": [
+    {
+      "name": "train_transaction.csv",
+      "size_bytes": null,
+      "sha256": ""
+    },
+    {
+      "name": "train_identity.csv",
+      "size_bytes": null,
+      "sha256": ""
+    }
+  ]
+}

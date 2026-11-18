@@ -1,0 +1,132 @@
+# Design contract only: not a Stage05/Stage06 runtime configuration.
+contract_version: 1
+stage: 8
+frozen_on: "2026-09-29"
+status: design_frozen
+# Legacy Qwen contract retained for Route 1 offline regression.
+hosted:
+  enabled: false
+  provider: alibaba_bailian
+  region: cn-beijing
+  model: qwen-plus-2025-12-01
+  endpoint_template: "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/compatible-mode/v1/chat/completions"
+  endpoint_verified: false
+  api_key_env: DASHSCOPE_API_KEY
+  enable_thinking: false
+  response_format: json_object
+  output_validation: pydantic_and_evidence
+  price_checked_on: "2026-09-30"
+  input_cny_per_million_tokens: 0.8
+  output_cny_per_million_tokens: 2.0
+  live_call_status: not_run
+budget:
+  stage_cap_cny: 100
+  stop_threshold_cny: 80
+  reserve_cny: 20
+  experiment_cap_cny: 5
+  request_reservation_cny: 0.10
+  actual_hosted_cost_cny: null  # itemized bill pending
+  estimated_hosted_cost_upper_cny: 0.028383
+  unknown_usage: reserve_until_reconciled
+  concurrency: 1
+comparison:
+  input_token_limit: 4096
+  output_token_limit: 512
+  temperature: 0
+  request_timeout_seconds: 60
+  case_deadline_seconds: 125
+  model_attempts_per_case: 2
+  transport_retries: 0  # Route 3 first-answer comparison; manual rerun still consumes budget
+  invalid_output_retries: 0
+  common_output_mode: json_object
+  shared_prompt_context_schema: true
+  local_fallback_for_hosted: false
+  token_limit_requires_provider_specific_counting: true
+data_boundary:
+  allowed: [project_original_simulated, synthetic_evaluation]
+  forbidden: [ieee_cis_rows, fraud_labels, identity_keys, private_reports, credentials, connection_strings]
+  source_manifest_required: true
+  caller_label_is_not_provenance: true
+local:
+  generation_model: "qwen2.5:0.5b"
+  generation_digest: a8b0c51577010a279d933d14c2a8ab4b268079d44c5c8830c0a93900f1827c67
+  embedding_model: "qwen3-embedding:0.6b"
+  embedding_digest: ac6da0dfba84a81fdbfbaf330198c33cd77c4cdfc53e8bc50eb581914a15621d
+  embedding_dimensions: 1024
+  new_candidate_status: measured_idle_output_contract_failed
+  candidate_model: "qwen3:4b"
+  candidate_digest: 359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7
+  measurement_config: configs/stage08_local_probe.yaml
+evaluation:
+  provider:
+    count: 20
+    groups: {evidence_summary: 6, json_fields: 4, insufficient_evidence: 4, invalid_or_stale_citation: 4, prompt_injection: 2}
+    case_freeze_route: 3
+    cases_status: frozen_v1
+    suite_sha256: f1d2b0e3a4e46032aa8db8c8d7b90057a18cc0941835d240c819f03f5614ab0a
+    contract_sha256: 0990dcff737fd445e44018d016c642cfc5c53e1bc9d2372a7fe7bcc6f65f9051
+    scored_outputs_status: local_and_deepseek_measured_bill_pending
+  graphrag:
+    count: 30
+    groups: {direct: 8, two_hop: 8, version_conflict: 6, no_answer: 4, injection: 4}
+    case_freeze_route: 4
+    cases_status: frozen_v1
+    dataset_path: projects/enterprise-graphrag/data/corpus-v1
+    freeze_sha256: 66d716823d71db9f78452c361ef89d04b90fa5810bd32380ffa77219de32d764
+    corpus_contract_status: validated
+    retrieval_status: validated_three_modes_real_local_embeddings
+    retrieval_contract_version: retrieval-v1
+    retrieval_top_k: 6
+    retrieval_index_version: 84d09b81aec41cbebdbeed7b6e634a9147b786b5c6c2efb41595e37839bd8c2e
+    retrieval_complete_evidence: {text: 19, graph: 20, hybrid: 22}
+    retrieval_answerable_denominator: 22
+    answering_status: engineering_validated_quality_pending
+    answering_contract_version: grounded-answer-v1
+    answering_contract_sha256: aa6d8308927a98a65dcf1de815b244e8f44f0e8eb85ff9034eed05aae867d17a
+    answering_rendering: verified_relation_templates
+    answering_development_smoke: {answered: 2, answerable: 4, deterministic_refusals: 4}
+    scored_outputs_status: frozen30_real_local_scored_v2_hybrid_gate_passed
+    scored_result_path: reports/generated/stage08/route7/scored-v2.json
+    scored_result_sha256: 02ea0107272390f1861e159b1f6633f1c69209856976660cf174038282b7f950
+    answerable_correct: {text: 16, graph: 18, hybrid: 18}
+    two_hop_correct: {text: 5, graph: 7, hybrid: 7}
+    real_local_workflow_observations: 90
+    actual_generation_calls: 60
+    answerable_required: 18
+    answerable_total: 22
+    two_hop_required: 6
+    no_answer_abstentions_required: 4
+    injection_safe_required: 4
+    fabricated_citations_allowed: 0
+    fabricated_edges_allowed: 0
+    max_hops: 2
+baseline:
+  root_lock_sha256: e31ddd7a212d34dc12baebf5568d2c28a583f1ca998f2a8ed02bcd8200c79d6f
+  stage05_cases_sha256: d4442875bd170bc020fbba26c150dd8fa9d2181bf60d936eb8ae00891ddb1ae1
+  stage06_cases_sha256: f91200b170e0665628312bc24ecfd01b928d6a74d861ce8e9bb9eac31caaf684
+  stage07_cases_sha256: 60fcad25b9dda57ecd243a226b7d41ce2bda88d28dd89ce88fd460784091f1d1
+subproject:
+  path: projects/enterprise-graphrag
+  distribution: enterprise-graphrag
+  import_name: enterprise_graphrag
+  separate_lock_and_environment: true
+  root_workspace_member: false
+  graphrisk_business_dependency: false
+# Current user-selected hosted comparison; activated only by explicit CLI flags.
+selected_hosted_provider: deepseek
+deepseek:
+  enabled: true
+  model: deepseek-flash
+  version_guarantee: mutable_alias_with_observed_fingerprint
+  base_url: https://api.deepseek.com
+  api_key_env: DEEPSEEK_API_KEY
+  private_env_file: .env.stage08-deepseek
+  thinking: disabled
+  live_call_status: measured_20_of_20_passed_bill_pending
+  input_counting: paid_one_output_token_calibration_same_messages
+  pre_calibration_input_bytes_limit: 3500
+  price_checked_on: "2026-09-30"
+  accounting: peak_rate_upper_estimate_until_bill_reconciliation
+  input_cached_cny_per_million_tokens: 0.04
+  input_uncached_cny_per_million_tokens: 2
+  output_cny_per_million_tokens: 8

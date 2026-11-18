@@ -53,5 +53,32 @@ reports/generated/
 Thumbs.db
 /.secrets/
 
-# Local coding-assistant state is not project source.
+# Local assistant state, caches and generated execution evidence.
+/.npm-cache/
+/.tmp/
 /.workbuddy/
+/reports/
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm
+
+# Repository-root protection for both source directories.
+**/.env
+**/.env.*
+!**/.env.example
+**/.secrets/
+**/reports/
+**/models/
+**/data/raw/**
+**/data/interim/**
+**/data/processed/**
+**/data/evaluation/**
+**/.venv/
+**/.uv-cache/
+**/.uv-python/
+**/artifacts/
+*.sqlite3-wal
+*.sqlite3-shm

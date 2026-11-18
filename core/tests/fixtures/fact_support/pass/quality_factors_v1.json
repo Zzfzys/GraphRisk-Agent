@@ -1,0 +1,9 @@
+[
+ {"id":"raw-money-9837","text":"目标交易金额为9.837。","refs":["F1"]},
+ {"id":"display-score","text":"主评分为0.931，是未校准信号，不是欺诈概率。","refs":["F8"]},
+ {"id":"raw-score","text":"主评分为0.9312345678901，是未校准信号，不是欺诈概率。","refs":["F8"]},
+ {"id":"grouped-count","text":"此前24小时匿名匹配历史交易数为413,378。","refs":["F3"]},
+ {"id":"ungrouped-count","text":"此前24小时匿名匹配历史交易数为413378。","refs":["F3"]},
+ {"id":"display-difference","text":"此前24小时金额与历史均值之差为-10.29。","refs":["F7"]},
+ {"id":"raw-mean","text":"此前24小时历史均值为20.123。","refs":["F5"]}
+]

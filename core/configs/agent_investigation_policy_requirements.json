@@ -1,0 +1,155 @@
+{
+  "annotations": [
+    {
+      "chunk_id": "policy-092e2446a628d02ed97a7b85",
+      "content_sha256": "9c6234ba58c7fe79703982a0250e01b363c3c1daeef11e018c2906056d04cbaa",
+      "purpose": "exception_condition",
+      "requirements": [
+        {
+          "expected": 5,
+          "metric": "verified_accounts_per_device",
+          "operator": "gte",
+          "subject": "target_device",
+          "unit": "distinct_verified_accounts",
+          "window_seconds": 86400
+        },
+        {
+          "expected": true,
+          "metric": "independent_device_authorization",
+          "operator": "eq",
+          "subject": "target_device",
+          "unit": "boolean",
+          "window_seconds": null
+        }
+      ]
+    },
+    {
+      "chunk_id": "policy-0bf288130ad967e9c6d373c4",
+      "content_sha256": "b2f5fcfd1519e306b2d49806927a3a85d9bcc909a79eae49c5b870274edf2342",
+      "purpose": "general_guidance",
+      "requirements": []
+    },
+    {
+      "chunk_id": "policy-17d32f86b7095e02715e39ca",
+      "content_sha256": "de9e66e2577a3ac15f1157445b1a16ed50fd93f505689f10ca117e69fa1a06c2",
+      "purpose": "general_guidance",
+      "requirements": []
+    },
+    {
+      "chunk_id": "policy-1cd398a94233baa2ed38d318",
+      "content_sha256": "668bf3b9b40bb925861f11abea7a87399720fb22fc17d3516212905283c3b602",
+      "purpose": "general_guidance",
+      "requirements": []
+    },
+    {
+      "chunk_id": "policy-33a9677b279241e7f045478d",
+      "content_sha256": "69f3fd66a6e87d0430b9876a3cfa9a900be7a02bb0facc6f8e441bea71aad3af",
+      "purpose": "general_guidance",
+      "requirements": []
+    },
+    {
+      "chunk_id": "policy-568d34751e7152dedfa624bd",
+      "content_sha256": "2625a25cd825a7c0615317b482926e755c670cbeeceaa6f7f00d592e256592ba",
+      "purpose": "general_guidance",
+      "requirements": []
+    },
+    {
+      "chunk_id": "policy-5f3069ff0c7ef7a0ab2f20e0",
+      "content_sha256": "88b07cca5da8dcf1ae90487e7ebd21a5dc7bb1c4de6e0ff926628c8cae493b42",
+      "purpose": "trigger_condition",
+      "requirements": [
+        {
+          "expected": 5,
+          "metric": "verified_accounts_per_device",
+          "operator": "gte",
+          "subject": "target_device",
+          "unit": "distinct_verified_accounts",
+          "window_seconds": 86400
+        }
+      ]
+    },
+    {
+      "chunk_id": "policy-611851f6661c58db726d4f52",
+      "content_sha256": "e7648d366a07234ce446e26680c58fa43694e09d6a316f7986897924c060c4f7",
+      "purpose": "general_guidance",
+      "requirements": []
+    },
+    {
+      "chunk_id": "policy-6675acd96fe0ad61a285de87",
+      "content_sha256": "4620c715e945304a2d3953b25c73dc6f0658cc2072ec306d19ade116e0814387",
+      "purpose": "general_guidance",
+      "requirements": []
+    },
+    {
+      "chunk_id": "policy-806535ad98348fa6dea5d847",
+      "content_sha256": "d4a2a933d5085162b6d446fa609de506ccaddb2c804f583488054653d04ae9f2",
+      "purpose": "trigger_condition",
+      "requirements": [
+        {
+          "expected": 4,
+          "metric": "card_attempt_count",
+          "operator": "gte",
+          "subject": "target_card",
+          "unit": "attempts",
+          "window_seconds": 600
+        }
+      ]
+    },
+    {
+      "chunk_id": "policy-97f6eb79d2a992d3cc2fd187",
+      "content_sha256": "4f3c382e60bd9bcb83b6691370ee95f9974722c52e20587fc999051897c450a9",
+      "purpose": "evidence_guidance",
+      "requirements": [
+        {
+          "expected": 1,
+          "metric": "scored_graph_neighbor_count",
+          "operator": "gte",
+          "subject": "graph_history_sample",
+          "unit": "transactions",
+          "window_seconds": null
+        }
+      ]
+    },
+    {
+      "chunk_id": "policy-dc6d395f92da538bb6c180d1",
+      "content_sha256": "9eca3cf1e217916305ff9ed7a53eaf47bbf23b17a57e009283b2cc89352fe7e0",
+      "purpose": "trigger_condition",
+      "requirements": [
+        {
+          "expected": 8,
+          "metric": "verified_accounts_per_device",
+          "operator": "gte",
+          "subject": "target_device",
+          "unit": "distinct_verified_accounts",
+          "window_seconds": 86400
+        }
+      ]
+    },
+    {
+      "chunk_id": "policy-de085f3a3a86c56432a259a5",
+      "content_sha256": "5ee891e177838632ac8cffc3e37b8a02403a3c87b947e7d8d7ad8f75e2565429",
+      "purpose": "general_guidance",
+      "requirements": []
+    },
+    {
+      "chunk_id": "policy-e6dc2ce6d9b7d96205006bfc",
+      "content_sha256": "d29a37f548281f820f8375cbc057622b744a3f5941e0f163922b87d8fcf6875e",
+      "purpose": "general_guidance",
+      "requirements": []
+    },
+    {
+      "chunk_id": "policy-f3e97de14c089820dca66b40",
+      "content_sha256": "eee1226674c6ebaedef77a7d6ac11624eeba0216d79cb92c97148db7cd48669b",
+      "purpose": "general_guidance",
+      "requirements": []
+    },
+    {
+      "chunk_id": "policy-f47fb037db9ea572cc95cef8",
+      "content_sha256": "24b280539eaa8d8f4807956318878ce0fce489fd60eb959cc79fdecca4231719",
+      "purpose": "general_guidance",
+      "requirements": []
+    }
+  ],
+  "index_version": "9eade9b4c7f38df917267731ebe1d19a0aa8c270cbe1b8234a64d64b1605b3e7",
+  "schema_version": "policy-requirements-v1"
+}

@@ -1,0 +1,140 @@
+name: graphrisk-stage07
+
+services:
+  db:
+    image: pgvector/pgvector:0.8.6-pg17-bookworm
+    environment:
+      POSTGRES_DB: graphrisk
+      POSTGRES_USER: graphrisk
+      POSTGRES_PASSWORD_FILE: /run/secrets/stage07_db_admin_password
+    secrets:
+      - stage07_db_admin_password
+    volumes:
+      - stage07_pgdata:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U graphrisk -d graphrisk"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  bootstrap:
+    build:
+      context: .
+      dockerfile: Dockerfile.stage07
+    image: graphrisk-stage07:local
+    command: ["python", "-m", "graphrisk.serving.stage07_runtime", "bootstrap"]
+    environment:
+      NO_PROXY: db,localhost,127.0.0.1
+    secrets:
+      - stage07_db_admin_password
+      - stage07_db_app_password
+    volumes:
+      - type: bind
+        source: ./artifacts/stage-05/policy
+        target: /app/artifacts/stage-05/policy
+        read_only: true
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: "no"
+
+  api:
+    image: graphrisk-stage07:local
+    init: true
+    command: ["python", "-m", "graphrisk.serving.stage07_runtime", "api"]
+    environment:
+      GRAPHRISK_MODEL_DIR: /app/artifacts/stage-02/ieee-cis/champion
+      GRAPHRISK_FEATURE_DATA: /app/data/interim/ieee-cis/features_all.parquet
+      NO_PROXY: host.docker.internal,db,localhost,127.0.0.1
+    secrets:
+      - stage07_db_app_password
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - type: bind
+        source: ./data/interim/ieee-cis
+        target: /app/data/interim/ieee-cis
+        read_only: true
+      - type: bind
+        source: ./data/processed/ieee-cis
+        target: /app/data/processed/ieee-cis
+        read_only: true
+      - type: bind
+        source: ./artifacts/stage-02/ieee-cis
+        target: /app/artifacts/stage-02/ieee-cis
+        read_only: true
+      - type: bind
+        source: ./artifacts/stage-04/ieee-cis
+        target: /app/artifacts/stage-04/ieee-cis
+        read_only: true
+      - type: bind
+        source: ./artifacts/stage-05/policy
+        target: /app/artifacts/stage-05/policy
+        read_only: true
+      - type: bind
+        source: ./reports/generated
+        target: /app/reports/generated
+        read_only: false
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
+    networks:
+      - backend
+      - frontend
+    healthcheck:
+      test: ["CMD", "python", "-c", "import json,urllib.request; r=urllib.request.urlopen('http://127.0.0.1:8000/api/v1/ready', timeout=5); assert json.load(r)['status']=='ready'"]
+      interval: 15s
+      timeout: 8s
+      retries: 5
+      start_period: 120s
+
+  workbench:
+    image: graphrisk-stage07:local
+    init: true
+    depends_on:
+      api:
+        condition: service_healthy
+    command:
+      - streamlit
+      - run
+      - streamlit_app.py
+      - --server.address
+      - 0.0.0.0
+      - --server.port
+      - "8501"
+      - --server.headless
+      - "true"
+      - --browser.gatherUsageStats
+      - "false"
+    environment:
+      GRAPHRISK_STAGE06_API_URL: http://api:8000
+      NO_PROXY: api,localhost,127.0.0.1
+    ports:
+      - "127.0.0.1:8501:8501"
+    networks:
+      - frontend
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/_stcore/health', timeout=5)"]
+      interval: 15s
+      timeout: 8s
+      retries: 5
+      start_period: 30s
+
+networks:
+  backend:
+    internal: true
+  frontend: {}
+
+volumes:
+  stage07_pgdata: {}
+
+secrets:
+  stage07_db_admin_password:
+    file: ./.secrets/stage07/admin_password
+  stage07_db_app_password:
+    file: ./.secrets/stage07/app_password

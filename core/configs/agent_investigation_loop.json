@@ -1,0 +1,16 @@
+{
+  "version": "bounded-investigation-v1.1",
+  "action_prompt": "investigation-action-v2",
+  "pricing_verified_date": "2026-10-20",
+  "max_model_calls": 5,
+  "max_tool_calls": 8,
+  "max_nodes": 12,
+  "seconds": 600,
+  "max_repairs": 1,
+  "no_progress_limit": 2,
+  "development_cap_each_provider_including_route2": 60,
+  "pilot_cap_each_provider": 15,
+  "local_keep_alive": 0,
+  "max_policy_paragraphs": 2,
+  "live_enabled_by_default": false
+}
