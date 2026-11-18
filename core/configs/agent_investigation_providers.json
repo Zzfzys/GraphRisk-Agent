@@ -1,0 +1,30 @@
+{
+  "schema_version": "investigation-providers-v1",
+  "prompt_version": "investigation-action-v2",
+  "deepseek": {
+    "endpoint": "https://api.deepseek.com/chat/completions",
+    "model": "deepseek-flash",
+    "documented_revision": "DeepSeek-V4.1-Flash-1017",
+    "context_limit": 1048576,
+    "peak_cny_per_million": {"cache_hit": "0.04", "cache_miss": "2", "output": "8"},
+    "pricing_verified_date": "2026-10-19",
+    "pricing_source": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+    "revision_source": "https://api-docs.deepseek.com/zh-cn/updates/"
+  },
+  "local": {
+    "endpoint": "http://127.0.0.1:11434/api/generate",
+    "model": "qwen3:4b",
+    "digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+    "num_ctx": 8192,
+    "think": false,
+    "keep_alive": "30s",
+    "idle_ram_min_gib": 4,
+    "running_ram_min_gib": 3
+  },
+  "max_output_tokens": 768,
+  "max_prompt_utf8_bytes": 7000,
+  "max_policy_paragraphs": 3,
+  "timeout_seconds": 180,
+  "pilot": {"different_development_cases": 3, "states_per_case": 2, "deepseek_cap": 6, "local_cap": 6},
+  "live_enabled_by_default": false
+}

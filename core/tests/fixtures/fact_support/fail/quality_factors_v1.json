@@ -1,0 +1,10 @@
+[
+ {"id":"wrong-money","text":"目标交易金额为9.84。","refs":["F1"]},
+ {"id":"arbitrary-score-rounding","text":"主评分为0.9312，是未校准信号，不是欺诈概率。","refs":["F8"]},
+ {"id":"wrong-window","text":"此前24小时匿名匹配历史交易数为17。","refs":["F2"]},
+ {"id":"wrong-score-citation","text":"主评分为0.931，是未校准信号，不是欺诈概率。","refs":["F16"]},
+ {"id":"invented-currency","text":"目标交易金额为9.837美元。","refs":["F1"]},
+ {"id":"raw-score-to-probability","text":"本笔欺诈概率为0.931。","refs":["F8"]},
+ {"id":"invented-extra-count","text":"目标交易金额为9.837，另外还有99笔。","refs":["F1"]},
+ {"id":"malformed-grouping","text":"此前24小时匿名匹配历史交易数为41,3378。","refs":["F3"]}
+]

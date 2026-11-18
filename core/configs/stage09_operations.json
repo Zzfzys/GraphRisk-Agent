@@ -1,0 +1,46 @@
+{
+  "schema_version": "stage09-operations-contract-v1",
+  "purpose": "single_worker_demo_observability_and_isolated_recovery",
+  "reference_policy": "frozen_before_drift_metrics_no_labels_no_model_selection",
+  "cohorts": {
+    "route1": "reports/generated/stage09/route1/20261007-baseline-v1",
+    "route5": "reports/generated/stage09/route5/20261007-replay-v1"
+  },
+  "cohort_main_cases": 30,
+  "cohort_repeats_separate": true,
+  "drift": {
+    "directory": "artifacts/stage-09/route5b/20261010-confirmation-v1/historical-test",
+    "feature_columns": [
+      "transaction_amount",
+      "tx_count_last_24h"
+    ],
+    "score_file": "x3-scores.npy",
+    "score_sha256": "c72dd9410deb6783148af8adc077f70a1a4efd01e7b2390e730312156860bc0f",
+    "model_decision_sha256": "645c714f83967f1f74845d04bd979fde910077a83dc67baaefc29ef25bb950f9",
+    "time_boundary": "middle_sorted_time_strict_less_vs_greater_equal",
+    "quantile_bins": 10,
+    "smoothing_count": 0.5,
+    "warning_psi": 0.1,
+    "alert_psi": 0.25,
+    "synthetic_amount_shift_reference_ranges": 10,
+    "synthetic_missing_fraction": 0.25,
+    "population": "historically_observed_test_descriptive_not_new_blind_or_production"
+  },
+  "recovery": {
+    "image": "pgvector/pgvector:0.8.6-pg17-bookworm",
+    "memory_mib": 384,
+    "database_scope": "new_random_container_source_and_new_empty_restore_database_only",
+    "backup_format": "custom_no_owner_no_privileges",
+    "backup_retention": "private_until_stage09_route8_review_then_user_controlled_archive_or_cleanup",
+    "application_role": "limited_not_superuser",
+    "model_and_agent_evidence": "synthetic_mechanism_fixture_no_real_model_calls"
+  },
+  "resources": {
+    "min_available_gib": 1.5,
+    "max_process_rss_mib": 1280
+  },
+  "real_training_allowed": false,
+  "real_generation_allowed": false,
+  "paid_calls_allowed": false,
+  "cold_warm_semantics": "unknown_unless_independently_measured; report_ollama_load_duration_separately_no_heuristic_relabel"
+}

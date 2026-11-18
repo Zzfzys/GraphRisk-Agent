@@ -1,0 +1,16 @@
+{
+  "version": "route5-supplement-v3",
+  "user_authorized": "新增最多100次，维持总预算在100元",
+  "group_key": "route5_supplement_v3",
+  "additional_deepseek_requests": 100,
+  "additional_local_requests": 0,
+  "global_hard_limit_cny": 100,
+  "pause_estimate_cny": 80,
+  "first_batch_cases": 5,
+  "max_requests_per_case": 2,
+  "repairs_per_case": 1,
+  "first_batch_request_cap": 10,
+  "original_route5_cap": 10,
+  "old_failures_preserved": true,
+  "live_default": false
+}

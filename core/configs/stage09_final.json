@@ -1,0 +1,30 @@
+{
+  "schema_version": "stage09-final-contract-v1",
+  "parent_head": "a098f2a275bc7048a254f6f612c1d2438fa41284",
+  "route7": "reports/generated/stage09/route7/20261017-ops-v1",
+  "baseline": "reports/generated/stage09/route1/20261007-baseline-v1",
+  "replay": "reports/generated/stage09/route5/20261007-replay-v1",
+  "quality": "reports/generated/stage09/route5a/20261008-quality-v2",
+  "quality_archives": [
+    "artifacts/stage-09/route5a/20261008-quality-v2/source-before-docker-repair",
+    "artifacts/stage-09/route5a/20261008-quality-v1/source-at-freeze"
+  ],
+  "demo_cases": [
+    "C-reg-case-01.json",
+    "C-reg-case-08.json"
+  ],
+  "demo_mode": "historical_real_report_replay_no_new_inference",
+  "real_training_allowed": false,
+  "real_generation_allowed": false,
+  "paid_calls_allowed": false,
+  "personal_learning": "Pending",
+  "human_usefulness_review": "Pending",
+  "resources": {
+    "minimum_available_ram_gib": 1.5,
+    "max_process_rss_mib": 1280
+  },
+  "recovery": {
+    "image": "pgvector/pgvector:0.8.6-pg17-bookworm",
+    "memory_mib": 384
+  }
+}

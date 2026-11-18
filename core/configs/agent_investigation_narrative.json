@@ -1,0 +1,13 @@
+{
+  "version": "program-facts-judgment-v2",
+  "pricing_verified_date": "2026-10-23",
+  "pricing_source": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+  "group": "route5",
+  "group_cap_each": 10,
+  "pilot_cases": 2,
+  "pilot_max_calls_each": 2,
+  "max_repairs": 1,
+  "formal_cases": 0,
+  "prompt_candidates": 1,
+  "live_default": false
+}

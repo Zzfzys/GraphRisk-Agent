@@ -1,0 +1,68 @@
+[project]
+name = "graphrisk-agent"
+version = "0.1.0"
+description = "Evidence-grounded fraud investigation agent portfolio project"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "duckdb>=1.4,<2",
+    "fastapi>=0.118,<1",
+    "httpx>=0.28,<1",
+    "joblib>=1.4,<2",
+    "langgraph>=1,<2",
+    "langgraph-checkpoint-postgres==3.1.2",
+    "mlflow>=3.5,<4",
+    "pandas>=2.2,<4",
+    "psycopg[binary]==3.3.6",
+    "pydantic>=2.11,<3",
+    "pytz>=2025.2",
+    "pyyaml>=6,<7",
+    "scikit-learn>=1.7,<2",
+    "torch==2.9.1",
+    "torch-geometric==2.8.0.post1",
+    "uvicorn>=0.35,<1",
+    "xgboost>=3,<4",
+]
+
+[project.scripts]
+graphrisk-build-features = "graphrisk.pipeline:main"
+graphrisk-generate-synthetic = "graphrisk.data.synthetic:main"
+graphrisk-train-baselines = "graphrisk.training.train_baselines:main"
+
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+demo = [
+    "streamlit>=1.57,<2",
+]
+dev = [
+    "pytest>=8.3,<9",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -p no:cacheprovider"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/graphrisk", "api"]
+
+[tool.uv]
+cache-dir = ".uv-cache"
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cu128", marker = "sys_platform == 'win32'" },
+    { index = "pytorch-cpu", marker = "sys_platform == 'linux'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

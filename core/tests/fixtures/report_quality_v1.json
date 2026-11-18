@@ -1,0 +1,312 @@
+{
+  "version": "authored-report-quality-samples-v1",
+  "source": "synthetic deterministic tool fixtures; not IEEE-CIS metrics or model generations",
+  "base_draft": {
+    "risk_level": "undetermined",
+    "basis": [
+      {
+        "text": "当前仅有匿名关联线索，授权仍未核实，尚不能据此确定异常。",
+        "refs": [
+          "F1",
+          "F9"
+        ]
+      }
+    ],
+    "counterevidence": [
+      {
+        "text": "尚未取得支付授权核验结果，这是缺口，不能据此认定交易正常。",
+        "refs": [
+          "F1"
+        ]
+      }
+    ],
+    "policy": {
+      "text": "政策命中不等于条件成立，必要业务前提仍须核实。",
+      "refs": [
+        "P1"
+      ]
+    },
+    "next_check": {
+      "text": "authorization",
+      "refs": [
+        "F1"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "specific-uncertain",
+      "kind": "rubric_anchor",
+      "change": {},
+      "scores": [
+        2,
+        2,
+        1,
+        2
+      ],
+      "facts": "Pass",
+      "role": "evidence_gap",
+      "expected": "Pass",
+      "reasons": [
+        "依据写出匿名关联及授权缺口，对当前判断有明确指向。",
+        "等级保守，关联不直接等于异常，缺口未当成正常反证。",
+        "授权核查对象明确，但旧字段缺少独立的结果用途说明。",
+        "能直接读懂当前判断、缺口和下一步。"
+      ]
+    },
+    {
+      "id": "generic",
+      "kind": "rubric_anchor",
+      "change": {
+        "basis_text": "该交易值得关注，建议进一步核查。",
+        "counter_text": "现有信息尚不足以下结论。"
+      },
+      "scores": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "facts": "Pass",
+      "role": "evidence_gap",
+      "expected": "Fail",
+      "reasons": [
+        "没有使用本案关键线索与缺口，基本可套用任何交易。",
+        "只有核查结论，没有解释线索与判断的关系。",
+        "下一步只是程序生成方向，原稿没有解释要解决哪个疑点。",
+        "短句基本可读，但无法复述调查理由。"
+      ]
+    },
+    {
+      "id": "wrong-amount-high-scores",
+      "kind": "aggregation_negative",
+      "change": {
+        "basis_text": "目标交易金额为999.99，需核查授权情况。",
+        "basis_refs": [
+          "F1"
+        ]
+      },
+      "scores": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "facts": "Pass",
+      "role": "evidence_gap",
+      "expected": "Fail",
+      "reasons": [
+        "故意预置高分，检验不能抵消已识别金额错误。",
+        "故意预置高分，检验不能抵消已识别金额错误。",
+        "故意预置高分，检验不能抵消已识别金额错误。",
+        "故意预置高分，检验不能抵消已识别金额错误。"
+      ]
+    },
+    {
+      "id": "gap-promoted-to-normal",
+      "kind": "semantic_review_negative",
+      "change": {
+        "counter_text": "没有授权核验信息，因此可以确认该交易正常。"
+      },
+      "scores": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "facts": "Fail",
+      "role": "mixed",
+      "expected": "Fail",
+      "fact_reason": "缺少授权信息不能支持确认交易正常，原句把未知当作正常结论。",
+      "reasons": [
+        "提到授权，但错误使用了缺失信息。",
+        "把授权缺失当成已正常的证据。",
+        "授权方向具体，无法弥补错误正常结论。",
+        "句子可读但含误导性判断。"
+      ]
+    },
+    {
+      "id": "available-tool-deferred",
+      "kind": "process_anchor",
+      "variant": "relations_not_requested",
+      "change": {
+        "basis_text": "关联查询结果尚未取得，当前材料不足以作出判断。",
+        "basis_refs": [
+          "F1"
+        ],
+        "counter_text": "关联查询尚未执行，应补齐取证后判断。"
+      },
+      "scores": [
+        1,
+        1,
+        0,
+        2
+      ],
+      "facts": "Pass",
+      "role": "evidence_gap",
+      "expected": "Fail",
+      "reasons": [
+        "指出关联结果未取得，但没有充分利用可补查条件。",
+        "没有把未查询说成无关联，但分析尚未展开。",
+        "本情景工具和预算可用且需要补查，却只留下人工方向建议。",
+        "缺失状态文字清楚，读者可以理解。"
+      ]
+    },
+    {
+      "id": "reasonable-stop",
+      "kind": "rubric_anchor",
+      "change": {
+        "basis_text": "主评分与图分数均属未校准线索，现有材料仍不足以核实授权。",
+        "basis_refs": [
+          "F1",
+          "F8",
+          "F16"
+        ]
+      },
+      "scores": [
+        2,
+        2,
+        1,
+        2
+      ],
+      "facts": "Pass",
+      "role": "evidence_gap",
+      "expected": "Pass",
+      "reasons": [
+        "用主评分、实验图分数及授权缺口界定本案材料。",
+        "没有把两个分数当概率或当作已欺诈证据。",
+        "现有工具不能核验实际授权，交人工合理，结果用途仍不够充分。",
+        "能读懂为何暂不能判断和谁来核实。"
+      ]
+    },
+    {
+      "id": "unfilled-review",
+      "kind": "pending_protocol",
+      "change": {},
+      "scores": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "facts": "Pending",
+      "role": "unreviewed",
+      "expected": "Pending",
+      "reasons": [
+        "尚未进行实际评分，不填零或默认通过。",
+        "尚未进行实际评分，不填零或默认通过。",
+        "尚未进行实际评分，不填零或默认通过。",
+        "尚未进行实际评分，不填零或默认通过。"
+      ]
+    },
+    {
+      "id": "unclassified-role",
+      "kind": "pending_protocol",
+      "change": {},
+      "scores": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "facts": "Pass",
+      "role": "unreviewed",
+      "expected": "Pending",
+      "reasons": [
+        "仅用于检查分类尚未完成时不能按预置分数通过。",
+        "仅用于检查分类尚未完成时不能按预置分数通过。",
+        "仅用于检查分类尚未完成时不能按预置分数通过。",
+        "仅用于检查分类尚未完成时不能按预置分数通过。"
+      ]
+    },
+    {
+      "id": "zero-basis-legacy-conflict",
+      "kind": "contract_compatibility",
+      "change": {
+        "zero_basis": true
+      },
+      "scores": [
+        2,
+        2,
+        1,
+        2
+      ],
+      "facts": "Pass",
+      "role": "evidence_gap",
+      "expected": "Fail",
+      "reasons": [
+        "产品允许零有效线索，但旧schema至少一条，记录兼容冲突，不称事实错误。",
+        "产品允许零有效线索，但旧schema至少一条，记录兼容冲突，不称事实错误。",
+        "产品允许零有效线索，但旧schema至少一条，记录兼容冲突，不称事实错误。",
+        "产品允许零有效线索，但旧schema至少一条，记录兼容冲突，不称事实错误。"
+      ]
+    },
+    {
+      "id": "false-completed-authorization",
+      "kind": "semantic_review_negative",
+      "change": {
+        "counter_text": "已完成支付授权核验，确认该交易正常。"
+      },
+      "scores": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "facts": "Fail",
+      "role": "mixed",
+      "expected": "Fail",
+      "fact_reason": "观察只有六个只读工具，未有授权核验动作，不能声称已完成授权核验。",
+      "reasons": [
+        "提到当前授权对象，但没有对应取证。",
+        "已完成核验及正常结论没有来源。",
+        "把尚未执行的人工核查写成完成。",
+        "句子可读但误导实际执行状态。"
+      ]
+    },
+    {
+      "id": "six-with-zero-dimension",
+      "kind": "aggregation_negative",
+      "change": {},
+      "scores": [
+        0,
+        2,
+        2,
+        2
+      ],
+      "facts": "Pass",
+      "role": "evidence_gap",
+      "expected": "Fail",
+      "reasons": [
+        "故意预置总分六但一项为零，验证逐项下限。",
+        "故意预置总分六但一项为零，验证逐项下限。",
+        "故意预置总分六但一项为零，验证逐项下限。",
+        "故意预置总分六但一项为零，验证逐项下限。"
+      ]
+    },
+    {
+      "id": "unknown-citation-high-scores",
+      "kind": "aggregation_negative",
+      "change": {
+        "basis_refs": [
+          "F999"
+        ]
+      },
+      "scores": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "facts": "Pass",
+      "role": "evidence_gap",
+      "expected": "Fail",
+      "reasons": [
+        "故意预置高分，检验不存在的引用不能被评委放行。",
+        "故意预置高分，检验不存在的引用不能被评委放行。",
+        "故意预置高分，检验不存在的引用不能被评委放行。",
+        "故意预置高分，检验不存在的引用不能被评委放行。"
+      ]
+    }
+  ]
+}

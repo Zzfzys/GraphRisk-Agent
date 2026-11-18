@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "baseline_config": "configs/stage05.yaml",
+  "persistent_probe_config": "configs/stage07_pgvector.yaml",
+  "baseline_storage": "memory_single_worker",
+  "baseline_retriever": "tfidf",
+  "policy_as_of": "2026-07-01",
+  "relation_limit": 3,
+  "agent_selection_split": "validation",
+  "score_strata": "xgboost_equal_rank_tertiles_10_each",
+  "selection_seed": 20261007,
+  "observed_test_status": "historically_observed_not_blind",
+  "output_root": "reports/generated/stage09",
+  "artifact_root": "artifacts/stage-09",
+  "agent": {
+    "unique_transactions": 30,
+    "minimum_generation_transactions": 20,
+    "repetitions_per_phase": 3,
+    "max_model_calls_per_case": 2,
+    "development_cases": 5,
+    "warmup_cases": 1,
+    "max_generation_attempts": 144,
+    "concurrency": 1,
+    "max_case_seconds": 300,
+    "max_request_seconds": 180,
+    "max_output_tokens": 512,
+    "temperature": 0,
+    "paid_calls_allowed": false,
+    "hosted_fallback_allowed": false
+  },
+  "graph": {
+    "baseline_seed": 20260921,
+    "confirmation_seeds": [
+      20260921,
+      20260928,
+      20261007
+    ],
+    "candidates": [
+      {
+        "learning_rate": 0.001,
+        "dropout": 0.2,
+        "hidden_channels": 64
+      },
+      {
+        "learning_rate": 0.0005,
+        "dropout": 0.2,
+        "hidden_channels": 64
+      },
+      {
+        "learning_rate": 0.001,
+        "dropout": 0.4,
+        "hidden_channels": 64
+      },
+      {
+        "learning_rate": 0.0005,
+        "dropout": 0.4,
+        "hidden_channels": 64
+      },
+      {
+        "learning_rate": 0.001,
+        "dropout": 0.2,
+        "hidden_channels": 128
+      },
+      {
+        "learning_rate": 0.0005,
+        "dropout": 0.2,
+        "hidden_channels": 128
+      }
+    ],
+    "max_new_gnn_runs": 13,
+    "max_epochs": 50,
+    "patience": 10,
+    "max_run_seconds": 3600,
+    "max_total_training_seconds": 21600,
+    "candidate_test_access_allowed": false,
+    "maximum_final_test_batches": 1,
+    "larger_fanout": [
+      10,
+      10
+    ]
+  },
+  "resources": {
+    "minimum_available_ram_gib": 3,
+    "minimum_free_gpu_mib": 4096,
+    "maximum_idle_gpu_utilization_percent": 10,
+    "minimum_disk_free_gib": {
+      "C": 5,
+      "D": 5,
+      "E": 10
+    }
+  }
+}

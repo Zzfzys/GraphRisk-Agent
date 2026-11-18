@@ -1,0 +1,12 @@
+{
+  "schema_version": "stage09-5b-graph-expansion-v1",
+  "device": "cuda", "cpu_threads": 4, "batch_size": 256,
+  "history_per_entity": 5, "max_epochs": 50, "patience": 10,
+  "scale_seed": 20260921, "search_seed": 20260928,
+  "train_probe_count": 10000, "maximum_prepare_seconds": 7200,
+  "scale_selection": "earliest_prefix_move_cut_left_over_equal_times",
+  "encoder_fit": "each_scale_training_roots_only",
+  "selection": "inner_ap_then_seconds_then_registered_order",
+  "conditional_trigger": "best_current_inner_ap_below_selected_wide_xgboost",
+  "label_access": ["fold-1-train", "fold-1-early-stop"]
+}

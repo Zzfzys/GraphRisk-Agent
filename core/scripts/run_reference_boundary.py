@@ -1,0 +1,85 @@
+"""Read-only by default; six boundary probes require a new explicit approval."""
+import argparse
+from contextlib import closing
+from datetime import date
+import os
+from pathlib import Path
+import sqlite3
+import time
+
+from graphrisk.agent import rank_successor as successor
+from graphrisk.agent.autonomous_budget import InvestigationBudget
+from graphrisk.agent.autonomous_session import SessionStore
+from graphrisk.agent.reference_boundary_execution import (
+    check, check_authorization, provider_class, read, require, selection_for, verify_saved_result,
+)
+from graphrisk.agent.upgrade_contract import canonical, digest, file_hash, load_contract
+
+
+def run(config_path, *, live=False, approval_note=None, transport=None):
+    cfg, preview = check(config_path)
+    if not live:
+        return preview
+    require(os.getenv('GRAPHRISK_UPGRADE_LIVE') == '1' and isinstance(approval_note, str)
+            and len(approval_note.strip()) >= 10, 'new_explicit_approval_required')
+    ledger = Path(cfg['runtime']) / 'reports/generated/agent-investigation-upgrade/live-budget.sqlite3'
+    sha = file_hash(Path(config_path))
+    with closing(sqlite3.connect(ledger.as_uri() + '?mode=ro', uri=True)) as db:
+        check_authorization(db, cfg, approval_note)
+        registered = db.execute('SELECT contract_path,contract_sha,authorization,closed FROM rank_successors '
+                                'WHERE campaign_id=?', (cfg['campaign'],)).fetchone()
+        if registered:
+            require(Path(registered[0]).resolve() == Path(config_path).resolve()
+                    and registered[1:3] == (sha, approval_note), 'approval_changed')
+            if registered[3]:
+                return {'status': 'closed_verified_no_new_requests', 'saved_first_results': 6,
+                        'new_requests_this_run': 0}
+    require(date.today().isoformat() == cfg['pricing_date'], 'refresh_pricing_before_new_requests')
+    budget = InvestigationBudget(ledger, load_contract(Path(cfg['source_root']) /
+                                 'configs/agent_investigation_experiment.json'), mode='live')
+    store = SessionStore(budget)
+    if registered is None:
+        store.campaign(cfg['campaign'], sha, cap_each=6, group_key=successor.GROUP_BOUNDARY)
+        successor.register(budget, config_path, approval_note)
+    output, profile = Path(cfg['output']), read(cfg['profile_path'])
+    output.mkdir(parents=True, exist_ok=True)
+    fresh = 0
+    for i, case in enumerate(cfg['cases']):
+        path = output / (case['case_id'] + '-result.json')
+        with budget.transaction() as db:
+            prior = verify_saved_result(db, cfg, cfg['campaign'], i)
+        if prior:
+            continue
+        require(not path.exists(), 'unregistered_result_no_resend')
+        session = cfg['campaign'] + '-C' + str(i + 1)
+        deadline = store.open(session, cfg['campaign'], {'campaign': cfg['campaign'], 'position': i,
+            'payload_sha': cfg['payloads'][i]}, 'deepseek', calls=1, seconds=600)
+        packet = read(case['packet_path'])
+        wrapper = {'profile_sha256': digest(profile), 'packets': [packet], 'session': session}
+        phase = store.register_packet(session, 0, digest(wrapper), 'deepseek')
+        provider = provider_class(case['kind'])('deepseek', profile=profile, budget=budget,
+            campaign=wrapper, campaign_sha=digest(wrapper), phase=phase, output=output / 'receipts',
+            runtime=Path(cfg['runtime']), live=True, remaining=lambda: deadline - time.time(), transport=transport)
+        response = provider.generate('0')
+        value = {'case_id': case['case_id'], 'kind': case['kind'], 'provider_result': response,
+            'selection': selection_for(case, packet, response), 'first_draft': True,
+            'automatic_retries': 0, 'repairs': 0, 'paid_judge_calls': 0}
+        with path.open('x', encoding='utf-8') as stream:
+            stream.write(canonical(value) + '\n')
+        successor.record(budget, cfg['campaign'], i, response['attempt_id'], path)
+        with budget.transaction() as db:
+            require(verify_saved_result(db, cfg, cfg['campaign'], i) is not None, 'new_result_binding')
+        fresh += 1
+        print(canonical({'position': i + 1, 'total': 6, 'case_id': case['case_id'], 'code': response['code']}), flush=True)
+    successor.close(budget, cfg['campaign'])
+    return {'status': 'six_first_results_closed', 'saved_first_results': 6, 'new_requests_this_run': fresh,
+            'automatic_retries': 0, 'repairs': 0, 'paid_judge_calls': 0, 'semantic_review': 'Pending'}
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--config', type=Path, required=True)
+    parser.add_argument('--live', action='store_true')
+    parser.add_argument('--approval-note')
+    args = parser.parse_args()
+    print(canonical(run(args.config, live=args.live, approval_note=args.approval_note)))

@@ -1,0 +1,22 @@
+{
+  "schema_version": "stage09-5b-conditional-v1",
+  "device": "cuda", "cpu_threads": 4, "batch_size": 256,
+  "max_epochs": 25, "patience": 10, "train_probe_count": 10000,
+  "seed": 20260928, "rewiring_seed": 20261009,
+  "core_profile": "core", "core_clip_standard_deviations": 10.0,
+  "core_categorical_encoding": "low_card_one_hot_else_signed_hash8",
+  "maximum_prepare_seconds": 7200,
+  "relationship_ap_margin": 0.005,
+  "minimum_rewired_graph_fraction": 0.10,
+  "tasks": [
+    {"id": "c1-no-edges", "variant": "no_edges", "core": false, "eligible": false, "max_seconds": 800},
+    {"id": "c2-rewired", "variant": "rewired", "core": false, "eligible": false, "max_seconds": 950},
+    {"id": "c3-no-history", "variant": "no_history_numeric", "core": false, "eligible": true, "max_seconds": 900},
+    {"id": "c4-core-graph", "variant": "full", "core": true, "eligible": true, "max_seconds": 1100},
+    {"id": "c5-core-no-edges", "variant": "no_edges", "core": true, "eligible": false, "max_seconds": 600}
+  ],
+  "selection": "eligible_inner_ap_then_seconds_then_registered_order",
+  "fusion": "freeze_grid_now_select_on_calibration_in_route5",
+  "heterogeneous_models": "deferred_limited_budget_and_no_confirmed_relation_gain",
+  "label_access": ["fold-1-train", "fold-1-early-stop"]
+}

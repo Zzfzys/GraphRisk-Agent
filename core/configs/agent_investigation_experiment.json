@@ -1,0 +1,51 @@
+{
+  "schema_version": "autonomous-investigation-v1",
+  "experiment_id": "agent-investigation-20261019",
+  "planning_commit": "f58c07c93f1f293ac332b800748fb0a2503525c0",
+  "budget": {
+    "total_attempts": 1000,
+    "deepseek_attempts": 600,
+    "local_attempts": 400,
+    "hard_limit_cny": 100,
+    "pause_estimate_cny": 80
+  },
+  "models": {
+    "primary_candidate": "deepseek",
+    "local_comparison": "qwen3:4b",
+    "local_digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+    "cloud_model_and_prices": "freeze_in_route2_before_generation"
+  },
+  "sampling": {
+    "seed": 20261019,
+    "development": 15,
+    "development_max_prompt_candidates": 2,
+    "natural_validation": 30,
+    "diagnostic_validation": 30,
+    "diagnostic_per_label": 15,
+    "repeat_cases_per_provider": 5,
+    "human_read_cases": 5,
+    "human_read_provider": "deepseek",
+    "human_read_version": "first_published_report_or_original_failure",
+    "exclude_previously_seen": true,
+    "natural_selection": "six_chronological_strata_five_each_without_labels_or_scores",
+    "diagnostic_selection": "five_chronological_strata_three_per_label",
+    "calibration": "per_model_strictly_earlier_fit_and_selection_exclude_all_agent_ids"
+  },
+  "draft_limits": {
+    "status": "draft_freeze_after_route2_3_pilot",
+    "steps_per_turn": 12,
+    "model_calls_per_turn": 6,
+    "tool_calls_per_turn": 8,
+    "semantic_repairs_per_turn": 1,
+    "seconds_per_turn": 600,
+    "turns_per_conversation": 6,
+    "model_calls_per_conversation": 24,
+    "tool_calls_per_conversation": 32,
+    "context_tokens": 8192,
+    "max_output_tokens": 1024
+  },
+  "tasks": ["investigate", "explain_evidence", "policy_conditions", "continue_checks"],
+  "states": ["registered", "running", "needs_clarification", "stopped", "verified", "failed"],
+  "error_categories": ["invalid_input", "source_drift", "unauthorized", "insufficient_evidence", "provider_unavailable", "invalid_model_output", "semantic_conflict", "resource_limit", "budget_unknown", "budget_exhausted"],
+  "live_generation_enabled": false
+}
